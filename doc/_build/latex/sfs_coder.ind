@@ -1,0 +1,57 @@
+\begin{theindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item add\_out() (command.Command method), \hyperpage{11}
+  \item add\_rand() (command.SFSCommand method), \hyperpage{12}
+
+  \indexspace
+  \bigletter B
+  \item build\_BGS() (command.SFSCommand method), \hyperpage{12}
+  \item build\_genomic() (command.SFSCommand method), \hyperpage{12}
+  \item build\_RHH() (command.SFSCommand method), \hyperpage{12}
+
+  \indexspace
+  \bigletter C
+  \item calc\_S() (sfs.Simulation method), \hyperpage{13}
+  \item Command (class in command), \hyperpage{11}
+  \item command (module), \hyperpage{11}
+  \item convert\_sfs\_ms() (command.SFSCommand method), \hyperpage{13}
+
+  \indexspace
+  \bigletter E
+  \item execute() (command.Command method), \hyperpage{11}
+
+  \indexspace
+  \bigletter F
+  \item FileData (class in readsfs), \hyperpage{13}
+
+  \indexspace
+  \bigletter G
+  \item genomic() (command.SFSCommand method), \hyperpage{13}
+  \item get\_sims() (readsfs.FileData method), \hyperpage{14}
+  \item get\_sims() (readsfs.msData method), \hyperpage{14}
+  \item gutenkunst() (command.SFSCommand method), \hyperpage{13}
+
+  \indexspace
+  \bigletter M
+  \item make\_muts() (sfs.Simulation method), \hyperpage{13}
+  \item ms (module), \hyperpage{13}
+  \item msData (class in readsfs), \hyperpage{14}
+
+  \indexspace
+  \bigletter P
+  \item parse\_string() (command.SFSCommand method), \hyperpage{13}
+
+  \indexspace
+  \bigletter R
+  \item readsfs (module), \hyperpage{13}
+
+  \indexspace
+  \bigletter S
+  \item sfs (module), \hyperpage{13}
+  \item SFSCommand (class in command), \hyperpage{11}
+  \item sfsplot (module), \hyperpage{13}
+  \item Simulation (class in sfs), \hyperpage{13}
+
+\end{theindex}

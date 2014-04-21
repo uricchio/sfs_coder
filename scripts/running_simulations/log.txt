@@ -1,0 +1,8 @@
+read 304 regions
+total simulated (excluding overlap) = 121235
+total neutral regions = 22; len = 50302
+simulating bases:
+134877553 138473011
+recMap = 154.409073993927 (134880830) - 157.376879129125 (138474764)
+minMap=154.409073993927
+maxMap=157.376879129125

@@ -1,0 +1,3 @@
+/netapp/home/lawrence.uricchio/rotations/hernandez/software/sfs_code/bin/sfs_code 1 10 -A -t 4.99623859101e-06 -Z -r F /netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/recombfiles/recomb.txt 0.0099978337575 -N 657 -n 10 -L 3 100000.0 1000.0 100000.0 -a N R -v L A 1 -v L 1 471.25833223 -W L 0 1 1000.0 1 0 -W L 2 1 1000.0 1 0 -TE 2 -s 48739 -o /netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/sims/RHH.delta0.1/RHH.delta0.1.1.txt 
+SEED = -48739
+//iteration:1/10

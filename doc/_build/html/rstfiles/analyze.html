@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Analyzing the output &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
+    <link rel="next" title="Plotting" href="plot.html" />
+    <link rel="prev" title="Running SFS_CODE simulations" href="execute.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="execute.html" title="Running SFS_CODE simulations"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="analyzing-the-output">
+<h1>Analyzing the output<a class="headerlink" href="#analyzing-the-output" title="Permalink to this headline">¶</a></h1>
+<p>sfs_code stores a great deal of information about each mutation or substitution
+in a simulation, which can make it challenging to parse the output.  With
+sfs_coder, all the data is stored internally in the Mutation class, allowing
+for flexible manipulation of the output.</p>
+<div class="section" id="opening-and-reading-an-output-file">
+<h2>Opening and reading an output file<a class="headerlink" href="#opening-and-reading-an-output-file" title="Permalink to this headline">¶</a></h2>
+<p>Opening and reading files is simple.  Below is an example that reads in all
+the data in an SFS_CODE output file and caluclates <img class="math" src="../_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> (the average
+pairwise diversity) in the 0th locus in all sampled populations.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">readsfs</span>
+
+<span class="c"># an sfs_code output file that we will analyze</span>
+<span class="n">f</span> <span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c"># initializing a data object and setting the file path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">readsfs</span><span class="o">.</span><span class="n">SFSData</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c"># getting all the data from the simulations in the file</span>
+<span class="n">data</span><span class="o">.</span><span class="n">get_sims</span><span class="p">()</span>
+
+<span class="c"># The simulations in the file are stored in the data.sims attribute</span>
+<span class="c"># for each Simulation object in data.sims, we can calculate pi for</span>
+<span class="c"># a set of loci</span>
+
+<span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">sims</span><span class="p">:</span>
+
+    <span class="n">pis</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">calc_pi</span><span class="p">(</span><span class="n">loci</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c"># array of pi values, indexed by population</span>
+    <span class="k">print</span> <span class="n">pis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>                <span class="c"># pis[0] is pi in the 0th population</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Analyzing the output</a><ul>
+<li><a class="reference internal" href="#opening-and-reading-an-output-file">Opening and reading an output file</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="execute.html"
+                        title="previous chapter">Running SFS_CODE simulations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plot.html"
+                        title="next chapter">Plotting</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rstfiles/analyze.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="execute.html" title="Running SFS_CODE simulations"
+             >previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+>chr1
+>chr2
+>chr3
+chr length = 243199373 in 4863988 lines
+read 74 genes and 269 exons with total length 42687
+220 uniq exons; length = 37719
+179 sorted UTRs
+146 uniq UTRs
+82 uniq utrs; length = 32960

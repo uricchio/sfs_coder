@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
+    <link rel="next" title="Running SFS_CODE simulations" href="execute.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="execute.html" title="Running SFS_CODE simulations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>sfs_coder does not require any installation of its own in order
+to get its basic functionality.  Just download the source and alter the
+PYTHONPATH variable on your machine so that python knows where to find the
+modules (see the section on &#8220;Importing&#8221; below).</p>
+<p>However, some methods within sfs_coder require external software in order to
+run.</p>
+<div class="section" id="required-dependencies">
+<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="http://sfscode.sourceforge.net">SFS_CODE</a></li>
+</ul>
+<p>SFS_CODE can be installed anywhere on the user&#8217;s machine. The path
+to the binary is supplied to sfs_coder (see the section on
+running SFS_CODE through sfs_coder).</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.python.org">python</a> (<em>2.7 or greater</em>)</li>
+</ul>
+</div>
+<div class="section" id="optional-dependencies">
+<h2>Optional dependencies<a class="headerlink" href="#optional-dependencies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://code.google.com/p/mpmath/">mpmath</a> (<em>required for rescaled recurrent hitchhiking simulations</em>)</li>
+<li><a class="reference external" href="http://www.scipy.org/">scipy</a> (<em>required for rescaled recurrent hitchhiking simulations and some
+methods in sfsplot</em>)</li>
+<li><a class="reference external" href="http://matplotlib.org/">matplotlib</a> (<em>required for plotting the output</em>)</li>
+</ul>
+</div>
+<div class="section" id="importing-sfs-coder-s-modules">
+<h2>Importing sfs_coder&#8217;s modules<a class="headerlink" href="#importing-sfs-coder-s-modules" title="Permalink to this headline">¶</a></h2>
+<p>Python uses the PYTHONPATH system variable to search for modules that are
+imported.  Suppose we download sfs_coder and store it in the directory
+&#8216;~/sfs_coder&#8217;, and then we try to execute the following script called
+&#8216;basic.py&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+
+<span class="n">com</span> <span class="o">=</span> <span class="n">SFSCommand</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If the directory that contains command.py (&#8216;~/sfs_coder/src&#8217; by default) is not
+included in the PYTHONPATH variable, this will result in an error similar to
+the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;basic.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">13</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="kn">import</span> <span class="nn">command</span>
+<span class="ne">ImportError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="n">command</span>
+</pre></div>
+</div>
+<p>Python does not know where the command module is!  To fix this, we can add the
+&#8216;~/sfs_coder/src&#8217; directory to the PYTHONPATH variable in a couple different
+ways.</p>
+<div class="section" id="adding-the-sfs-coder-source-directory-to-pythonpath-in-bashrc">
+<h3>Adding the sfs_coder source directory to PYTHONPATH in .bashrc<a class="headerlink" href="#adding-the-sfs-coder-source-directory-to-pythonpath-in-bashrc" title="Permalink to this headline">¶</a></h3>
+<p>If you execute your scripts at the command line with a bash shell, you can add
+a line to your .bashrc file that will fix this problem and allow you to run the
+above script.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">export </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$PYTHONPATH</span>:~/sfs_coder/src
+</pre></div>
+</div>
+<p>The .bashrc file exists in your home directory and is read by bash every time
+you open a new shell.  If a file called .bashrc doesn&#8217;t exist in your home
+directory you can create it.</p>
+<p>Of course, if the path to your sfs_coder &#8216;src&#8217; directory is different than
+above you will need to provide the path to your copy of this directory.</p>
+</div>
+<div class="section" id="adding-the-path-to-sfs-coder-s-source-directory-within-a-python-script">
+<h3>Adding the path to sfs_coder&#8217;s source directory within a python script<a class="headerlink" href="#adding-the-path-to-sfs-coder-s-source-directory-within-a-python-script" title="Permalink to this headline">¶</a></h3>
+<p>You can also add the path to sfs_coder&#8217;s &#8216;src&#8217; directory to any python script
+if for any reason you don&#8217;t want to modify your .bashrc as above.  Assuming
+the same directory layout as the above example, we can use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;~/sfs_coder/src&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">command</span>
+
+<span class="n">com</span> <span class="o">=</span> <span class="n">SFSCommand</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This adds &#8216;~/sfs_coder/src&#8217; to the PYTHONPATH variable within the script.
+Note that this solution requires us to add this line of code to every python
+script that imports something from sfs_coder, whereas the first solution allows
+us to import the modules just like any other python modules.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
+<li><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
+<li><a class="reference internal" href="#importing-sfs-coder-s-modules">Importing sfs_coder&#8217;s modules</a><ul>
+<li><a class="reference internal" href="#adding-the-sfs-coder-source-directory-to-pythonpath-in-bashrc">Adding the sfs_coder source directory to PYTHONPATH in .bashrc</a></li>
+<li><a class="reference internal" href="#adding-the-path-to-sfs-coder-s-source-directory-within-a-python-script">Adding the path to sfs_coder&#8217;s source directory within a python script</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="execute.html"
+                        title="next chapter">Running SFS_CODE simulations</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rstfiles/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="execute.html" title="Running SFS_CODE simulations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
