@@ -1,0 +1,18 @@
+Introduction
+************
+
+Forward simulation is a powerful tool for understanding the impact of
+evolutionary forces on genetic 
+variaiton.  Forward simulation can generate sequence data under arbitrarily 
+complex models that include positive and negative selection as well as complex 
+demography.  This level of generailty is difficult to model analytically and is 
+not provided by other simulation frameworks such as the coalescent.  However,
+populaiton genetic simulators can be daunting to master because of the 
+vast number of input options and the density of the output data.    
+
+sfs_coder is a python based front end to the popular forward simulation 
+software SFS_CODE.  It allows python programmers to easily execute and analyze 
+simulations performed with SFS_CODE.  It is free to use and distribute for 
+personal or academic use.  We hope that you will find it useful.
+
+

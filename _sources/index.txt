@@ -1,0 +1,50 @@
+.. sfs_coder documentation master file, created by
+   sphinx-quickstart on Fri Apr  4 17:41:10 2014.
+
+#######################
+sfs_coder documentation
+#######################
+
+.. toctree::
+   :maxdepth: 2
+
+   Introduction </rstfiles/intro>
+   Installation </rstfiles/install>
+   Running simulations </rstfiles/execute>
+   Analyzing the output </rstfiles/analyze>
+   Plotting </rstfiles/plot>  
+
+sfs_coder Classes and methods
+=============================
+
+contents of command.py
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: command 
+   :members:
+
+contents of sfs.py
+^^^^^^^^^^^^^^^^^^
+
+.. automodule:: sfs 
+   :members:
+
+contents of sfsplot.py
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: sfsplot 
+   :members:
+
+contents of ms.py
+^^^^^^^^^^^^^^^^^
+
+.. automodule:: ms
+   :members:
+
+indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

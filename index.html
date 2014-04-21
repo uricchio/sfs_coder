@@ -1,1 +1,900 @@
-Stuff
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sfs_coder documentation &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="#" />
+    <link rel="next" title="Introduction" href="rstfiles/intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rstfiles/intro.html" title="Introduction"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sfs-coder-documentation">
+<h1>sfs_coder documentation<a class="headerlink" href="#sfs-coder-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/install.html#required-dependencies">Required dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/install.html#optional-dependencies">Optional dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/install.html#importing-sfs-coder-s-modules">Importing sfs_coder&#8217;s modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/execute.html">Running simulations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/execute.html#the-basic-structure-of-an-sfs-coder-script">The basic structure of an sfs_coder script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/execute.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/analyze.html">Analyzing the output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/analyze.html#opening-and-reading-an-output-file">Opening and reading an output file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/plot.html">Plotting</a></li>
+</ul>
+</div>
+<div class="section" id="sfs-coder-classes-and-methods">
+<h2>sfs_coder Classes and methods<a class="headerlink" href="#sfs-coder-classes-and-methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-command">
+<span id="contents-of-command-py"></span><h3>contents of command.py<a class="headerlink" href="#module-command" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="command.Command">
+<em class="property">class </em><tt class="descclassname">command.</tt><tt class="descname">Command</tt><a class="headerlink" href="#command.Command" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class stores information from parsed command lines
+and provides the mechanics to call SFS_CODE/ms commands.</p>
+<dl class="method">
+<dt id="command.Command.execute">
+<tt class="descname">execute</tt><big>(</big><em>rand=1</em><big>)</big><a class="headerlink" href="#command.Command.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute a simulation command</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt><em>rand=1</em> </dt>
+<dd><p class="first last">a random integer. If the value is not reset by the user
+then a new random number is rolled within self.execute.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="command.MSCommand">
+<em class="property">class </em><tt class="descclassname">command.</tt><tt class="descname">MSCommand</tt><big>(</big><em>prefix='out'</em>, <em>ms_loc='ms'</em>, <em>err='err'</em>, <em>outdir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/sims'</em><big>)</big><a class="headerlink" href="#command.MSCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that handles some of the specifics of calling ms commands.
+A bit underdeveloped at the moment, but functional and utilized by
+SFSCommand.convert_to_ms()</p>
+<p>More documentation will arrive as development of this class continues.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="command.SFSCommand">
+<em class="property">class </em><tt class="descclassname">command.</tt><tt class="descname">SFSCommand</tt><big>(</big><em>outdir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/sims'</em>, <em>prefix='out'</em>, <em>err='err'</em><big>)</big><a class="headerlink" href="#command.SFSCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is used to store, parse, and convert SFS_CODE command lines.</p>
+<p>Upon initialization, an object of the SFSCommand class sets the values
+of many of its attributes to the SFS_CODE defaults.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt><em>outdir=os.path.join(os.getcwd(), &#8216;sims&#8217;)</em> </dt>
+<dd><p class="first last">A directory containing
+subdirectories with sfs_code simulations.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>prefix=&#8217;out&#8217;</em> </dt>
+<dd><p class="first last">The prefix of the out directory and the data files 
+within the out directory.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>err=&#8217;err&#8217;</em></dt>
+<dd><p class="first last">The name of the directory that contains all the stderr ouput from
+calling sfs_code.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first">Attributes:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt><em>self.com_string=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the entire command stored as a single string.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.outdir= outdir</em>   </dt>
+<dd><p class="first last">the parent directory of output directories for sets of SFS_CODE 
+simulations</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.sfs_code_loc = &#8216;&#8217;</em>   </dt>
+<dd><p class="first last">the location of the SFS_CODE binary.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.N = 500</em>  </dt>
+<dd><p class="first last">the number of individuals in the ancestral population.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.P = [2]</em>  </dt>
+<dd><p class="first last">the ploidy of the individuals in each population.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.t = 0.001</em></dt>
+<dd><p class="first last"><img class="math" src="_images/math/55881a22958b078003e193ba9cb1432ea791b10e.png" alt="\theta = 4Nu = 0.001"/>.  This is the value of 
+<img class="math" src="_images/math/a9cfbeb8ebee1f365919e147a79e242dcb67ee5d.png" alt="\theta"/> in the ancestral population</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.L = [5000]</em> </dt>
+<dd><p class="first last">an array containing the length of each simulate locus.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.B = 5 self.p[0] self.N</em> </dt>
+<dd><p class="first last">the length of the burn in (generations).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.prefix= prefix</em> </dt>
+<dd><p class="first last">the prefix for the output file directory and each simulation file.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.r=0.0.</em> </dt>
+<dd><p class="first last"><img class="math" src="_images/math/0d4705ec6d1a398623a285c559cea4ab52d23de1.png" alt="\rho = 4Nr = 0.0"/>.  The value of <img class="math" src="_images/math/f574498915fa9e02eeb5141c24835d077eba3e75.png" alt="\rho"/> in the 
+ancestral population.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.n_pops=1</em> </dt>
+<dd><p class="first last">number of populations.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.n_iter=1</em> </dt>
+<dd><p class="first last">number of simulations.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.line=[]</em> </dt>
+<dd><p class="first last">an array of strings, each of which is an argument
+to SFS_CODE.  This is the attribute that is used to execute SFS_CODE
+commands.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="command.SFSCommand.add_event">
+<tt class="descname">add_event</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#command.SFSCommand.add_event" title="Permalink to this definition">¶</a></dt>
+<dd><p>add an event to a command line.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>event</em> </dt>
+<dd><p class="first">an array of strings corresponding to the event.</p>
+<p>e.g., adding a mutation at locus 0 at time 0 with</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">event</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;--mutation&#39;</span><span class="p">,</span> <span class="s">&#39;0&#39;</span><span class="p">,</span><span class="s">&#39;L&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.build_BGS">
+<tt class="descname">build_BGS</tt><big>(</big><em>n_sim=10</em>, <em>theta=0.0001</em>, <em>recomb=True</em>, <em>rho=0.001</em>, <em>N=250</em>, <em>n_sam=10</em>, <em>alpha=5</em>, <em>L=100000</em>, <em>Lmid=100000</em><big>)</big><a class="headerlink" href="#command.SFSCommand.build_BGS" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for running simulations of background selection.  This method
+is a bit underdeveloped at the moment, so stay tuned for more on how
+it works.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.build_RHH">
+<tt class="descname">build_RHH</tt><big>(</big><em>alpha=1000.0</em>, <em>N0=5000.0</em>, <em>rho0=0.001</em>, <em>lam0=1e-10</em>, <em>delta=0.01</em>, <em>L0=-1</em>, <em>L1=100000.0</em>, <em>loop_max=10</em>, <em>L_neut=1000.0</em>, <em>theta_neut=0.001</em>, <em>minpop=100</em>, <em>recomb_dir='./recombfiles'</em>, <em>outdir='sims'</em>, <em>TE=2</em>, <em>r_within=False</em>, <em>neg_sel_rate=0.0</em>, <em>alpha_neg=5</em>, <em>additive=1</em>, <em>Lextend=1</em>, <em>mutation=</em>, <span class="optional">[</span><span class="optional">]</span><em>bottle=</em>, <span class="optional">[</span><span class="optional">]</span><em>expansion=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#command.SFSCommand.build_RHH" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to build a recurrent hitchhiking command line using the 
+method of Uricchio &amp; Hernandez (2014, <em>Genetics</em>).</p>
+<ul>
+<li><p class="first">Dependencies:</p>
+<ul class="simple">
+<li>scipy</li>
+<li>mpmath</li>
+</ul>
+</li>
+<li><p class="first">Parameters</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>alpha = 1000</em> </dt>
+<dd><p class="first last"><img class="math" src="_images/math/87aac670225b45dc7c991de922eff0fcd9e4f1bf.png" alt="\alpha = 2Ns"/>, the ancestral population 
+scaled strength of selection.  Note that demographic events 
+can change N, and hence they also changle alpha.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>N0 = 5000</em> </dt>
+<dd><p class="first last">the ancestral population size</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>rho0 = 0.001</em> </dt>
+<dd><p class="first last">the population scaled recombination coefficient
+in the ancestral population.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>lam0 = 10*</em>-10 </dt>
+<dd><p class="first last">the rate of positive substitutions per generation
+per site in the population.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>delta = 0.01</em> </dt>
+<dd><p class="first last">a single parameter that encapsulates both delta 
+parameters from Uricchio &amp; Hernandez (Genetics, 2014).
+Smaller values of delta result in dynamics that are a better
+match for the original population of size N0, but are more 
+computationally expensive.  We do not recommend using values
+of delta greater than 0.1.  For more information please see the
+paper referenced above.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>L0 = -1</em> </dt>
+<dd><p class="first last">the length of the flanking sequence on each side of the
+neutral locus. If L0 is not reset from it&#8217;s default value, 
+it is automatically set to L0 = s0/r0, where s0 and r0 are 
+alpha/2N0 and rho/4N0, respectively.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>theta_neut = 0.001</em> </dt>
+<dd><p class="first last">the neutral value of theta.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>TE=2</em></dt>
+<dd><p class="first last">the ending time of the simulation in units of 
+2*N0*self.P[0] generations.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>r_within=False</em></dt>
+<dd><p class="first last">Currently only works with this option set to False, 
+but in the future will allow for recombination within the 
+neutral locus.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.build_genomic">
+<tt class="descname">build_genomic</tt><big>(</big><em>basedir='../src/../src/req'</em>, <em>outdir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files'</em>, <em>datafile='hg19_gencode.v14.gtf.gz'</em>, <em>chr=2</em>, <em>begpos=134545415</em>, <em>endpos=138594750</em>, <em>db=136545415</em>, <em>de=136594750</em>, <em>withseq=0</em>, <em>fafile='hg19.fa.gz'</em>, <em>phast_file='hg19_phastCons_mammal.wig'</em>, <em>dense_dist=5000</em>, <em>regname=''</em>, <em>annotfile=''</em>, <em>recombout=''</em>, <em>sel='SEL'</em><big>)</big><a class="headerlink" href="#command.SFSCommand.build_genomic" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to build simulations of genomic regions with realistic 
+genome structure.  The default data sources and options are all
+human-centric, but in principle these methods could be used to simulate
+sequences from any population for which the relevant data sources are 
+available.</p>
+<p>This function mostly just calls a number of perl scripts, originally 
+implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
+perl scripts are bundled with sfs_coder in the directory src/req</p>
+<p>A number of datasources are also included with sfs_coder, including...</p>
+<p>By default, this function simulates 4 MB of sequence centered on the
+lactase persistance locus on chrhomosome 2.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>basedir=os.path.join(os.getcwd(),&#8217;req&#8217;)</em></dt>
+<dd><p class="first last">the directory where all the datasources and perl for this method
+are located</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>outdir=os.path.join(os.getcwd(),&#8217;input_files&#8217;)</em></dt>
+<dd><p class="first last">the directory where the sfs_code annotation files will be 
+written</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>datafile=&#8217;hg19_gencode.v14.gtf.gz&#8217;</em></p>
+</li>
+<li><dl class="first docutils">
+<dt><em>chr=2</em></dt>
+<dd><p class="first last">chromosome number to query</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>begpos=134545415</em></dt>
+<dd><p class="first last">genomic coordinate of the beginning of the simulated sequence</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>endpos=138594750</em></dt>
+<dd><p class="first last">genomic coordinate of the end of the simulated sequence</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>db=136545415</em></dt>
+<dd><p class="first last">genomic coordinate of the region in which to include dense 
+neutral sequences.  Neutral sites within this region will be 
+simulated if they are within a specified distance of one
+of the simulated genomic elements (given by <em>dense_dist</em>)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>de=136594750</em></dt>
+<dd><p class="first last">genomic coordinate of the end of the dense neutral region</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>withseq =0</em></p>
+</li>
+<li><p class="first"><em>fafile=hg19.fa.gz</em></p>
+</li>
+<li><dl class="first docutils">
+<dt><em>phast_file=&#8217;hg19_phastCons_mammal.wig&#8217;</em></dt>
+<dd><p class="first last">file containing conserved element coordinates inferred
+by phastcons</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>desnse_dist=5000</em></dt>
+<dd><p class="first last">the distance to the right and left of a conserved or coding 
+element that is simulated as neutral non-coding within
+the bounds of <em>db</em> and <em>de</em>.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>regname=&#8217;&#8216;</em></p>
+</li>
+<li><p class="first"><em>annotfile=&#8217;&#8216;</em></p>
+</li>
+<li><p class="first"><em>recmbout=&#8217;&#8216;</em></p>
+</li>
+<li><dl class="first docutils">
+<dt><em>sel=True</em></dt>
+<dd><p class="first last">If true, draw selection coefficients from a gamma distribution 
+of selection coefficients for conserved elements and coding
+regions.  These distributions are taken from Boyko et al 
+(coding) and Torgerson et al (non-coding).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.convert_sfs_ms">
+<tt class="descname">convert_sfs_ms</tt><big>(</big><big>)</big><a class="headerlink" href="#command.SFSCommand.convert_sfs_ms" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to convert an sfs_code command line to ms.  Most but not all
+switches are converted (the method should let you know if you try to
+use an unsupported switch).  The method will ignore selection 
+based switches in SFS_CODE (since ms only includes neutral 
+demographic models).</p>
+<p>This method has been tested only sparingly and it is recommended that 
+it is used with great caution.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.genomic">
+<tt class="descname">genomic</tt><big>(</big><em>basedir='../src/../src/req', outdir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files', datafile='hg19_gencode.v14.gtf.gz', chr=2, begpos=134545415, endpos=138594750, db=136545415, de=136594750, withseq=0, fafile='hg19.fa.gz', phast_file='hg19_phastCons_mammal.wig', dense_dist=5000, N=2000, mutation=[], sel=True, model='', t=0.001, rho=0.001, nsim=10, nsam=[20]</em><big>)</big><a class="headerlink" href="#command.SFSCommand.genomic" title="Permalink to this definition">¶</a></dt>
+<dd><p>a method for running simulations of genomic elements using realistic
+genome structure. Most of the heavy lifting is done by the 
+build_genomic() method.  This method exists mostly as a slimmed down
+interface to that method, with the major difference being that this 
+version allows for the inclusion of a demographic model. Currently,
+only the demographic model of Gutenkunst (2009, <em>PLoS Genetics</em>) is
+included.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.gutenkunst">
+<tt class="descname">gutenkunst</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[]</em><big>)</big><a class="headerlink" href="#command.SFSCommand.gutenkunst" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method that adds the Gutenkunst (2009, <em>PLoS Genetics</em>) model to
+an SFS_CODE command line.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.parse_string">
+<tt class="descname">parse_string</tt><big>(</big><big>)</big><a class="headerlink" href="#command.SFSCommand.parse_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method to parse SFS_CODE command lines.  By default, every switch
+is stored as an array with the exception of certain special cases that
+are stored as dictionaries.</p>
+<p>Note, <strong>only the short form of SFS_CODE options are currently fully 
+supported!</strong>  For example, <em>-t 0.002</em> is supported but <em>&#8211;theta 0.002</em>
+is not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="command.SFSCommand.three_pop">
+<tt class="descname">three_pop</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100, 100, 100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[], t_end=0.60274, t_expand_p0=0, expand_p0=1.68493, t_split_p0_p1=0.219178, t_split_p1_p2=0.544658, bottle_p1_0=0.170732, bottle_p1_1=0.47619, bottle_p2=0.242857, growth_p1=58.4, growth_p2=80.3, mig_p0_p1=6.15, mig_p1_p0=0.5, mig_all=[0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792], t_super=0.391465, model='guten'</em><big>)</big><a class="headerlink" href="#command.SFSCommand.three_pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>A general three population model with growth events.
+Inspired by Gutenkunst et al (2009, <em>PLoS Genetics</em>)
+and Gravel et al (2011, <em>PNAS</em>).  For a pictorial 
+representation see Figure 3A of the Gutenkunst paper.</p>
+<p>The default parameters are set to Gutenkunst et al.
+The maximum likelihood estimates of Gravel et al
+are also included.</p>
+<p>To use the gravel model parameters, use model=&#8217;gravel&#8217;.</p>
+<p>The user can specify the model parameters as desired.
+To use a user specified model, simply use model = &#8216;&#8217;.
+Any unspecified parameters are set by default to the 
+parameters of the Gutenkunst model.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sfs">
+<span id="contents-of-sfs-py"></span><h3>contents of sfs.py<a class="headerlink" href="#module-sfs" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="sfs.Mutation">
+<em class="property">class </em><tt class="descclassname">sfs.</tt><tt class="descname">Mutation</tt><a class="headerlink" href="#sfs.Mutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>a class to store the data associated with a variant in an 
+SFS_CODE output file.  Note, both mutations and substitutions
+are stored as instances of this class.</p>
+<ul>
+<li><p class="first">Attributes:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>self.locus=-1</em></dt>
+<dd><p class="first last">The locus number of the variant</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.AXY=&#8217;?&#8217;</em> </dt>
+<dd><p class="first last">&#8216;A&#8217; for autosomal, &#8216;X&#8217; or &#8216;Y&#8217; for the corresponding sex
+chromosomes</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.pos=-1</em></dt>
+<dd><p class="first last">The position within the locus.  Note that the positions
+within each locus start from 0.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.t_init={}</em> </dt>
+<dd><p class="first last">A dictionary, keyed by population number, and storing 
+the time that the variant arose</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.t_fix={}</em></dt>
+<dd><p class="first last">A dictionary, keyed by population number, and storing 
+the time that the variant fixed within the population.
+If the variant is segregating, the time stored is the
+time of sampling.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.tri_nuc=&#8217;NNN&#8217;</em></dt>
+<dd><p class="first last">The ancestral trinucleotide (the middle base is the 
+mutated base, so this is not necessarily a codon!)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.deriv_n=&#8217;N&#8217;</em></dt>
+<dd><p class="first last">The derived nucleotide</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.non_or_syn=&#8217;?&#8217;</em></dt>
+<dd><p class="first last">Is the mutation synonymous (0) or nonsynonymous (1).
+0 also is used to indicate non-coding.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.ancest=&#8217;?&#8217;</em></dt>
+<dd><p class="first last">Ancestral amino acid</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.deriv_aa=&#8217;?&#8217;</em></dt>
+<dd><p class="first last">Derived amino acid</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.fit=&#8217;?&#8217;</em></dt>
+<dd><p class="first last">fitness effect of the mutation (0 for neutral)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>self.chrs = defaultdict(dict)</em></dt>
+<dd><p class="first">A dictionary of dictionaries that is keyed by population
+and chromosome number.</p>
+<p>E.g., if the derived allele is present on chromosome 11 in
+population 2, then</p>
+<p class="last">self.chrs[2][11] = True</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>self.pops_numchr = {}</em></p>
+<blockquote>
+<div><p>A dictionary that stores the number of chromosomes that
+carry the derived allele in each population.</p>
+</div></blockquote>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="class">
+<dt id="sfs.SFSData">
+<em class="property">class </em><tt class="descclassname">sfs.</tt><tt class="descname">SFSData</tt><big>(</big><em>file=''</em><big>)</big><a class="headerlink" href="#sfs.SFSData" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class that handles the basic parsing of sfs_code output file
+data.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>file= &#8216;&#8217;</em></dt>
+<dd><p class="first last">the path to the file that is to be read.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+<li><p class="first">Attributes:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>self.file = file</em></dt>
+<dd><p class="first last">the path to the file that is to be read.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>sims = []</em></dt>
+<dd><p class="first last">an array of sfs.Simulation objects.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<dl class="method">
+<dt id="sfs.SFSData.get_sims">
+<tt class="descname">get_sims</tt><big>(</big><big>)</big><a class="headerlink" href="#sfs.SFSData.get_sims" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method that reads sfs_code output files and stores all the data in
+sfs.Simulation objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="sfs.Simulation">
+<em class="property">class </em><tt class="descclassname">sfs.</tt><tt class="descname">Simulation</tt><a class="headerlink" href="#sfs.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class to store the data from SFS_CODE simulations.</p>
+<ul>
+<li><p class="first">Attributes:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><em>self.command = command.SFSCommand()</em></p>
+</li>
+<li><p class="first"><em>self.data = &#8216;&#8217;</em></p>
+</li>
+<li><p class="first"><em>self.loci = defaultdict(lambda: defaultdict(list))</em></p>
+<blockquote>
+<div><p>A dictionary of dictionaries indexed by locus and position.
+Each dictionary of dictionaries is a list of Mutation
+objects that occur at the corresponding locus and position.</p>
+<p>e.g., self.loci[0][0] is a list of Mutation objects that
+occur at the first position in the first locus.</p>
+<p>Note that these keys will only exist in self.loci if there
+were mutations at this particular point in the sequence
+in the sample from the simulation.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><em>self.muts = []</em></p>
+<blockquote>
+<div><p>A list of all the Mutation objects in the simulation.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="sfs.Simulation.calc_S">
+<tt class="descname">calc_S</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_S" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the number of segretating sites within all
+populations.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>multi_skip = True</em></dt>
+<dd><p class="first last">skip sites that are more than biallelic if true</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">A list of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_fit">
+<tt class="descname">calc_fit</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the fitness of the sampled chromosomes
+within a population.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em> </dt>
+<dd><p class="first last">population number</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_pi">
+<tt class="descname">calc_pi</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_pi" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the mean pairwise diversity per site
+bewteen pairs of sequences across a set of loci.
+If the loci parameter is left undefined by the
+user, then this method calculates <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> 
+over all loci in the simulation.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><p class="first"><em>multi_skip=True</em></p>
+<blockquote>
+<div><p>If True, skip loci that are multiallelic.
+Otherwise lump all the derived alleles together.</p>
+</div></blockquote>
+</li>
+<li><p class="first"><em>loci=[]</em></p>
+<blockquote>
+<div><p>An array of loci over which to calculate 
+<img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/>.  If left blank, all loci
+are used in the calculation.</p>
+</div></blockquote>
+</li>
+</ul>
+</li>
+<li><p class="first">Return value: An array of values of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/>
+values indexed by population number.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_pi_by_locus">
+<tt class="descname">calc_pi_by_locus</tt><big>(</big><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_pi_by_locus" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> independently for each locus.</p>
+<ul>
+<li><p class="first">Return value: An array of arrays of pi values, indexed by 
+population and then locus number.</p>
+<p>e.g., if the return value is stored in the variable pi, 
+pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> in population 0 at locus 1.</p>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.get_sfs">
+<tt class="descname">get_sfs</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfs.Simulation.get_sfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the site frequency specutrum for a population</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">population number</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-sfsplot">
+<span id="contents-of-sfsplot-py"></span><h3>contents of sfsplot.py<a class="headerlink" href="#module-sfsplot" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="module-ms">
+<span id="contents-of-ms-py"></span><h3>contents of ms.py<a class="headerlink" href="#module-ms" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">sfs_coder documentation</a><ul>
+<li><a class="reference internal" href="#sfs-coder-classes-and-methods">sfs_coder Classes and methods</a><ul>
+<li><a class="reference internal" href="#module-command">contents of command.py</a></li>
+<li><a class="reference internal" href="#module-sfs">contents of sfs.py</a></li>
+<li><a class="reference internal" href="#module-sfsplot">contents of sfsplot.py</a></li>
+<li><a class="reference internal" href="#module-ms">contents of ms.py</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="rstfiles/intro.html"
+                        title="next chapter">Introduction</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="rstfiles/intro.html" title="Introduction"
+             >next</a> |</li>
+        <li><a href="#">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

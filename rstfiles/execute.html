@@ -1,0 +1,255 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running SFS_CODE simulations &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
+    <link rel="next" title="Analyzing the output" href="analyze.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analyze.html" title="Analyzing the output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="running-sfs-code-simulations">
+<h1>Running SFS_CODE simulations<a class="headerlink" href="#running-sfs-code-simulations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-basic-structure-of-an-sfs-coder-script">
+<h2>The basic structure of an sfs_coder script<a class="headerlink" href="#the-basic-structure-of-an-sfs-coder-script" title="Permalink to this headline">¶</a></h2>
+<p>Running SFS_CODE simulations with sfs_coder requires only a few lines
+of code.</p>
+<p>First, we import the command module, initialize an SFSCommand object, and tell
+the software where the sfs_code binary is located.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+
+<span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">()</span>
+
+<span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="s">&#39;/path/to/sfs_code&#39;</span>
+</pre></div>
+</div>
+<p>Next, we need to build a command line.  Although this process is very
+flexible (in fact we can build any command line that is accepted by SFS_CODE),
+we have prepackaged several models that may be of general interest.  For
+example, to simulate the model of Gutenkunst (2009, <em>PLoS Genetics</em>), we
+call the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">com</span><span class="o">.</span><span class="n">gutenkunst</span><span class="p">()</span>
+
+<span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And that&#8217;s it!  Of course, there are many more options that can be altered to
+modify the parameters of the simulation, such as the ancestral population size.
+Please see the &#8220;scripts&#8221; directory in the top level of sfs_coder for more
+complicated examples. Below, we include a slight modification of the above
+script that demonstrates some basic functionality that may be useful to users,
+as well as a few other examples.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+<span class="c"># initialize an SFS_CODE command, set the prefix of the output subdirectory</span>
+<span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;guten.N500&#39;</span><span class="p">)</span>
+
+<span class="c"># build the command line for the Gutenkunst model, specifying some parameters</span>
+<span class="n">com</span><span class="o">.</span><span class="n">gutenkunst</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">nsam</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">nsim</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c"># set the location of the sfs_code binary</span>
+<span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span>
+                       <span class="s">&#39;path/to/sfs_code&#39;</span><span class="p">)</span>
+
+<span class="c"># execute the command, supplying a random number</span>
+<span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="adding-selection">
+<h3>Adding selection<a class="headerlink" href="#adding-selection" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+<span class="c"># initialize a new SFS_CODE command</span>
+<span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;tennessen.N1000&#39;</span><span class="p">)</span>
+
+<span class="c"># build the command line for the tennessen model</span>
+<span class="c"># a selection model is added with sel = sel=[&#39;-W&#39;,&#39;1&#39;,&#39;5&#39;,&#39;0&#39;,&#39;1&#39;]</span>
+<span class="c"># this adds a type 1 selection model, with gamma =5,</span>
+<span class="c"># and the probability of negative seleciton set to 1.</span>
+<span class="c"># for more on selection models in SFS_CODE, see the SFS_CODE handbook</span>
+
+<span class="n">com</span><span class="o">.</span><span class="n">three_pop</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">nsam</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">nsim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s">&#39;tennessen&#39;</span><span class="p">,</span>
+              <span class="n">L</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-L&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;100&#39;</span><span class="p">],</span><span class="n">sel</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-W&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;5&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">])</span>
+
+<span class="c"># set the location of sfs_code</span>
+<span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span>
+                    <span class="s">&#39;rotations/hernandez/software/sfs_code/bin/sfs_code&#39;</span><span class="p">)</span>
+
+<span class="c"># execute the command</span>
+<span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simulations-with-realistic-genomic-structure-and-demography">
+<h3>Simulations with realistic genomic structure and demography<a class="headerlink" href="#simulations-with-realistic-genomic-structure-and-demography" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+<span class="c"># initialize a new SFS_CODE command</span>
+<span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;guten.lactase&#39;</span><span class="p">)</span>
+
+<span class="c"># build the command line for the gutenkunst model in the lactase region</span>
+<span class="n">com</span><span class="o">.</span><span class="n">genomic</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span><span class="n">demo</span><span class="o">=</span><span class="s">&#39;guten&#39;</span><span class="p">,</span><span class="n">sel</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="c"># set the location of sfs_code</span>
+<span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span><span class="s">&#39;rotations/hernandez/software/sfs_code/bin/sfs_code&#39;</span><span class="p">)</span>
+
+<span class="c"># execute the command</span>
+<span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-sge">
+<h3>Using SGE<a class="headerlink" href="#using-sge" title="Permalink to this headline">¶</a></h3>
+<p>sfs_coder uses the sge_task_id system variable to number output files.
+If you submit an sfs_coder script to a cluster as an array job, it will take
+care of all the work of numbering the output files for you.</p>
+<p>For example, any of the above scripts can be sent to a cluster with the
+following header:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. code-block:: bash
+</pre></div>
+</div>
+<blockquote>
+<div>#!/usr/bin/python
+#$ -e sim.div.log
+#$ -o sim.div.log
+#$ -S /usr/bin/python
+#$ -cwd
+#$ -r yes
+#$ -l h_rt=240:00:00
+#$ -t 1-100
+#$ -l arch=linux-x64
+#$ -l mem_free=1G
+#$ -l netapp=1G</div></blockquote>
+</div>
+<div class="section" id="simulations-of-phenotypes">
+<h3>Simulations of phenotypes<a class="headerlink" href="#simulations-of-phenotypes" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Running SFS_CODE simulations</a><ul>
+<li><a class="reference internal" href="#the-basic-structure-of-an-sfs-coder-script">The basic structure of an sfs_coder script</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#adding-selection">Adding selection</a></li>
+<li><a class="reference internal" href="#simulations-with-realistic-genomic-structure-and-demography">Simulations with realistic genomic structure and demography</a></li>
+<li><a class="reference internal" href="#using-sge">Using SGE</a></li>
+<li><a class="reference internal" href="#simulations-of-phenotypes">Simulations of phenotypes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="analyze.html"
+                        title="next chapter">Analyzing the output</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rstfiles/execute.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="analyze.html" title="Analyzing the output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="install.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

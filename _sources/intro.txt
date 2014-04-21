@@ -1,0 +1,7 @@
+Introduction
+************
+
+sfs_coder is python based a front end for the popular
+forward simulation software SFS_CODE.
+
+
