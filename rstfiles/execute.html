@@ -158,21 +158,19 @@ If you submit an sfs_coder script to a cluster as an array job, it will take
 care of all the work of numbering the output files for you.</p>
 <p>For example, any of the above scripts can be sent to a cluster with the
 following header:</p>
-<div class="highlight-python"><div class="highlight"><pre>.. code-block:: bash
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
+<span class="c">#$ -e sim.div.log</span>
+<span class="c">#$ -o sim.div.log</span>
+<span class="c">#$ -S /usr/bin/python</span>
+<span class="c">#$ -cwd</span>
+<span class="c">#$ -r yes</span>
+<span class="c">#$ -l h_rt=240:00:00</span>
+<span class="c">#$ -t 1-100</span>
+<span class="c">#$ -l arch=linux-x64</span>
+<span class="c">#$ -l mem_free=1G</span>
+<span class="c">#$ -l netapp=1G</span>
 </pre></div>
 </div>
-<blockquote>
-<div>#!/usr/bin/python
-#$ -e sim.div.log
-#$ -o sim.div.log
-#$ -S /usr/bin/python
-#$ -cwd
-#$ -r yes
-#$ -l h_rt=240:00:00
-#$ -t 1-100
-#$ -l arch=linux-x64
-#$ -l mem_free=1G
-#$ -l netapp=1G</div></blockquote>
 </div>
 <div class="section" id="simulations-of-phenotypes">
 <h3>Simulations of phenotypes<a class="headerlink" href="#simulations-of-phenotypes" title="Permalink to this headline">¶</a></h3>
