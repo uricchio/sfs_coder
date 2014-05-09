@@ -3,4 +3,3 @@ git add .
 git commit -m "updating the documentation for new functionality"
 git push origin gh-pages
 
-
