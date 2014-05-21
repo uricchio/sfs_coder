@@ -19,5 +19,5 @@ data.get_sims()
 # a set of loci
 
 for sim in data.sims:
-    sim.sim_pheno(c=0.)
+    sim.sim_pheno_mech(c=100.)
     

@@ -14,7 +14,6 @@ class Command:
 
     def add_out(self):
         
-
         try:
             os.stat(os.path.join(self.outdir,self.prefix))
         except:
@@ -214,7 +213,7 @@ class SFSCommand(Command):
         else:
             self.task_id = 1
         self.sfs_code_loc = ''
-        self.TE = [0]
+        self.TE = 0
         self.n_pops = 1
         self.n_iter = 1
         self.Z = 0
@@ -230,7 +229,8 @@ class SFSCommand(Command):
 
         Note, **only the short form of SFS_CODE options are currently fully 
         supported!**  For example, *-t 0.002* is supported but *--theta 0.002*
-        is not. 
+        is not. Hence, if you run SFS_CODE with the long forms or wish to 
+        analyze code that used the long form to run, you may have issues.
         """
 
  
@@ -333,6 +333,20 @@ class SFSCommand(Command):
                         else:
                             self.gap.append(int(stuff[0][0:len(stuff)-2]))
         return
+
+    def p_fix(self, s,alpha):
+        pfix = 0
+        if (s >= 0.1):
+            pfix = math.exp(-(1+s))
+            lim = 0
+            while(lim < 200):
+                pfix = math.exp((1+s)*(pfix-1))
+                lim +=1
+            pfix = 1-pfix
+        else:
+            pfix = (1-math.exp(-2*s))/(1-math.exp(-2*alpha))
+        return p_fix
+ 
 
     def build_RHH(self,alpha=1000.,N0=5000.,rho0=0.001,lam0=(10**-10),
                   delta=0.01, L0 = -1,L1=10.**5,loop_max=10,L_neut=1000.,
@@ -975,9 +989,9 @@ class SFSCommand(Command):
     def genomic(self,basedir=os.path.join(os.path.dirname(__file__),'../src/req'),
                       outdir=os.path.join(os.getcwd(),'input_files'),
                       datafile='hg19_gencode.v14.gtf.gz',chr=2,
-                      begpos=134545415,endpos=138594750,db=136545415,
-                      de=136594750,withseq=0,fafile='hg19.fa.gz',
-                      phast_file ='hg19_phastCons_mammal.wig',dense_dist=5000,
+                      begpos=134545415,endpos=138594750,db=-1,
+                      de=-1,withseq=0,fafile='',
+                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
                       N=2000,mutation=[],sel=True,model='',t=0.001,rho=0.001,
                       nsim=10,nsam=[20]):
 
@@ -993,7 +1007,16 @@ class SFSCommand(Command):
 
         """
 
+        if de < 0:
+            de = endpos
+        if db < 0:
+            db = begpos
+
         files = 0
+
+        if fafile == '':
+
+            fafile = 'chr'+str(chr)+'.fa.gz'
 
         regname = 'chr'+str(chr)+'_'+str(begpos)+'-'+str(endpos)
 
@@ -1025,7 +1048,6 @@ class SFSCommand(Command):
                                regname=regname,annotfile=annotfile,
                                recombout=recombout,sel=sel)
 
-       
         if model != '':
 
             self.three_pop(N=N,nsim=nsim,recombfile=recombout,nsam=nsam,
@@ -1042,8 +1064,8 @@ class SFSCommand(Command):
         # self.line.extend(['-W', '2', '0', '0', '0', '0.184', '0.00040244'])         
 
 
-    def snm(self,N=500,nsim=10,t=0.001,rho=0.001,recombfile=''):
-
+    def snm(self,N=500,nsim=10,t=0.001,rho=0.001,nsam=10,recombfile='',
+            mutation=[],sel=[],event=[], TE=0,L=5000,non_coding=False):
 
         self.line = []
 
@@ -1053,19 +1075,43 @@ class SFSCommand(Command):
 
         self.line.extend(['-N', str(N)])
 
+        self.line.extend(['-n', str(nsam)])
+        
+        for thing in L:
+            self.line.append(str(thing))
+
+        self.line.extend(['-A'])
+ 
+        if non_coding ==True:
+            self.line.extend(['-a', 'N'])
+            if int(L[1]) > 1:
+                self.line.append('R')
+
+
+        for thing in mutation:
+            self.line.append(str(thing))
+
+        for thing in sel:
+            self.line.append(str(thing))
+        
+        for thing in event:
+            self.line.append(str(thing))
+
         if recombfile =='':
             self.line.extend(['-r',str(rho)])
 
         else:
             self.line.extend(['-r', 'F', recombfile, str(rho)])
 
+        self.line.extend(['-TE', str(TE)])
+
 
     def build_genomic(self,basedir=os.path.join(os.path.dirname(__file__),'../src/req'),
                       outdir=os.path.join(os.getcwd(),'input_files'),
                       datafile='hg19_gencode.v14.gtf.gz',chr=2,
-                      begpos=134545415,endpos=138594750,db=136545415,
-                      de=136594750,withseq=0,fafile='hg19.fa.gz',
-                      phast_file ='hg19_phastCons_mammal.wig',dense_dist=5000,
+                      begpos=134545415,endpos=138594750,db=-1,
+                      de=-1,withseq=0,fafile='chr2.fa.gz',
+                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
                       regname='',annotfile='',recombout='',sel='SEL'):
        
         """
@@ -1105,13 +1151,13 @@ class SFSCommand(Command):
           * *endpos=138594750*
              genomic coordinate of the end of the simulated sequence
 
-          * *db=136545415*
+          * *db=begpos*
              genomic coordinate of the region in which to include dense 
              neutral sequences.  Neutral sites within this region will be 
              simulated if they are within a specified distance of one
              of the simulated genomic elements (given by *dense_dist*)
 
-          * *de=136594750*
+          * *de=begpos*
              genomic coordinate of the end of the dense neutral region
 
           * *withseq =0*
@@ -1122,7 +1168,7 @@ class SFSCommand(Command):
              file containing conserved element coordinates inferred
              by phastcons
 
-          * *desnse_dist=5000*
+          * *desnse_dist=0*
              the distance to the right and left of a conserved or coding 
              element that is simulated as neutral non-coding within
              the bounds of *db* and *de*. 
@@ -1149,9 +1195,12 @@ class SFSCommand(Command):
      
         datadir=os.path.join(basedir,'hg19')
 
-        # important variables
+        if db < 0:
+           db = begpos
 
-        # dense_dist = 5000
+        if de < 0:
+           de = endpos
+
         # first, generate any directories that need to be made/check exist
 
         try:
@@ -1215,7 +1264,8 @@ class SFSCommand(Command):
                 os.path.join(outdir,regname+'.UTRs'), 
                 os.path.join(outdir,regname+'.CNCs'), str(chr), str(begpos), 
                 str(endpos)]
-       
+
+
         ex_ncs = subprocess.Popen(ncs, stdout=eh_ncs, stderr=subprocess.STDOUT, 
                                   close_fds = True)  
  
@@ -1235,7 +1285,7 @@ class SFSCommand(Command):
                  os.path.join(outdir,regname+'.exons'), 
                  os.path.join(outdir,regname+'.UTRs'), 
                  os.path.join(outdir,regname+'.CNCs'), str(db), str(de), 
-                 str(sel), '0'] 
+                 str(sel), '0']
 
         log = open(os.path.join(os.getcwd(), 'log.txt'),'w+')
          
@@ -1260,7 +1310,7 @@ class SFSCommand(Command):
         sim_max= db_de[1]
         
         recombin = os.path.join(datadir,
-                          'geneticMap/genetic_map_GRCh37_chr'+str(chr)+'.txt')
+                          'geneticMap/genetic_map_GRCh37_chr'+str(chr)+'.txt.gz')
    
         if recombout == '':
             recombout = os.path.join(outdir, 'sfscode_rec_'+regname+'.txt')
@@ -1504,6 +1554,8 @@ class SFSCommand(Command):
             for thing in L:
                 self.line.append(thing)
 
+        self.line.extend(['-t',str(t)])
+
         # recomb
 
         if(recombfile == ''):
@@ -1688,3 +1740,32 @@ class MSCommand(Command):
                         self.line[i] = self.ms_loc
                         break
 
+
+class Reg():
+
+    import subprocess
+
+    def __init__(self):
+
+        self.n_params = 2
+        self.n_sums = 4
+        self.reg_loc = ''
+        self.file_base = ''
+        self.n_params = ''
+        self.prior_file = ''
+        self.data_file = ''
+        self.out_file_base = ''
+        self.tol = 0.001
+        self.line = []
+   
+
+    def execute(self):
+
+        self.line = []
+  
+        self.line.append(self.reg_loc)
+        
+        # extend with other options
+
+        process = subprocess.Popen(self.line, stdout=out_h,
+                                   stderr=err_h, close_fds = True)

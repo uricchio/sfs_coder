@@ -24,7 +24,13 @@ SFS_CODE through a python based interface.  We encourage any interested users
 to extend the code base that we provide and add any models that could be 
 useful for the community. 
 
-sfs_coder is free to use and distribute for personal or academic use.  
+sfs_coder is currently under developement and will be released in a few 
+months.  We don't expect these pages to get much traffic at the moment
+but we have put them online for our development team. If you have stumbled
+accross them and have any suggestions or would like to inquire about the 
+development feel free to email Lawrence (uricchio@berkeley.edu).
+
+sfs_coder will be free to use and distribute for personal or academic use.  
 We hope that you will find it useful.
 
 

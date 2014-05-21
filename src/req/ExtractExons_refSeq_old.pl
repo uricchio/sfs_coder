@@ -1,6 +1,9 @@
 #!/usr/bin/perl -w
 use strict;
 
+# Old version of the script, when we 
+# supported using the full observed sequence
+
 unless(scalar(@ARGV) == 7){
   print "usage:  $0 <input file> <output UTR file> <output exon file> <chr> <BEG POSITION> <END POSITION> <ref genome>\n";
   exit;
@@ -10,12 +13,47 @@ my $CHR = $ARGV[3];
 my $BEG = $ARGV[4];
 my $END = $ARGV[5];
 
+
+my $chrseq = "";
+open(IN,"$ARGV[6]") or die "cannot read genome file $ARGV[6]\n";
+if($ARGV[6] =~ /\.gz$/){
+  close(IN);
+  open(IN, "gunzip -c $ARGV[6] |") or die "cannot gunzip $ARGV[6]\n";
+}
+my $READ=0;
+my $nlines = 0;
+while(<IN>){
+  if($_ =~ /^>chr([1-9MXY]+)\n$/){
+    print "$_";
+    if($1 eq $CHR){
+      $READ = 1;
+    }
+    elsif($READ == 1){
+      close(IN);
+      last;
+    }
+    else{
+      next;
+    }
+  }
+  elsif($READ == 1){
+    chomp;
+    $chrseq .= $_;
+    $nlines++;
+  }
+  else{
+    next;
+  }
+}
+print "chr length = ".length($chrseq)." in $nlines lines\n";
+
 open(IN,"$ARGV[0]") or die "cannot read $ARGV[0]\n";
 if($ARGV[0] =~ /\.gz$/){
   close(IN);
   open(IN,"gunzip -c $ARGV[0] |") or die "cannot gunzip $ARGV[0]\n";
 }
 
+print "here\n";
 my $line = <IN>;
 my %exons = ();
 my $numExons = 0;
@@ -138,7 +176,7 @@ open(OUTEX,">$ARGV[2]") or die "cannot write to $ARGV[2]\n";
 my $finalLen = 0;
 for(my $i=0; $i<=$nuex; $i++){
   $finalLen += $uniqEx[$i][1]-$uniqEx[$i][0]+1;
-  my $seq = "";
+  my $seq = substr($chrseq, $uniqEx[$i][0]-1, $uniqEx[$i][1]-$uniqEx[$i][0]+1);
   print OUTEX "$uniqEx[$i][0] $uniqEx[$i][1] $seq\n";
   if($uniqEx[$i][0] > $uniqEx[$i][1]){
     die "uniqEx[$i] $uniqEx[$i][0] > $uniqEx[$i][1]\n";
@@ -220,7 +258,7 @@ open(OUTUTR,">$ARGV[1]") or die "cannot write to $ARGV[1]\n";
 $finalLen = 0;
 for(my $i=0; $i<$nUTRfin; $i++){
   $finalLen += $UTRfin[$i][1]-$UTRfin[$i][0]+1;
-  my $seq = "";
+  my $seq = substr($chrseq, $UTRfin[$i][0]-1, $UTRfin[$i][1]-$UTRfin[$i][0]+1);
   print OUTUTR "$UTRfin[$i][0] $UTRfin[$i][1]\n";
 }
 print "$nUTRfin uniq utrs; length = $finalLen\n";

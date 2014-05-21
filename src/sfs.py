@@ -6,7 +6,7 @@ import math
 import command
 import ms
 import re
-import matplotlib
+#import matplotlib
 from collections import defaultdict
 from os.path import exists
 
@@ -49,6 +49,7 @@ class Simulation:
         self.haplo = {}
         self.causal = {}
 
+    
     def set_data(self,data):
         self.data = data
 
@@ -67,7 +68,7 @@ class Simulation:
             mut_data = snp.split(',')
             
             newmut = Mutation()
-            newmut.set_all(mut_data,self.command.P,self.command.n)
+            newmut.set_all(mut_data,self.command.n)
 
             self.loci[int(newmut.locus)][int(newmut.pos)].append(newmut)
 
@@ -76,6 +77,14 @@ class Simulation:
         return
 
     def merge_muts(self):
+
+        # SFS_CODE sometimes stores mutations
+        # separately in different populations.
+        # this is to handle the case whene mutations
+        # fix in one population but still segregate in
+        # other populations.  This function merges 
+        # these mutations such that they are internally
+        # stored together
 
         def merge(m,multi):
             if len(m) < 2:
@@ -118,22 +127,26 @@ class Simulation:
                         pop =p
                         break
                     # all the muts with same t_init at same location
-                    # are pushed into a single list, then merged into a single
-                    # entity    
+                    # are pushed into a single list, muts[t_init]
                     muts[mut.t_init[pop]].append(mut)
                 
                 # check whether site is multiallelic
 
-                num_alleles = 0
-                for t in muts:
-                    for mut in muts[t]:
-                        for pop in mut.t_fix:
-                            if float(mut.t_fix[pop]) == self.command.TE:
-                                num_alleles += 1
-                                break        
+                alleles = {}
+                # assuming here that at most one mutation occurs at
+                # each position in each generation
+                for t_init in muts:
+                    for mut in muts[t_init]:
+                        for pop in mut.chrs:
+                            if -1 in mut.chrs[pop]:
+                                alleles[mut.deriv_n] = 0
+                            else:
+                                alleles[mut.deriv_n] = 0
+                                alleles[mut.tri_nuc[1]] = 0
+                       
                 
                 multi = False
-                if num_alleles > 1:
+                if len(alleles) > 2:
                     multi = True
                 
                 for t in muts:
@@ -145,7 +158,7 @@ class Simulation:
         #for mut in self.muts:
         #    print mut.multiallelic
         
-    def calc_S(self,multi_skip=True,loci=[]):
+    def calc_S(self,multi_skip=True,loci=[],pop=0):
      
         """
         calculate the number of segretating sites within all
@@ -154,38 +167,146 @@ class Simulation:
         * Parameters:
           
           * *multi_skip = True*
-             skip sites that are more than biallelic if true
+             skip sites that are more than biallelic if True
           * *loci = []*
              A list of loci over which to calculate the number of segregating
              sites.  Uses all loci if this is left blank.
         """
-
         if len(loci) == 0:
-            loci = self.loci
+            loci = range(0,len(self.command.L))
+
+        if max(loci) >= len(self.command.L):
+                print "No such locus, ", max(loci), "!"
+                exit()
+
         nums = []
 
-        for pop in range(0, self.command.n_pops):
+        for pop in range(0,self.command.n_pops):
             num = 0
             for locus in loci:
-               for pos in self.loci[locus]:
-                   for mut in self.loci[locus][pos]:
-                       if pop not in mut.chrs:
-                           continue
-                       if float(mut.t_fix[pop]) < self.command.TE:
-                           continue
-                       if multi_skip:
-                           if mut.multiallelic:
-                               continue
-                       num += 1
+                if locus not in self.loci:
+                    continue
+                for pos in self.loci[locus]:
+                     for mut in self.loci[locus][pos]:
+                        if pop not in mut.chrs:
+                            continue
+                        if float(mut.t_fix[pop]) < self.command.TE:
+                            continue
+                        if multi_skip:
+                            if mut.multiallelic:
+                                continue
+                        if -1 in mut.chrs[pop]:
+                            continue
+                        num += 1
             nums.append(num)    
+        return nums[pop]  
+
+    def calc_watt(self,pop=0,loci=[]):
+
+        if len(loci) == 0:
+            loci = range(0,len(self.command.L))
         
-        return nums  
+        if max(loci) >= len(self.command.L):
+            print "No such locus,", max(loci), "!"
+            exit()
 
-    def calc_tajD(self, loci=[]):
-        return
+        tot_sites = 0
+        for index in loci:
+            tot_sites+=self.command.L[index]
 
-    def calc_ZnS(self, loci=[]):
-        return 
+        S = self.calc_S(loci=loci,pop=pop)
+  
+        watt = 0
+ 
+        for i in range(1,self.command.n[pop]):
+            watt += 1./(i+0.)
+        
+        watt = (S+0.)/watt
+        watt /= tot_sites
+        
+        return watt        
+
+    def calc_tajD(self,pop=0,loci=[]):
+  
+
+        if len(loci) == 0:
+            loci = range(0,len(self.command.L)) 
+        
+        if max(loci) >= len(self.command.L):
+            print "No such locus,", max(loci), "!"
+            exit()
+
+        tot_sites = 0
+        for l in loci:
+            tot_sites+=self.command.L[l]
+
+        S = self.calc_S(loci=loci,pop=pop)
+        watt = self.calc_watt(pop=pop,loci=loci)*tot_sites
+        pi = self.calc_pi(loci=loci)[pop]*tot_sites
+
+        if (S == 0):
+            return 'NA'
+
+        numerator = pi - watt
+
+        # now compute normalizing stats 
+
+        a1 = 0
+        a2 = 0
+
+        nsam = self.command.n[pop]
+
+        for i in range(1,nsam):
+            a1 += 1./(i+0.)
+            a2 += 1./(i**2 + 0.)
+        b1 = (nsam+1.)/(3.*(nsam-1))
+
+        b2 = (2.*(nsam**2 + nsam + 3.))/(9.*nsam*(nsam-1.))
+   
+        c1 = b1 - 1./a1
+
+        c2 = b2 - (nsam+2.)/(a1*nsam+0.) + a2/(a1**2)
+
+        e1 = c1/a1
+  
+        e2 = c2 /(a1**2 + a2 + 0.) 
+
+        denom = math.sqrt(e1*(S+0.) + e2*S*(S-1.))
+
+        return numerator/denom
+
+    def calc_ZnS(self, pop = 0, loci=[]):
+
+        if len(loci) == 0:
+            loci = range(0,len(self.command.L))
+        
+        if max(loci) >= len(self.command.L):
+            print "No such locus, ", max(loci), "!"
+            exit() 
+
+        S = self.calc_S(loci=loci,pop=pop)
+   
+        if S < 2:
+            return
+
+   
+        tot = 0
+
+        for i in range(0, len(self.muts)):
+            for j in range(i+1, len(self.muts)):
+                mut = self.muts[i]
+                mut2 = self.muts[j]
+                if mut.locus not in loci:
+                    continue
+                if mut2.locus not in loci:
+                    continue
+                delij = mut.calc_delij(mut2,pop,n=self.command.n[pop])
+                if delij is not None:
+                    tot += delij
+
+        ZnS = tot * 2. / (S*(S-1.))
+
+        return ZnS
  
     def calc_pi(self,multi_skip=True,loci=[]):
         
@@ -214,22 +335,20 @@ class Simulation:
   
         """
 
-        for locus in loci:
-            if locus not in self.loci:
-                print "Locus",locus,"is not in self.loci!"
-                print "restrict input to calc_pi (loci=[...]) to loci that",
-                print "were actually simulated"
-                exit()
 
         pis = []
         tot = 0
         if len(loci) == 0:
-            loci=self.loci  
+            loci= self.loci  
             tot = self.command.n_sites
         else:
+            if max(loci) >= len(self.command.L):
+                print "No such locus,", max(loci), "!"
             locidict = {}
             for locus in loci:
                 tot += self.command.L[locus]
+                if locus not in self.loci:
+                    continue
                 locidict[locus] = self.loci[locus]
 
             loci = locidict
@@ -245,6 +364,8 @@ class Simulation:
                         if mut.fixed_pop[pop] == True:
                            continue
                         if mut.multiallelic == True and multi_skip == True:
+                           continue
+                        if -1 in mut.chrs:
                            continue
                         sum += mut.pops_numchr[pop]
                     pi_var = (self.command.n[pop]-sum)*sum
@@ -298,7 +419,6 @@ class Simulation:
              
         """
 
-
         fit = {}             
 
         if pop not in self.command.n:
@@ -307,46 +427,69 @@ class Simulation:
         for chr in range(0,self.command.n[pop]):
             fit[chr] = 1
         
-        for i in range(0,len(self.muts)):
-           
-            #print i, self.muts[i]
+        for locus in self.loci:
+            for pos in self.loci[locus]:
+                for mut in self.loci[locus][pos]:
+                    if pop not in mut.t_fix:
+                        continue
+                    num_fixed = 0
 
-            mut = self.muts[i]
+                    for j in range(0,self.command.n_pops):
+                        if (j in mut.t_fix):
+                            if (mut.t_fix[j] < self.command.TE):
+                                num_fixed +=1
+                    if num_fixed == self.command.n_pops:
+                        continue
+  
+                    if mut.fit == 0.:
+                        continue
 
-            if mut.fit == 0.:
-                continue
+                    if -1 in mut.chrs[pop]:
+                        if self.command.Z == 0:
+                            for chr in range(0,self.command.n[pop]):
+                                if mut.fit < -1:
+                                    fit[chr] = 0
+                                    continue
+                                fit[chr] *= (1+mut.fit)
+                        else:
+                            for chr in range(0,self.command.n[pop]): 
+                                fit[chr] += mut.fit
+                        continue
 
-            if pop not in mut.t_fix:
-                continue
-
-            if mut.t_fix[pop]<self.command.TE:
-                continue
-
-            #print pop, mut.t_fix[pop]
-
-            #print pop, mut.locus, mut.pos, mut.fit, mut.t_fix[pop]
-
-            if -1 in mut.chrs[pop]:
-                if self.command.Z == 0:
-                    for chr in range(0,self.command.n[pop]): 
-                        fit[chr] *= (1+mut.fit)
-                else:
-                    for chr in range(0,self.command.n[pop]): 
-                        fit[chr] += mut.fit
-                continue
-
-            if self.command.Z == 0:
-                for chr in mut.chrs[pop]:
-                    fit[chr] *= (1+mut.fit)
-            else:
-                for chr in mut.chrs[pop]:
-                    fit[chr] += mut.fit
-
+                    else: 
+                        if self.command.Z == 0:
+                            for chr in mut.chrs[pop]:
+                                if mut.fit < -1:
+                                    fit[chr] = 0
+                                    continue
+                                fit[chr] *= (1+mut.fit)
+                   
+                        else:
+                            for chr in mut.chrs[pop]:
+                                fit[chr] += mut.fit
+        f=1
+        i = 0
         for chr in range(0, self.command.n[pop]):
-            print fit[chr],
+            if self.command.Z != 0:
+                f += fit[chr]
+                i += 1
+                if i % int(self.command.P[0]) == 0:
+                    newfit = int(self.command.P[0])+1-f,
+                    if newfit < 0:
+                        newfit = 0
+                    print newfit
+                    f = 1
+            else:
+                i+=1               
+                f *= fit[chr]
+                if i % int(self.command.P[0]) == 0:
+                    print f,
+                    f = 1
+
         print
 
         return
+
 
     def get_sfs(self, pop=0, NS=True, SYN=True):
 
@@ -371,21 +514,30 @@ class Simulation:
 
     def haplotype(self,pop=0):
   
-        self.haplo[pop] = [ [0 for i in range(0,len(self.muts)+1)] for j in range(0, self.command.n[pop])]
+        self.haplo[pop] = [ [0 for i in range(0,len(self.muts))] for j in range(0, self.command.n[pop])]
  
         i = 0
         for mut in self.muts:
             if pop not in mut.fixed_pop:
+                for chr in range(0,self.command.n[pop]):
+                    self.haplo[pop][chr][i] = 0
+                i+=1
                 continue
-            if mut.fixed_pop[pop] == True:
+            elif mut.fixed_pop[pop] == True:
+                for chr in range(0,self.command.n[pop]):
+                    self.haplo[pop][chr][i] = 1
+                i+=1
                 continue
             elif -1 in mut.chrs[pop]:
+                for chr in range(0,self.command.n[pop]):
+                    self.haplo[pop][chr][i] = 1
+                i +=1 
                 continue
             for chr in mut.chrs[pop]:
                 self.haplo[pop][chr][i] = 1
             i += 1
      
-    def print_hap(self,pop=0):
+    def print_fam(self,pop=0):
 
         if pop not in self.haplo:
             print "Warning: must define the haplotype first!"
@@ -393,28 +545,22 @@ class Simulation:
             print "exiting the function"
             return
 
-        for arr in self.haplo[pop]:
-            for var in arr:
+        i = 0
+        while i < len(self.haplo[pop]):
+            print i /2, '\t1\t',
+            for k in range(0, len(self.muts)+1):
+                var = (self.haplo[pop][i][k] + self.haplo[pop][i+1][k])
                 print var,
-            print 
-
-    def sim_pheno(self,div=0.1,thresh=2.,c=0.,effect_small=0.01,effect_big=0.1):
+            print
+            i+=2
+            
+    def sim_pheno_simmons(self,thresh=2.,c=0.,effect_small=0.01,effect_big=0.1):
              
-        if int(self.command.W[0]) != 2:
-            print "only gamma distributed selection coefficients are",
-            print "currently supported"
-            return
-
         from scipy.stats import gamma
         from math import floor
         import random
 
         # for now assuming only negative selection coefficients
-
-        #shape = float(self.command.W[4])
-        #scale = 1./float(self.command.W[5])
- 
-        #p_div = gamma.cdf(div, shape, scale=scale)
     
         thresh /= (2.*self.command.N)
 
@@ -446,6 +592,94 @@ class Simulation:
         for mut in self.muts:
             print mut.effect
 
+    def sim_pheno(self,c=1.,spread=0.01,pop=0,var_prop=0.01):
+
+        from scipy.stats import norm
+        from numpy import mean, var
+        from scipy.stats import gamma
+        import sys
+
+        if var_prop <0. or var_prop >1.:
+            print "var_prop is the proportion of variance in the",
+            print "phenotype due to sequences being simulated;",
+            print "must be in [0,1]"
+            exit()
+
+        if 'W' not in self.command.__dict__ or len(self.command.W) == 0:
+            sys.stderr.write("This simulation not under selection,")
+            sys.stderr.write("setting var_prop to 0!\n")
+            var_prop = 0.
+            mean = 0.
+
+        else :
+            a = float(self.command.W[4])
+            scale = 1./float(self.command.W[5])
+            mean = gamma.mean(a,scale=scale)/(2.*self.command.N)
+
+        effects = []
+
+        for mut in self.muts:
+            mut.effect = mut.fit*c #+ norm.rvs(scale=spread*(c*mean))
+            effects.append(mut.effect)
+
+        if pop not in self.haplo:
+            self.haplotype(pop)  
+
+        num = 0 
+        phenos = [0 for i in range(0, self.command.n[pop]/2)]
+        pheno =0
+        
+        for chr in self.haplo[pop]:
+            if(len(chr) != len(effects)):
+                print "Error: not every site has an effect size"
+                exit()
+            for j in range(0, len(chr)):
+                pheno += chr[j]*effects[j]
+            if num % 2 != 0:
+                phenos[num/2-1] = pheno
+                pheno = 0
+            num += 1     
+        
+        gen_var = var(phenos)
+         
+        if gen_var > 0.:
+            env_var = gen_var*(1-var_prop)/(var_prop)
+        else:
+            env_var = 1.
+
+        for i in range(0, len(phenos)):
+            phenos[i] += norm.rvs(scale=env_var**0.5)
+
+        #phen_var = var(phenos)
+
+        for pheno in phenos:
+            print pheno,
+        print
+ 
+    def print_freq_sel(self,pop=0):
+    
+        for mut in self.muts:
+            
+            if pop not in mut.fixed_pop:
+                continue
+            if mut.fixed_pop[pop]:
+                continue
+            if -1 in mut.chrs[pop]:
+                continue
+            if mut.fit == 0.:
+                continue
+            freq = len(mut.chrs[pop])/(self.command.n[pop]+0.)
+            print freq, mut.fit
+           
+    def get_sel(self,file=file):
+
+        fh = open(file, 'w')
+
+        for mut in self.muts:
+            fh.write(str(mut.fit)+'\n')
+ 
+        fh.close()
+ 
 class Mutation:
     
     """
@@ -564,7 +798,7 @@ class Mutation:
      
     # master setter
 
-    def set_all(self,all,P,n):
+    def set_all(self,all,n):
         self.set_locus(all.pop(0))        
         self.set_AXY(all.pop(0))        
         self.set_pos(all.pop(0))        
@@ -585,13 +819,36 @@ class Mutation:
             self.pops_numchr[popu] = 0
             if -1 in self.chrs[popu]:
                 self.fixed_pop[popu] = True
-                self.pops_numchr[popu]=P[0]*n[popu]
+                self.pops_numchr[popu]=n[popu]
                 continue
             
             self.fixed_pop[popu] = False
             for chr in self.chrs[popu]:  
                 self.pops_numchr[popu]+=1
 
+    def calc_delij(self,mut,pop,n):
+        
+       if pop not in self.chrs or pop not in mut.chrs:
+           return None
+
+       pi = (self.pops_numchr[pop]+0.)/n
+       pj = (mut.pops_numchr[pop]+0.)/n
+       
+       if pi == 0 or pj ==0 or pi ==1 or pj == 1:
+           return None
+
+       pij = 0 
+       
+       for chr in self.chrs[pop]:
+           if chr in mut.chrs[pop]:
+               pij +=1
+       pij /= (n+0.)
+
+       Dij = pij -pi*pj
+
+       delij = (Dij**2)/(pi*(1.-pi)*pj*(1.-pj))
+
+       return delij
 
 class SFSData:
 
@@ -686,8 +943,22 @@ class SFSData:
 
         f.close()
 
+    def p_fix(self, s,alpha):
+        pfix = 0
+        if (s >= 0.1):
+            pfix = math.exp(-(1+s))
+            lim = 0
+            while(lim < 200):
+                pfix = math.exp((1+s)*(pfix-1))
+                lim +=1
+            pfix = 1-pfix
+        else:
+            pfix = (1-math.exp(-2*s))/(1-math.exp(-2*alpha))
+        return pfix
 
 class msData:
+
+    # A class for ms style ourput
 
     # this class is a bit underdeveloped at the moment 
     # and hence is not present in the documentation

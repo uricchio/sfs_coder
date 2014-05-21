@@ -70,6 +70,11 @@ foreach my $beg (sort {$a<=>$b} keys %SKIPregs){
 print "read $nSKIP regions to be skipped with length $skipLen\n";
 
 open(IN,"$ARGV[0]") or die "cannot read $ARGV[0]\n";
+if($ARGV[0] =~ /\.gz$/){
+  close(IN);
+  open(IN,"gunzip -c $ARGV[0] |") or die "cannot gunzip $ARGV[0]\n";
+}
+
 open(OUT,">$ARGV[3]") or die "cannot write to $ARGV[3]\n";
 
 my $tmp = 0;

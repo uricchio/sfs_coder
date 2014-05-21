@@ -116,9 +116,9 @@ If you submit an sfs_coder script to a cluster as an array job, it will take
 care of all the work of numbering the output files for you.
 
 For example, any of the above scripts can be sent to a cluster with the 
-following header::
+following header:
 
-.. code-block:: bash
+.. code-block:: python
 
    #!/usr/bin/python
    #$ -e sim.div.log

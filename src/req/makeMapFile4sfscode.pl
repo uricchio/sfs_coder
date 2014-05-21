@@ -19,6 +19,10 @@ my $bigger = 0;
 
 open(IN, "$infile")
   or die "cannot read $infile\n";
+if($infile =~ /\.gz$/){
+  close(IN);
+  open(IN, "gunzip -c $infile |") or die "cannot gunzip $infile\n";
+}
 my $line = <IN>;
 my @PREV = ();
 my @PREV2 = ();
