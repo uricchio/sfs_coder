@@ -1097,8 +1097,13 @@ class SFSCommand(Command):
         
         self.line.append('-L')
 
-        for thing in L:
-            self.line.append(str(thing))
+        if str(L[0]) == 'R':
+            for thing in L:
+             self.line.append(str(thing))
+        else:
+            self.line.append(str(len(L)))
+            for thing in L:
+                self.line.append(str(thing))
 
         self.line.extend(['-A'])
  
