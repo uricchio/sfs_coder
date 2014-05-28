@@ -350,10 +350,10 @@ class SFSCommand(Command):
 
     def build_RHH(self,alpha=1000.,N0=5000.,rho0=0.001,lam0=(10**-10),
                   delta=0.01, L0 = -1,L1=10.**5,loop_max=10,L_neut=1000.,
-                  theta_neut=0.001,minpop=100,recomb_dir='./recombfiles',
-                  outdir='sims',TE=2,r_within=False, neg_sel_rate = 0., 
+                  theta_neut=0.001,minpop=100,recomb_dir='recombfiles',
+                  outdir='sims',TE=2,r_within=True, neg_sel_rate = 0., 
                   alpha_neg = 5, additive=1, Lextend=1,mutation=[],bottle=[],
-                  expansion=[]):
+                  expansion=[],nreps=10, Boyko=False):
 
         """
 
@@ -402,19 +402,15 @@ class SFSCommand(Command):
              but in the future will allow for recombination within the 
              neutral locus.
          """      
-  
 
         from scipy.integrate import quad
         from scipy.optimize import brentq
         from mpmath import gammainc
 
-        recomb_dir = os.path.abspath(recomb_dir)
-        outdir = os.path.abspath(outdir)
+        recomb_dir = os.path.join(os.getcwd(),recomb_dir)
+        outdir = os.path.join(os.getcwd(), outdir)
 
         self.outdir = outdir
-
-        if len(self.recomb_file) == 0:
-            self.recomb_file = recomb_dir+'/recomb.txt'
 
         #internal parameters
         
@@ -465,7 +461,7 @@ class SFSCommand(Command):
        
         # now extend the sequence length, after computing s
 
-        a = a/Lextend
+        a = a/float(Lextend)
         L0 = L0*Lextend
 
         # compute all remaining perameters
@@ -474,12 +470,6 @@ class SFSCommand(Command):
         lam = r*lam0/r0
         N = int(alpha/(2*s))
         rho = 4*N*r
-
-        #print 's: ', s,'r :', r,'lam: ', lam, 'N: ', N
-
-        #print integ(s), init
-
-        #exit()
 
         pfix = 0
         if (s >= 0.1):
@@ -522,11 +512,21 @@ class SFSCommand(Command):
 
         middist = math.ceil(L1+L_neut)
         finaldist = math.ceil(2*L1+L_neut)
+        
+        if len(self.recomb_file) == 0:
+            self.recomb_file = os.path.join(recomb_dir,'recomb.L0'+str(int(L0))+'.al'+str(int(round(alpha)))+'.lam'+str(lam0)+'.txt')
 
         try:
             os.stat(recomb_dir)
         except:
             os.makedirs(recomb_dir)
+
+        # proportion of recombination events that fall in 
+        # neutral region
+        prop_neutral = L_neut/(L_neut+2.*L0)
+
+        first_seg = 0.5-0.5*prop_neutral
+        second_seg = 0.5+0.5*prop_neutral
 
         try:    
             os.stat(self.recomb_file)
@@ -535,20 +535,26 @@ class SFSCommand(Command):
             rfile.write('3\n')
             rfile.write(str(int(math.ceil(L1))))
             
-            if r_within == False:
-                rfile.write(' 0.5\n')
+            if r_within == True:
+                rfile.write(' '+str(first_seg)+'\n')
                 rfile.write(str(int(middist)))
-                rfile.write(' 0.50000000001\n')
+                rfile.write(' '+str(second_seg)+'\n')
                 rfile.write(str(int(finaldist)))
                 rfile.write(' 1.0\n')
-                                
+            else:
+                rfile.write('0.5\n')
+                rfile.write(str(int(middist)))
+                rfile.write('0.5000000000000001\n')
+                rfile.write(str(int(finaldist)))
+                rfile.write(' 1.0\n')
+  
             rfile.close()
 
         #self.line = ['/usr/bin/time', '-f', '%e %M', self.sfs_code_loc]
         self.line = []        
-
+  
         # one population, 10 replicates
-        self.line.extend(['1','10'])
+        self.line.extend(['1',str(nreps)])
   
         # Don't print ancestral sequence
         self.line.append('-A')
@@ -587,7 +593,7 @@ class SFSCommand(Command):
             self.line.extend(['-W','L','0','1',str(alpha),'1','0'])
             self.line.extend(['-W','L','2','1',str(alpha),'1','0'])
    
-        else:
+        elif (Boyko == False):
             
             # selection on the flanking sequences, neutral theta
             l_pos = 1000000000
@@ -601,6 +607,18 @@ class SFSCommand(Command):
             self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
                               str(l_pos), str(a_neg), str(l_neg)])
      
+        else:
+            l_pos = 1000000000
+            a_pos = alpha*l_pos
+
+            l_neg = 0.00040244
+            a_neg = 0.184
+
+            self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+            self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+        
         # add any demographic events
         for thing in bottle:
             self.line.extend([thing])
@@ -1065,7 +1083,7 @@ class SFSCommand(Command):
 
 
     def snm(self,N=500,nsim=10,t=0.001,rho=0.001,nsam=10,recombfile='',
-            mutation=[],sel=[],event=[], TE=0,L=5000,non_coding=False):
+            mutation=[],sel=[],event=[],TE=0,L=[5000],non_coding=False):
 
         self.line = []
 
@@ -1077,6 +1095,8 @@ class SFSCommand(Command):
 
         self.line.extend(['-n', str(nsam)])
         
+        self.line.append('-L')
+
         for thing in L:
             self.line.append(str(thing))
 
@@ -1745,19 +1765,22 @@ class Reg():
 
     import subprocess
 
-    def __init__(self):
+    def __init__(self,reg_loc='',
+                 dir = os.path.join(os.getcwd(), 'ABC')):
 
         self.n_params = 2
-        self.n_sums = 4
-        self.reg_loc = ''
-        self.file_base = ''
-        self.n_params = ''
-        self.prior_file = ''
-        self.data_file = ''
-        self.out_file_base = ''
-        self.tol = 0.001
+        self.n_sums = 10
+        self.reg_loc = reg_loc
+        self.dir = dir
+        try:
+            os.stat(self.dir)
+        except:
+            os.mkdir(self.dir)
+        self.out_file_base = os.path.join(self.dir, 'ABC')
+        self.prior_file =  os.path.join(self.dir,'prior_test')
+        self.data_file =  os.path.join(self.dir, 'data_test')
+        self.tol = 0.02
         self.line = []
-   
 
     def execute(self):
 
@@ -1765,7 +1788,27 @@ class Reg():
   
         self.line.append(self.reg_loc)
         
+        self.line.extend(['-P',str(self.n_params)])
+        
+        self.line.extend(['-S',str(self.n_sums)])
+        
+        self.line.extend(['-p',self.prior_file])
+        
+        self.line.extend(['-d',self.data_file])
+        
+        self.line.extend(['-b',self.out_file_base])
+        
+        self.line.extend(['-t',str(self.tol)])
+
+        self.line.append('-L') # method of Beaumont et al
+
         # extend with other options
+
+        out_h = open(os.path.join(self.dir,'log.txt'),'w')
+ 
+        err_h = open(os.path.join(self.dir,'err.txt'),'w')
 
         process = subprocess.Popen(self.line, stdout=out_h,
                                    stderr=err_h, close_fds = True)
+
+        code = process.wait()

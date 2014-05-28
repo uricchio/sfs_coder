@@ -6,6 +6,7 @@ import math
 import command
 import ms
 import re
+import sys
 #import matplotlib
 from collections import defaultdict
 from os.path import exists
@@ -226,6 +227,37 @@ class Simulation:
         
         return watt        
 
+    def calc_theta_H(self, pop=0, multi_skip=False,loci=[]):
+
+        if len(loci) == 0:
+            loci = range(0, len(self.command.L))
+
+        if max(loci) >= len(self.command.L):
+            print "No such locus,", max(loci), "!"
+
+              
+        tot_sites = 0
+        for index in loci:
+            tot_sites+=self.command.L[index]
+
+        tot = 0
+        for locus in loci:
+            if locus not in self.loci:
+                continue
+            for pos in self.loci[locus]:
+                for mut in self.loci[locus][pos]:    
+                    if (mut.multiallelic == True and multi_skip==True):
+                        continue
+                    if -1 in mut.chrs[pop]:
+                        continue
+                    tot += (mut.pops_numchr[pop])**2            
+ 
+        tot /= (tot_sites*self.command.n[pop]*(self.command.n[pop]-1.)+0.)
+ 
+        tot *= 2
+
+        return tot
+
     def calc_tajD(self,pop=0,loci=[]):
   
 
@@ -245,7 +277,7 @@ class Simulation:
         pi = self.calc_pi(loci=loci)[pop]*tot_sites
 
         if (S == 0):
-            return 'NA'
+            return None
 
         numerator = pi - watt
 
@@ -467,22 +499,22 @@ class Simulation:
                         else:
                             for chr in mut.chrs[pop]:
                                 fit[chr] += mut.fit
-        f=1
+        f = 1
         i = 0
         for chr in range(0, self.command.n[pop]):
             if self.command.Z != 0:
                 f += fit[chr]
                 i += 1
                 if i % int(self.command.P[0]) == 0:
-                    newfit = int(self.command.P[0])+1-f,
+                    newfit = f - int(self.command.P[0])
                     if newfit < 0:
                         newfit = 0
-                    print newfit
+                    print newfit,
                     f = 1
             else:
                 i+=1               
                 f *= fit[chr]
-                if i % int(self.command.P[0]) == 0:
+                if i % int(self.command.P[0]) == 0: 
                     print f,
                     f = 1
 
@@ -631,7 +663,7 @@ class Simulation:
         
         for chr in self.haplo[pop]:
             if(len(chr) != len(effects)):
-                print "Error: not every site has an effect size"
+                print >> sys.stderr, "Error: not every site has an effect size"
                 exit()
             for j in range(0, len(chr)):
                 pheno += chr[j]*effects[j]
@@ -895,7 +927,7 @@ class SFSData:
         try: 
             f = open(self.file, 'r')
         except:
-            print 'Error: cannot open file', self.file, 'for reading!' 
+            print >> sys.stderr, 'Error: cannot open file', self.file, 'for reading!' 
             exit(-1)
 
         command_file = command.SFSCommand()
@@ -945,10 +977,10 @@ class SFSData:
 
     def p_fix(self, s,alpha):
         pfix = 0
-        if (s >= 0.1):
+        if (s >= 0.02):
             pfix = math.exp(-(1+s))
             lim = 0
-            while(lim < 200):
+            while(lim < 2000):
                 pfix = math.exp((1+s)*(pfix-1))
                 lim +=1
             pfix = 1-pfix
