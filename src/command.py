@@ -353,7 +353,7 @@ class SFSCommand(Command):
                   theta_neut=0.001,minpop=100,recomb_dir='recombfiles',
                   outdir='sims',TE=2,r_within=True, neg_sel_rate = 0., 
                   alpha_neg = 5, additive=1, Lextend=1,mutation=[],bottle=[],
-                  expansion=[],nreps=10, Boyko=False):
+                  expansion=[],nreps=10, Boyko=False,unlink=False):
 
         """
 
@@ -578,6 +578,10 @@ class SFSCommand(Command):
         #3 Loci of lengths L1, L_neut, L1
         self.line.extend(['-L','3',str(L1),str(L_neut),str(L1)])
         
+        #unlink the selected sites from the neutral site
+        if (unlink == True):
+           self.line.extend(['-l','g','0.5','R'])
+        
         # set noncoding for all sites
         self.line.extend(['-a','N','R'])
         
@@ -632,8 +636,7 @@ class SFSCommand(Command):
 
         # simulation end time
         self.line.extend(['-TE',str(TE)])
-
-
+ 
     def convert_sfs_ms(self):
 
         """
@@ -1082,7 +1085,7 @@ class SFSCommand(Command):
         # self.line.extend(['-W', '2', '0', '0', '0', '0.184', '0.00040244'])         
 
 
-    def snm(self,N=500,nsim=10,t=0.001,rho=0.001,nsam=10,recombfile='',
+    def snm(self,N=500,nsim=10,t=0.001,rho=0.001,nsam=[10],recombfile='',
             mutation=[],sel=[],event=[],TE=0,L=[5000],non_coding=False):
 
         self.line = []
@@ -1093,7 +1096,10 @@ class SFSCommand(Command):
 
         self.line.extend(['-N', str(N)])
 
-        self.line.extend(['-n', str(nsam)])
+        self.line.append('-n')
+
+        for thing in nsam:
+            self.line.append(str(thing))
         
         self.line.append('-L')
 
@@ -1292,6 +1298,8 @@ class SFSCommand(Command):
 
 
         ex_ncs = subprocess.Popen(ncs, stdout=eh_ncs, stderr=subprocess.STDOUT, 
+                                  preexec_fn=lambda: signal.signal(
+                                        signal.SIGPIPE, signal.SIG_DFL),
                                   close_fds = True)  
  
         returncode = ex_ncs.wait()
@@ -1315,6 +1323,8 @@ class SFSCommand(Command):
         log = open(os.path.join(os.getcwd(), 'log.txt'),'w+')
          
         ex_annot = subprocess.Popen(annot, stdout=log, 
+                                    preexec_fn=lambda: signal.signal(
+                                        signal.SIGPIPE, signal.SIG_DFL),
                                     stderr=subprocess.STDOUT, close_fds = True)
         returncode = ex_annot.wait()
 
@@ -1344,6 +1354,8 @@ class SFSCommand(Command):
                recombin,str(sim_min), str(sim_max),recombout]
 
         ex_map = subprocess.Popen(map, stdout=log, stderr=subprocess.STDOUT, 
+                                  preexec_fn=lambda: signal.signal(
+                                        signal.SIGPIPE, signal.SIG_DFL),
                                   close_fds = True)
         returncode = ex_map.wait()
 
