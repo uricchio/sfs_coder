@@ -420,7 +420,6 @@ class Simulation:
 
         """
 
-
         pis = [[0.0 for i in range(0, len(self.command.L))] for j in range(0,self.command.n_pops)]
 
         for pop in range(0, self.command.n_pops):
@@ -586,7 +585,7 @@ class Simulation:
             print
             i+=2
             
-    def sim_pheno_simmons(self,thresh=2.,c=0.,effect_small=0.01,effect_big=0.1):
+    def sim_pheno_simons(self,thresh=2.,c=0.,effect_small=0.01,effect_big=0.1):
              
         from scipy.stats import gamma
         from math import floor

@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 use strict;
 
-unless(scalar(@ARGV) == 11){
-    die "usage:  $0 <MINPOS> <MAXPOS> <NEUTRAL BUFFER> <OUTFILE> <GENES FILE> <UTRs FILE> <CNCs FILE> <DENSE BEG> <DENSE END> <SEL/NEUT> <WITHSEQ>\n";
+unless(scalar(@ARGV) >= 11){
+    die "usage:  $0 <MINPOS> <MAXPOS> <NEUTRAL BUFFER> <OUTFILE> <GENES FILE> <UTRs FILE> <CNCs FILE> <DENSE BEG> <DENSE END> <SEL/NEUT> <WITHSEQ> [ref_chrom.fa.gz]\n";
 }
 
 my $MINPOS = $ARGV[0];
@@ -12,11 +12,30 @@ my $BLOCKSIZE = $ARGV[2]; #changed this to be equal to buffer size, was default 
 my $DB = $ARGV[7];
 my $DE = $ARGV[8];
 my $WITHSEQ=$ARGV[10];
-if($WITHSEQ ne 0){
-  die "sorry, please set WITHSEQ to 0, as this is not yet implemented...\n";
-}
+my $CHRSEQ = "";
 unless($WITHSEQ == 0 || $WITHSEQ == 1){
   die "arg 10 \"WITHSEQ\" must be 0 or 1\n";
+}
+if($WITHSEQ == 1){
+  if(scalar(@ARGV) != 12){
+    die "When extracting genomic sequence, you must include a chromosome fasta file\n";
+  }
+  open(IN,"$ARGV[11]") or die "cannot read genome file $ARGV[11]\n";
+  if($ARGV[11] =~ /\.gz$/){
+    close(IN);
+    open(IN, "gunzip -c $ARGV[11] |") or die "cannot gunzip $ARGV[11]\n";
+  }
+  my $nlines = 0;
+  while(<IN>){
+    if($_ =~ /^>chr([1-9MXY]+)\n$/){
+      print "$_";
+      next;
+    }
+    chomp;
+    $CHRSEQ .= $_;
+    $nlines++;
+  }
+  print "chr length = ".length($CHRSEQ)." in $nlines lines\n";
 }
 
 my %REGS = ();
@@ -36,7 +55,6 @@ while(<IN>){
 	next;
     }
     $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[0] = "E";
-    $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[1] = $sp[2];
     $CREGS[$nCREGS][0] = $sp[0];
     $CREGS[$nCREGS][1] = $sp[1]-$sp[0]+1;
     $nCREGS++;
@@ -67,7 +85,6 @@ while(<IN>){
       next;
     }
     $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[0] = "U";
-    $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[1] = $sp[2];
     if($sp[0] > $sp[1]){
 	die "U $lines $sp[0] > $sp[1]\n";
     }
@@ -89,7 +106,6 @@ while(<IN>){
     next;
   }
   $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[0] = "C";
-  $REGS{$sp[0]}{$sp[1]-$sp[0]+1}[1] = $sp[2];
   if($sp[0] > $sp[1]){
     die "C $lines $sp[0] > $sp[1]\n";
   }
@@ -105,7 +121,6 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
     $srtREGS[$nsrtREGS][0] = $s;
     $srtREGS[$nsrtREGS][1] = $l;
     $srtREGS[$nsrtREGS][2] = $REGS{$s}{$l}[0];
-    $srtREGS[$nsrtREGS][3] = $REGS{$s}{$l}[1];
     if($nsrtREGS>0 && $srtREGS[$nsrtREGS][0] < $srtREGS[$nsrtREGS-1][0]+$srtREGS[$nsrtREGS-1][1]){
       die "overlapping elements!!  ($srtREGS[$nsrtREGS][0], $srtREGS[$nsrtREGS][1]) and ($srtREGS[$nsrtREGS-1][0], $srtREGS[$nsrtREGS-1][1])\n";
     }
@@ -117,112 +132,119 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
 my @NEUT = ();
 my $nNEUT = 0;
 my $tmp = 0;
-if($BUFF > 0){
-  while($tmp<$nCREGS && $CREGS[$tmp][0]+$CREGS[$tmp][1] < $DB){
-    $tmp++;
+if($BUFF != 0){
+  if($BUFF == -1){
+    $NEUT[0][0] = $DB;
+    $NEUT[0][1] = $DE-$DB+1;
+    $nNEUT = 1;
   }
-  $NEUT[0][0] = $CREGS[$tmp][0]-$BUFF;
-  $NEUT[0][1] = $BLOCKSIZE;
-  if($NEUT[0][0] < 0){
-    $NEUT[0][1] += $NEUT[0][0]-1;
-    $NEUT[0][0] = 1;
-  }
-  $nNEUT++;
-  my $tsum = $NEUT[0][1];
-  while($tsum<=$BUFF-$BLOCKSIZE && $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1]<$CREGS[$tmp][0]){
-    $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-    $NEUT[$nNEUT][1] = $BLOCKSIZE;
-    $nNEUT++;
-    $tsum += $BLOCKSIZE;
-  }
-  if($tsum < $BUFF){
-    $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-    $NEUT[$nNEUT][1] = $BUFF-$tsum;
-    $nNEUT++;
-  }
-  my $neutLen = $BUFF; #before first element
-  my $numLess = 0;
-  $tmp++;
-  while($tmp<$nCREGS && $CREGS[$tmp][0]<$DE){
-    my $dist = $CREGS[$tmp][0]-($CREGS[$tmp-1][0]+$CREGS[$tmp-1][1]);
-    if($dist >= 2*$BUFF){
-      $neutLen += 2*$BUFF;
-      $NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
-      $NEUT[$nNEUT][1] = $BLOCKSIZE;
-      $nNEUT++;
-      my $tsum = $BLOCKSIZE;
-      while($tsum<$BUFF-$BLOCKSIZE){
-	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	$NEUT[$nNEUT][1] = $BLOCKSIZE;
-	$nNEUT++;
-	$tsum += $BLOCKSIZE;
-      }
-      if($tsum < $BUFF){
-	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	$NEUT[$nNEUT][1] = $BUFF-$tsum;
-	$nNEUT++;
-      }
-      
-      $NEUT[$nNEUT][0] = $CREGS[$tmp][0]-$BUFF;
-      $NEUT[$nNEUT][1] = $BLOCKSIZE;
-      $nNEUT++;
-      $tsum = $BLOCKSIZE;
-      while($tsum<$BUFF-$BLOCKSIZE){
-	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	$NEUT[$nNEUT][1] = $BLOCKSIZE;
-	$nNEUT++;
-	$tsum += $BLOCKSIZE;
-      }
-      if($tsum < $BUFF){
-	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	$NEUT[$nNEUT][1] = $BUFF-$tsum;
-	$nNEUT++;
-      }
+  else{
+    while($tmp<$nCREGS && $CREGS[$tmp][0]+$CREGS[$tmp][1] < $DB){
+      $tmp++;
     }
-    elsif($dist > 0){
-      $neutLen += $dist;
-      $numLess++;
-      if($dist <= $BLOCKSIZE){
-	$NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
-	$NEUT[$nNEUT][1] = $dist;
-	$nNEUT++;
-      }
-      else{
-	$NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
-	$NEUT[$nNEUT][1] = $BLOCKSIZE;
-	$nNEUT++;
-	$tsum = $BLOCKSIZE;
-	while($tsum<$dist-$BLOCKSIZE){
-	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	  $NEUT[$nNEUT][1] = $BLOCKSIZE;
-	  $tsum += $BLOCKSIZE;
-	  $nNEUT++;
-	}
-	if($tsum < $dist){
-	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
-	  $NEUT[$nNEUT][1] = $dist-$tsum;
-	  $nNEUT++;
-	}
-      }
+    $NEUT[0][0] = $CREGS[$tmp][0]-$BUFF;
+    $NEUT[0][1] = $BLOCKSIZE;
+    if($NEUT[0][0] < 0){
+      $NEUT[0][1] += $NEUT[0][0]-1;
+      $NEUT[0][0] = 1;
     }
-    $tmp++;
-  }
-  if($tmp<$nCREGS){
-    $neutLen += $BUFF;  #after last element
-    $tsum = $BLOCKSIZE;
-    $NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
-    $NEUT[$nNEUT][1] = $BLOCKSIZE;
     $nNEUT++;
-    while($tsum<$BUFF-$BLOCKSIZE){
+    my $tsum = $NEUT[0][1];
+    while($tsum<=$BUFF-$BLOCKSIZE && $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1]<$CREGS[$tmp][0]){
       $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
       $NEUT[$nNEUT][1] = $BLOCKSIZE;
-      $tsum += $BLOCKSIZE;
       $nNEUT++;
+      $tsum += $BLOCKSIZE;
     }
     if($tsum < $BUFF){
       $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
       $NEUT[$nNEUT][1] = $BUFF-$tsum;
       $nNEUT++;
+    }
+    my $neutLen = $BUFF; #before first element
+    my $numLess = 0;
+    $tmp++;
+    while($tmp<$nCREGS && $CREGS[$tmp][0]<$DE){
+      my $dist = $CREGS[$tmp][0]-($CREGS[$tmp-1][0]+$CREGS[$tmp-1][1]);
+      if($dist >= 2*$BUFF){
+	$neutLen += 2*$BUFF;
+	$NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
+	$NEUT[$nNEUT][1] = $BLOCKSIZE;
+	$nNEUT++;
+	my $tsum = $BLOCKSIZE;
+	while($tsum<$BUFF-$BLOCKSIZE){
+	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	  $NEUT[$nNEUT][1] = $BLOCKSIZE;
+	  $nNEUT++;
+	  $tsum += $BLOCKSIZE;
+	}
+	if($tsum < $BUFF){
+	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	  $NEUT[$nNEUT][1] = $BUFF-$tsum;
+	  $nNEUT++;
+	}
+	
+	$NEUT[$nNEUT][0] = $CREGS[$tmp][0]-$BUFF;
+	$NEUT[$nNEUT][1] = $BLOCKSIZE;
+	$nNEUT++;
+	$tsum = $BLOCKSIZE;
+	while($tsum<$BUFF-$BLOCKSIZE){
+	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	  $NEUT[$nNEUT][1] = $BLOCKSIZE;
+	  $nNEUT++;
+	  $tsum += $BLOCKSIZE;
+	}
+	if($tsum < $BUFF){
+	  $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	  $NEUT[$nNEUT][1] = $BUFF-$tsum;
+	  $nNEUT++;
+	}
+      }
+      elsif($dist > 0){
+	$neutLen += $dist;
+	$numLess++;
+	if($dist <= $BLOCKSIZE){
+	  $NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
+	  $NEUT[$nNEUT][1] = $dist;
+	  $nNEUT++;
+	}
+	else{
+	  $NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
+	  $NEUT[$nNEUT][1] = $BLOCKSIZE;
+	  $nNEUT++;
+	  $tsum = $BLOCKSIZE;
+	  while($tsum<$dist-$BLOCKSIZE){
+	    $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	    $NEUT[$nNEUT][1] = $BLOCKSIZE;
+	    $tsum += $BLOCKSIZE;
+	    $nNEUT++;
+	  }
+	  if($tsum < $dist){
+	    $NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	    $NEUT[$nNEUT][1] = $dist-$tsum;
+	    $nNEUT++;
+	  }
+	}
+      }
+      $tmp++;
+    }
+    if($tmp<$nCREGS){
+      $neutLen += $BUFF;  #after last element
+      $tsum = $BLOCKSIZE;
+      $NEUT[$nNEUT][0] = $CREGS[$tmp-1][0]+$CREGS[$tmp-1][1];
+      $NEUT[$nNEUT][1] = $BLOCKSIZE;
+      $nNEUT++;
+      while($tsum<$BUFF-$BLOCKSIZE){
+	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	$NEUT[$nNEUT][1] = $BLOCKSIZE;
+	$tsum += $BLOCKSIZE;
+	$nNEUT++;
+      }
+      if($tsum < $BUFF){
+	$NEUT[$nNEUT][0] = $NEUT[$nNEUT-1][0]+$NEUT[$nNEUT-1][1];
+	$NEUT[$nNEUT][1] = $BUFF-$tsum;
+	$nNEUT++;
+      }
     }
   }
   
@@ -276,6 +298,10 @@ my $pend = 0;
 foreach my $s (sort {$a<=>$b} keys %REGS){
   my $foo=0;
   foreach my $l (sort {$a<=>$b} keys %{$REGS{$s}}){
+    my $seq = "";
+    if($WITHSEQ == 1){
+      $seq = substr($CHRSEQ, $s-1, $l);
+    }
     $simMin = $s if($s<$simMin);
     $simMax = $s+$l if($s+$l>$simMax);
     $foo++;
@@ -301,10 +327,10 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
     }
     if($REGS{$s}{$l}[0] eq "E"){
       if($ARGV[9] eq "NEUT"){
-	$FIN[$nFIN] = "$l,,C,0,1.0;";
+	$FIN[$nFIN] = "$l,$seq,C,0,1.0;";
       }
       elsif($ARGV[9] eq "SEL"){
-	$FIN[$nFIN] = "$l,,C,2 0 0 0 0.184 0.00040244,1.0;";
+	$FIN[$nFIN] = "$l,$seq,C,2 0 0 0 0.184 0.00040244,1.0;";
       }
       else{
 	die "$ARGV[9] must be either SEL or NEUT\n";
@@ -322,7 +348,8 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
       $TDIST += $l;
     }
     elsif($REGS{$s}{$l}[0] eq "N" || $REGS{$s}{$l}[0] eq "U"){
-      $FIN[$nFIN] = "$l,,N,0,1.0;";
+    #elsif($REGS{$s}{$l}[0] eq "TT"){
+      $FIN[$nFIN] = "$l,$seq,N,0,1.0;";
       $REM[$nFIN][0] = $s;
       $REM[$nFIN][1] = $l;
       $nFIN++;
@@ -339,10 +366,10 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
     }
     else{
       if($ARGV[9] eq "NEUT"){
-	$FIN[$nFIN] = "$l,,N,0,1.0;";
+	$FIN[$nFIN] = "$l,$seq,N,0,1.0;";
       }
       elsif($ARGV[9] eq "SEL"){
-	$FIN[$nFIN] = "$l,,N,2 0 0 0 0.0415 0.0015625,1.0;";
+	$FIN[$nFIN] = "$l,$seq,N,2 0 0 0 0.0415 0.0015625,1.0;";
       }
       else{
 	die "$ARGV[9] must be either SEL or NEUT\n";

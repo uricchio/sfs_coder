@@ -9,7 +9,7 @@ class Command:
 
     """
     This class stores information from parsed command lines
-    and provides the mechanics to call SFS_CODE/ms commands.
+    and provides the mechanics to call SFS_CODE commands.
     """ 
 
     def add_out(self):
@@ -38,10 +38,11 @@ class Command:
             * *rand=1* 
                a random integer. If the value is not reset by the user
                then a new random number is rolled within self.execute.
+               This value is used as the random seed for SFS_CODE.
         """
 
         # this is admittedly implemented in such a way as to 
-        # obviate the use of inheriting from the class, and
+        # obviate the use of inheriting anything and
         # should be cleaned up to improve its generaility 
 
         from random import randint
@@ -334,26 +335,13 @@ class SFSCommand(Command):
                             self.gap.append(int(stuff[0][0:len(stuff)-2]))
         return
 
-    def p_fix(self, s,alpha):
-        pfix = 0
-        if (s >= 0.1):
-            pfix = math.exp(-(1+s))
-            lim = 0
-            while(lim < 200):
-                pfix = math.exp((1+s)*(pfix-1))
-                lim +=1
-            pfix = 1-pfix
-        else:
-            pfix = (1-math.exp(-2*s))/(1-math.exp(-2*alpha))
-        return p_fix
- 
-
     def build_RHH(self,alpha=1000.,N0=5000.,rho0=0.001,lam0=(10**-10),
                   delta=0.01, L0 = -1,L1=10.**5,loop_max=10,L_neut=1000.,
                   theta_neut=0.001,minpop=100,recomb_dir='recombfiles',
                   outdir='sims',TE=2,r_within=True, neg_sel_rate = 0., 
                   alpha_neg = 5, additive=1, Lextend=1,mutation=[],bottle=[],
-                  expansion=[],nreps=10, Boyko=False,unlink=False):
+                  expansion=[],nreps=10, Boyko=False,Lmult=False,lmultnum=50,
+                  Torg=False,non_coding=True):
 
         """
 
@@ -566,6 +554,7 @@ class SFSCommand(Command):
         if (additive == 1):
             self.line.append('-Z')
 
+
         #set up recombination file
         self.line.extend(['-r','F',self.recomb_file,str(rho)])
         
@@ -576,28 +565,41 @@ class SFSCommand(Command):
         self.line.extend(['-n','10'])
         
         #3 Loci of lengths L1, L_neut, L1
-        self.line.extend(['-L','3',str(L1),str(L_neut),str(L1)])
-        
-        #unlink the selected sites from the neutral site
-        if (unlink == True):
-           self.line.extend(['-l','g','0.5','R'])
+        if Lmult == False:
+            self.line.extend(['-L','3',str(L1),str(L_neut),str(L1)])
+        else:        
+            self.line.extend(['-L',str(lmultnum+2),str(L1)])
+            for j in range(0,lmultnum):
+                self.line.append(str(L_neut/lmultnum))       
+            self.line.append(str(L1))
+
         
         # set noncoding for all sites
-        self.line.extend(['-a','N','R'])
+        if(non_coding == True):
+            self.line.extend(['-a','N','R'])
         
         # set all mutation rates
         self.line.extend(['-v','L','A','1'])
 
         # set mutation rate at Locus 1 to be different
-        self.line.extend(['-v','L','1',str(theta_sim_ratio)])
-    
+        if Lmult == False:
+             self.line.extend(['-v','L','1',str(theta_sim_ratio)])
+        else: 
+             for j in range(0,lmultnum):
+                 self.line.extend(['-v','L',str(j+1),str(theta_sim_ratio/lmultnum)])
+        
         if(neg_sel_rate == 0.):
 
             # selection on the flanking sequences
-            self.line.extend(['-W','L','0','1',str(alpha),'1','0'])
-            self.line.extend(['-W','L','2','1',str(alpha),'1','0'])
-   
-        elif (Boyko == False):
+            if Lmult == False:
+                self.line.extend(['-W','L','0','1',str(alpha),'1','0'])
+                self.line.extend(['-W','L','2','1',str(alpha),'1','0'])
+            else:
+                self.line.extend(['-W','L','0','1',str(alpha),'1','0'])
+                self.line.extend(['-W','L',str(lmultnum+1),'1',str(alpha),'1','0'])
+                 
+  
+        elif (Boyko == False and Torg == False):
             
             # selection on the flanking sequences, neutral theta
             l_pos = 1000000000
@@ -606,23 +608,59 @@ class SFSCommand(Command):
             l_neg = 1000000000
             a_neg = alpha_neg*l_neg
 
-            self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
+            if Lmult == False:
+
+                self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
                               str(l_pos), str(a_neg), str(l_neg)])
-            self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
+                self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+            else:    
+                self.line.extend(['-W','2', 'L','0',str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+                self.line.extend(['-W','2', 'L',str(lmultnum+1),str(p_pos), str(a_pos),
                               str(l_pos), str(a_neg), str(l_neg)])
      
-        else:
+        elif (Torg == True):
+
+            l_pos = 1000000000
+            a_pos = alpha*l_pos
+
+            l_neg = 0.0015625
+            a_neg = 0.0415
+
+            if Lmult == False:
+
+                self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+                self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+            else:
+                self.line.extend(['-W','L','0','2',str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+                self.line.extend(['-W','L',str(lmultnum+1),'2',str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+
+        elif (Boyko == True):
             l_pos = 1000000000
             a_pos = alpha*l_pos
 
             l_neg = 0.00040244
             a_neg = 0.184
 
-            self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
+            if Lmult == False:
+
+                self.line.extend(['-W','L','0','2', str(p_pos), str(a_pos),
                               str(l_pos), str(a_neg), str(l_neg)])
-            self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
+                self.line.extend(['-W','L','2','2', str(p_pos), str(a_pos),
                               str(l_pos), str(a_neg), str(l_neg)])
-        
+            else:       
+                # selection on all loci
+                self.line.extend(['-W','L','0','2',str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+                self.line.extend(['-W','L',str(lmultnum+1),'2',str(p_pos), str(a_pos),
+                              str(l_pos), str(a_neg), str(l_neg)])
+                
+
         # add any demographic events
         for thing in bottle:
             self.line.extend([thing])
@@ -638,18 +676,6 @@ class SFSCommand(Command):
         self.line.extend(['-TE',str(TE)])
  
     def convert_sfs_ms(self):
-
-        """
-        A method to convert an sfs_code command line to ms.  Most but not all
-        switches are converted (the method should let you know if you try to
-        use an unsupported switch).  The method will ignore selection 
-        based switches in SFS_CODE (since ms only includes neutral 
-        demographic models).
-
-        This method has been tested only sparingly and it is recommended that 
-        it is used with great caution.
-        """
-
 
         from random import randint
 
@@ -951,7 +977,6 @@ class SFSCommand(Command):
  
         self.line.extend(['-s',str(int(math.floor(rand)))])
 
-    
     def add_event(self, event):
  
         """
@@ -979,12 +1004,6 @@ class SFSCommand(Command):
     def build_BGS(self, n_sim=10,theta=0.0001,recomb=True,rho=0.001,N=250,
                   n_sam=10,alpha=5,L=10**5,Lmid=10**5):
         
-        """
-        A method for running simulations of background selection.  This method
-        is a bit underdeveloped at the moment, so stay tuned for more on how
-        it works.
-        """
-
         self.line = [];
         
         self.line.extend(['1',str(n_sim),'-A'])
@@ -1008,24 +1027,81 @@ class SFSCommand(Command):
      
  
     def genomic(self,basedir=os.path.join(os.path.dirname(__file__),'../src/req'),
-                      outdir=os.path.join(os.getcwd(),'input_files'),
-                      datafile='hg19_gencode.v14.gtf.gz',chr=2,
-                      begpos=134545415,endpos=138594750,db=-1,
-                      de=-1,withseq=0,fafile='',
+                      indir=os.path.join(os.getcwd(),'input_files'),
+                      datafile='hg19_gencode.v14.gtf.gz',
                       phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
+                      begpos=134545415,endpos=138594750,db=-1,chr=2,
+                      de=-1,withseq=0,fafile='',
                       N=2000,mutation=[],sel=True,model='',t=0.001,rho=0.001,
                       nsim=10,nsam=[20]):
 
         """
 
-        a method for running simulations of genomic elements using realistic
-        genome structure. Most of the heavy lifting is done by the 
-        build_genomic() method.  This method exists mostly as a slimmed down
-        interface to that method, with the major difference being that this 
-        version allows for the inclusion of a demographic model. Currently,
-        only the demographic model of Gutenkunst (2009, *PLoS Genetics*) is
-        included.
+        A method for running simulations of genomic elements using realistic
+        genome structure and demographic models.  The demographic models of 
+        Gutenkunst (2009, *PLoS Genetics*), Gravle (2011, *PNAS*), Tennessenn
+        (2012,*Science*), and the standard neutral model are included.
 
+        The default data sources and options are all
+        human-centric, but in principle these methods could be used to simulate
+        sequences from any population for which the relevant data sources are 
+        available (recombination map, conserved elements, exon positions).   
+
+        This function calls a number of perl scripts, originally 
+        implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
+        perl scripts are bundled with sfs_coder in the directory src/req
+
+        * Parameters:
+
+          * *basedir=os.path.join(os.path.dirname(__file__),'../src/req')*
+             the directory where all the datasources and perl for this method
+             are located.  You shouldn't have to change this unless you're
+             moving around the source files relative to each other.
+          
+          * *outdir=os.path.join(os.getcwd(),'input_files')*
+             the directory where the sfs_code annotation files will be 
+             written
+
+          * *chr=2*
+             chromosome number to query
+
+          * *begpos=134545415*
+             genomic coordinate of the beginning of the simulated sequence
+ 
+          * *endpos=138594750*
+             genomic coordinate of the end of the simulated sequence
+
+          * *db=begpos*
+             genomic coordinate of the region in which to include dense 
+             neutral sequences.  Neutral sites within this region will be 
+             simulated if they are within a specified distance of one
+             of the simulated genomic elements (given by *dense_dist*)
+
+          * *de=begpos*
+             genomic coordinate of the end of the dense neutral region
+
+          * *dense_dist=5000*
+             The amount of neutral sequence to pad onto the end of each 
+             conserved element or exon.  For example, if two adjaacent 
+             conserved elemets are 20,000 base pairs apart, and the 
+             dense_dist=5,000, then 5,000 base pairs are padded onto the 
+             end of each of the conserved elements and the middle 10,000
+             base pairs are not simulated.
+ 
+             To include no neutral sequence, use dense_dist = 0.
+      
+             To include every neutral base pair in the region, use 
+             dense_dist=-1 (potentially very computationally expensive
+             for large regions!) 
+
+          * *sel=True*
+             If true, draw selection coefficients from a gamma distribution 
+             of selection coefficients for conserved elements and coding
+             regions.  These distributions are taken from Boyko et al 
+             (coding, 2008, *PLoS Genetics*) and Torgerson et al (conserved 
+             non-coding, 2009, *PLoS Genetics*).
+
+        
         """
 
         if de < 0:
@@ -1046,10 +1122,10 @@ class SFSCommand(Command):
         else:
             sel='NEUT'
 
-        annotfile = os.path.join(outdir,
+        annotfile = os.path.join(indir,
                             'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
          
-        recombout = os.path.join(outdir, 'sfscode_rec_'+regname+'.txt')
+        recombout = os.path.join(indir, 'sfscode_rec_'+regname+'.txt')
 
         try:
             os.stat(annotfile)
@@ -1062,19 +1138,26 @@ class SFSCommand(Command):
             files+=1
  
         if files != 0:
-            self.build_genomic(basedir=basedir,outdir=outdir,datafile=datafile,                                
+            self.build_genomic(basedir=basedir,indir=indir,datafile=datafile,                                
                                chr=chr,begpos=begpos,endpos=endpos,db=db,de=de,
                                withseq=withseq,fafile=fafile,
                                phast_file=phast_file,dense_dist=dense_dist,
                                regname=regname,annotfile=annotfile,
                                recombout=recombout,sel=sel)
-
-        if model != '':
+        if model != 'snm':
 
             self.three_pop(N=N,nsim=nsim,recombfile=recombout,nsam=nsam,
                                 t=t,rho=rho,model=model)
+
+        elif model == 'snm':
+            self.snm(N=N,nsim=nsim,recombfile=recombout,nsam=nsam,t=t,
+                                rho=rho,no_L=True)
+
         else:
-            self.snm(N=N,nsim=nsim,recombfile=recombout,nsam=nsam)
+            print 'model', model, 'not recognized!'
+            print 'supported models include snm (standard neutral)',
+            print 'guten, gravel, and tennessen'
+            exit(-1)
 
         self.line.extend(['-a','F',annotfile])
   
@@ -1086,7 +1169,8 @@ class SFSCommand(Command):
 
 
     def snm(self,N=500,nsim=10,t=0.001,rho=0.001,nsam=[10],recombfile='',
-            mutation=[],sel=[],event=[],TE=0,L=[5000],non_coding=False):
+            mutation=[],sel=[],event=[],TE=0,L=[5000],non_coding=False,
+            no_L=False):
 
         self.line = []
 
@@ -1101,15 +1185,15 @@ class SFSCommand(Command):
         for thing in nsam:
             self.line.append(str(thing))
         
-        self.line.append('-L')
-
-        if str(L[0]) == 'R':
-            for thing in L:
-             self.line.append(str(thing))
-        else:
-            self.line.append(str(len(L)))
-            for thing in L:
-                self.line.append(str(thing))
+        if no_L == False:
+            self.line.append('-L')
+            if str(L[0]) == 'R':
+                for thing in L:
+                    self.line.append(str(thing))
+            else:
+                self.line.append(str(len(L)))
+                for thing in L:
+                    self.line.append(str(thing))
 
         self.line.extend(['-A'])
  
@@ -1138,86 +1222,13 @@ class SFSCommand(Command):
 
 
     def build_genomic(self,basedir=os.path.join(os.path.dirname(__file__),'../src/req'),
-                      outdir=os.path.join(os.getcwd(),'input_files'),
+                      indir=os.path.join(os.getcwd(),'input_files'),
                       datafile='hg19_gencode.v14.gtf.gz',chr=2,
                       begpos=134545415,endpos=138594750,db=-1,
                       de=-1,withseq=0,fafile='chr2.fa.gz',
                       phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
                       regname='',annotfile='',recombout='',sel='SEL'):
        
-        """
-        A method to build simulations of genomic regions with realistic 
-        genome structure.  The default data sources and options are all
-        human-centric, but in principle these methods could be used to simulate
-        sequences from any population for which the relevant data sources are 
-        available.   
-
-        This function mostly just calls a number of perl scripts, originally 
-        implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
-        perl scripts are bundled with sfs_coder in the directory src/req
-
-        A number of datasources are also included with sfs_coder, including...
-
-        By default, this function simulates 4 MB of sequence centered on the
-        lactase persistance locus on chrhomosome 2.
-
-        * Parameters:
-
-          * *basedir=os.path.join(os.getcwd(),'req')*
-             the directory where all the datasources and perl for this method
-             are located
-          
-          * *outdir=os.path.join(os.getcwd(),'input_files')*
-             the directory where the sfs_code annotation files will be 
-             written
-
-          * *datafile='hg19_gencode.v14.gtf.gz'*
-             
-          * *chr=2*
-             chromosome number to query
-
-          * *begpos=134545415*
-             genomic coordinate of the beginning of the simulated sequence
- 
-          * *endpos=138594750*
-             genomic coordinate of the end of the simulated sequence
-
-          * *db=begpos*
-             genomic coordinate of the region in which to include dense 
-             neutral sequences.  Neutral sites within this region will be 
-             simulated if they are within a specified distance of one
-             of the simulated genomic elements (given by *dense_dist*)
-
-          * *de=begpos*
-             genomic coordinate of the end of the dense neutral region
-
-          * *withseq =0*
- 
-          * *fafile=hg19.fa.gz*
-             
-          * *phast_file='hg19_phastCons_mammal.wig'*
-             file containing conserved element coordinates inferred
-             by phastcons
-
-          * *desnse_dist=0*
-             the distance to the right and left of a conserved or coding 
-             element that is simulated as neutral non-coding within
-             the bounds of *db* and *de*. 
-
-          * *regname=''*          
-   
-          * *annotfile=''*
-           
-          * *recmbout=''*
-
-          * *sel=True*
-             If true, draw selection coefficients from a gamma distribution 
-             of selection coefficients for conserved elements and coding
-             regions.  These distributions are taken from Boyko et al 
-             (coding) and Torgerson et al (non-coding).
-
-        
-        """
 
         import signal
 
@@ -1235,16 +1246,16 @@ class SFSCommand(Command):
         # first, generate any directories that need to be made/check exist
 
         try:
-           os.stat(os.path.join(basedir,'ExtractExons_refSeq.pl'))
+           os.stat(os.path.join(basedir,'ExtractExons.pl'))
         except:
            print 'No such file', 
-           print os.path.join(basedir,'ExtractExons_refSeq.pl')
+           print os.path.join(basedir,'ExtractExons.pl')
            exit(-1)
 
         try: 
-            os.stat(outdir)
+            os.stat(indir)
         except:
-            os.makedirs(outdir)
+            os.makedirs(indir)
 
         try:
             os.stat(datadir)
@@ -1258,7 +1269,7 @@ class SFSCommand(Command):
             print 'No such file', os.path.join(datadir,datafile), '!'
             exit(-1)
         
-        err = self.err
+        err = os.path.join(self.outdir,self.prefix,self.err)
 
         try:
             os.stat(err)
@@ -1270,11 +1281,11 @@ class SFSCommand(Command):
 
         # now build first perl command, for generating the exons regions
   
-        exons = ['perl', os.path.join(basedir,'ExtractExons_refSeq.pl'), 
+        exons = ['perl', os.path.join(basedir,'ExtractExons.pl'), 
                  os.path.join(datadir,datafile), 
-                 os.path.join(outdir,regname+'.UTRs'), 
-                 os.path.join(outdir,regname+'.exons'), str(chr), str(begpos), 
-                 str(endpos), os.path.join(datadir,fafile)] 
+                 os.path.join(indir,regname+'.UTRs'), 
+                 os.path.join(indir,regname+'.exons'), str(chr), str(begpos), 
+                 str(endpos)] 
 
         ex_exons = subprocess.Popen(exons, stdout=log_exons, stderr=eh_exons, 
                                     preexec_fn=lambda: signal.signal(
@@ -1285,15 +1296,15 @@ class SFSCommand(Command):
         eh_exons.close()
         log_exons.close()
         
-        eh_ncs = open(os.path.join(err,'log.ncs'),'w')
+        eh_ncs = open(os.path.join(err,'log.cncs'),'w')
 
         # next perl command, conserved non-coding
 
         ncs = ['perl', os.path.join(basedir,'ExtractConservedNCs.pl'), 
                 os.path.join(datadir,phast_file), 
-                os.path.join(outdir,regname+'.exons'), 
-                os.path.join(outdir,regname+'.UTRs'), 
-                os.path.join(outdir,regname+'.CNCs'), str(chr), str(begpos), 
+                os.path.join(indir,regname+'.exons'), 
+                os.path.join(indir,regname+'.UTRs'), 
+                os.path.join(indir,regname+'.CNCs'), str(chr), str(begpos), 
                 str(endpos)]
 
 
@@ -1309,18 +1320,19 @@ class SFSCommand(Command):
         # next perl command, make annotation file for sfs_code
 
         if annotfile == '': 
-            annotfile = os.path.join(outdir,
-                        'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
+            annotfile =os.path.join(indir, 'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
 
         annot = ['perl', os.path.join(basedir,'makeSFSCODEannotationFile.pl'), 
                  str(begpos), str(endpos), str(dense_dist), 
-                 os.path.join(outdir, annotfile), 
-                 os.path.join(outdir,regname+'.exons'), 
-                 os.path.join(outdir,regname+'.UTRs'), 
-                 os.path.join(outdir,regname+'.CNCs'), str(db), str(de), 
+                 os.path.join(annotfile), 
+                 os.path.join(indir,regname+'.exons'), 
+                 os.path.join(indir,regname+'.UTRs'), 
+                 os.path.join(indir,regname+'.CNCs'), str(db), str(de), 
                  str(sel), '0']
 
-        log = open(os.path.join(os.getcwd(), 'log.txt'),'w+')
+        logfile = os.path.join(self.outdir,self.prefix,self.err,'log.build_input.txt')
+
+        log = open(logfile,'w+')
          
         ex_annot = subprocess.Popen(annot, stdout=log, 
                                     preexec_fn=lambda: signal.signal(
@@ -1332,13 +1344,14 @@ class SFSCommand(Command):
 
         # first, get the min and max for the dense regions
         
-        cmd = "cat "+os.path.join(os.getcwd(), 'log.txt')
+        cmd = "cat "+logfile
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
                                   stderr=subprocess.PIPE)
        
         out,err  = result.communicate()
 
         out_arr = out.split('\n')
+
         db_de = out_arr[len(out_arr)-2].split(' ')
 
         sim_min= db_de[0]
@@ -1348,7 +1361,7 @@ class SFSCommand(Command):
                           'geneticMap/genetic_map_GRCh37_chr'+str(chr)+'.txt.gz')
    
         if recombout == '':
-            recombout = os.path.join(outdir, 'sfscode_rec_'+regname+'.txt')
+            recombout = os.path.join(indir, 'sfscode_rec_'+regname+'.txt')
 
         map = ['perl', os.path.join(basedir,'makeMapFile4sfscode.pl'), 
                recombin,str(sim_min), str(sim_max),recombout]
@@ -1464,9 +1477,11 @@ class SFSCommand(Command):
 
         The default parameters are set to Gutenkunst et al.
         The maximum likelihood estimates of Gravel et al
-        are also included.
+        and Tennessen et al (2012, *Science*) are also 
+        included.
 
-        To use the gravel model parameters, use model='gravel'.
+        Use model='gravel', model='tennessen' or model='guten'
+        to explicitly choose one of the models.
 
         The user can specify the model parameters as desired.
         To use a user specified model, simply use model = ''.
@@ -1639,112 +1654,7 @@ class SFSCommand(Command):
                 self.line.append(thing)
 
 
-    def cosi(self,addon=False,nsim=10,N=500,
-             nsam=[20,20,20],non_coding=False,L=[]):
-
-        # this model is not quite correct
-        # going to have to go into the cosi source in order to 
-        # get this correct since the parameters are not all 
-        # well defined within their documentation (order of
-        # bottleneck events, meaning of bottleneck events,
-        # realtive to current or ancestral populaion size?
-
-        theta = 0.00075
-        # this is cosi's rho for gene conversion...
-        rho = 0.000225
-        
-        t_end = 0.68
-        expand_p0 = 1.92
-        
-        t_split_p0_p1 = 0.54
-        t_split_p1_p2= 0.6
-        
-        t_expand_p0_1 = 0.672
-        t_expand_p1 = 0.666
-        t_expand_p2 = 0.664
-
-        bottle_p1_0 = 0.085
-        bottle_p1_1 = 0.020
-        bottle_p2 = 0.067
-        bottle_p0 = 0.008
-            
-        expand_p0_1=1000
-        expand_p1= 4700
-        expand_p2 = 1400
-        mig_all = [6.4, 1.6,
-                   6.4, 0., 1.6, 0.]
- 
-        if not(add_on):
-
-            self.line = []
-
-        # 3 populations, nim
-        self.line.extend(['3', str(nsim)])
-
-        # N individuals
-        self.line.extend(['-N', str(N)])
-
-        # samples
-        self.line.extend(['-n'])
-
-        if not isinstance(nsam, list) :
-            print "Error: nsam must be a list"
-            exit()
-
-        for n in nsam:
-            self.line.append(str(n))
-
-        # non_coding?
-        if (non_coding):
-            self.line.extend(['-a','N'])
-            if len(self.command.L) > 1:
-                self.line.append('R')
-
-        # no seq
-        self.line.append('-A')
-
-        if len(L) > 0:
-            for thing in L:
-                self.line.append(thing)
-
-        self.line.extend(['-r',str(rho)])
-
-        # Demographic events inferred under the model
-        self.line.extend(['-TS', str(t_split_p0_p1), '0', '1'])
-        self.line.extend(['-TS', str(t_split_p1_p2), '1', '2'])
-        self.line.extend(['-TE', str(t_end)])
-        
-        # ancestral expansion
-        self.line.extend(['-Td', str(t_expand_p0), 'P', '0', str(expand_p0)])
-        
-        # bottlenecks
-        self.line.extend(['-Td', str(t_split_p0_p1), 'P', '1', str(bottle_p1_0)])
-        
-        self.line.extend(['-Td', str(t_split_p1_p2), 'P', '0', str(bottle_p0)])
-        self.line.extend(['-Td', str(t_split_p1_p2), 'P', '1', str(bottle_p1_1)])
-        self.line.extend(['-Td', str(t_split_p1_p2), 'P', '2', str(bottle_p2)])
-
-        # agriculture expansions
-        self.line.extend(['-Td', str(t_expand_p0_1), 'P', '0', str(expand_p0_1)])
-        self.line.extend(['-Td', str(t_expand_p1), 'P', '1', str(expand_p1)])
-        self.line.extend(['-Td', str(t_expand_p2), 'P', '2', str(expand_p2)])
-        
-        # migration
-        self.line.extend(['-Tm', str(t_split_p1_p2), 'L', str(mig_all[0]), str(mig_all[1]),
-                          str(mig_all[2]), str(mig_all[3]), str(mig_all[4]), str(mig_all[5])])
-        
-
 class MSCommand(Command):
-
-
-    """
-    A class that handles some of the specifics of calling ms commands.
-    A bit underdeveloped at the moment, but functional and utilized by
-    SFSCommand.convert_to_ms()
-
-    More documentation will arrive as development of this class continues.
-
-    """
 
 
     def __init__(self,prefix='out',ms_loc=os.path.join('ms'),
@@ -1776,7 +1686,6 @@ class MSCommand(Command):
                     if(pattern.search(self.line[i])):
                         self.line[i] = self.ms_loc
                         break
-
 
 class Reg():
 

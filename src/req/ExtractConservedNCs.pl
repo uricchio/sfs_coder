@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 use strict;
 
-#input file assumed to be phastConse elements file 
+#input file assumed to be phastCons elements file 
 ## a wig file with 6 columns: bin, chr, start, stop, name, score
 
 unless(scalar(@ARGV) == 7){
@@ -74,7 +74,6 @@ if($ARGV[0] =~ /\.gz$/){
   close(IN);
   open(IN,"gunzip -c $ARGV[0] |") or die "cannot gunzip $ARGV[0]\n";
 }
-
 open(OUT,">$ARGV[3]") or die "cannot write to $ARGV[3]\n";
 
 my $tmp = 0;
@@ -86,30 +85,38 @@ while(<IN>){
     chomp;
     my @sp = split(' ',$_);
     if($sp[1] ne "chr$ARGV[4]" || $sp[2] < $ARGV[5] || $sp[3] > $ARGV[6]){
-	next;
+	next; #note that this excludes elements that overlap the boundaries
+    }
+    if($sp[1] =~ /chr(\d+)/){
+      if($1 > $ARGV[4]){
+	last;
+      }
     }
     my $beg = $sp[2];
     my $end = $sp[3];
     if($beg > $end){
 	die "$beg > $end !!!\n";
     }
-    elsif($beg<=$pe){
-	die "overlapping elements!  $pb $pe and $beg $end\n";
-    }
+
     $pb = $beg;
     $pe = $end;
     $tmp = scalar(@SKIP)-1 if($tmp>=scalar(@SKIP));
-    while($tmp > 0 && $SKIP[$tmp][0] > $beg){
+
+    # the following conditional added by LHU to
+    # guard against case when there are no exons
+
+    if(@SKIP > 0) {
+      while($tmp > 0 && $SKIP[$tmp][0] > $beg){
 	$tmp--;
-    }
-    while($tmp < scalar(@SKIP) && $SKIP[$tmp][1] < $beg){
+      }
+      while($tmp < scalar(@SKIP) && $SKIP[$tmp][1] < $beg){
 	$tmp++;
-    }
-    if($tmp<scalar(@SKIP) && $SKIP[$tmp][0]<=$beg && $SKIP[$tmp][1]>=$beg){
+      }
+      if($tmp<scalar(@SKIP) && $SKIP[$tmp][0]<=$beg && $SKIP[$tmp][1]>=$beg){
 	$beg = $SKIP[$tmp][1]+1;
 	$tmp++;
-    }
-    while($beg < $end && $tmp < scalar(@SKIP) && $SKIP[$tmp][0] <= $end){
+      }
+      while($beg < $end && $tmp < scalar(@SKIP) && $SKIP[$tmp][0] <= $end){
 	my $len = $SKIP[$tmp][0]-$beg;
 	if($len > 0){
 	    print OUT "$beg ".($SKIP[$tmp][0]-1)."\n";
@@ -118,12 +125,14 @@ while(<IN>){
 	}
 	$beg = $SKIP[$tmp][1]+1;
 	$tmp++;
+      }
     }
     if($beg < $end){
 	print OUT "$beg $end\n";
     $nCNCs++;
     $totLen += $end-$beg+1;
   }
+ 
 }
 
 close(IN);
