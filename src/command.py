@@ -168,7 +168,7 @@ class SFSCommand(Command):
           ancestral population.
        * *self.n_pops=1* 
           number of populations.
-       * *self.n_iter=1* 
+       * *self.nsim=1* 
           number of simulations.
        * *self.line=[]* 
           an array of strings, each of which is an argument
@@ -216,7 +216,7 @@ class SFSCommand(Command):
         self.sfs_code_loc = ''
         self.TE = 0
         self.n_pops = 1
-        self.n_iter = 1
+        self.nsim = 1
         self.Z = 0
         self.n_sites = 5000.
         self.gap = []
@@ -242,7 +242,7 @@ class SFSCommand(Command):
         loc = temp[0].split(' ')
         self.sfs_code_loc=loc[0]
         self.n_pops=int(loc[1])
-        self.n_iter=int(loc[2])
+        self.nsim=int(loc[2])
   
         self.attrs = {}
 
@@ -864,12 +864,12 @@ class SFSCommand(Command):
         # add MSCommand location
         ms_com.line = [ms_com.ms_loc]
 
-        # n_sam and n_iter
-        n_sam = 0
+        # nsam and nsim
+        nsam = 0
         for pop in self.n:
-            n_sam += self.n[pop]
+            nsam += self.n[pop]
 
-        ms_com.line.extend([str(n_sam),str(self.n_iter)])
+        ms_com.line.extend([str(nsam),str(self.nsim)])
 
         # theta
         theta = self.t*N[0][tf]/self.N
@@ -1002,7 +1002,7 @@ class SFSCommand(Command):
         self.line.extend(new_event)
 
     def build_BGS(self, n_sim=10,theta=0.0001,recomb=True,rho=0.001,N=250,
-                  n_sam=10,alpha=5,L=10**5,Lmid=10**5):
+                  nsam=[10],alpha=5,L=10**5,Lmid=10**5):
         
         self.line = [];
         
@@ -1015,7 +1015,10 @@ class SFSCommand(Command):
 
         self.line.extend(['-N', str(N)])
 
-        self.line.extend(['-n', str(n_sam)])
+        self.line.append('-n')
+        
+        for thing in nsam:
+             self.line.append(str(thing))
 
         self.line.extend(['-L', '3', str(L),str(Lmid),str(L)])
         
@@ -1156,7 +1159,7 @@ class SFSCommand(Command):
         else:
             print 'model', model, 'not recognized!'
             print 'supported models include snm (standard neutral)',
-            print 'guten, gravel, and tennessen'
+            print 'gutenkunst, gravel, and tennessen'
             exit(-1)
 
         self.line.extend(['-a','F',annotfile])
@@ -1467,7 +1470,7 @@ class SFSCommand(Command):
                    bottle_p1_1=0.47619,bottle_p2=0.242857,
                    growth_p1=58.4,growth_p2=80.3, mig_p0_p1=6.15,
                    mig_p1_p0=0.5, mig_all = [0.738,0.4674,0.06,0.192,
-                   0.01938,0.09792], t_super=0.391465,model='guten'):
+                   0.01938,0.09792], t_super=0.391465,model='gutenkunst'):
         
         """
         A general three population model with growth events.
@@ -1480,7 +1483,7 @@ class SFSCommand(Command):
         and Tennessen et al (2012, *Science*) are also 
         included.
 
-        Use model='gravel', model='tennessen' or model='guten'
+        Use model='gravel', model='tennessen' or model='gutenkunst'
         to explicitly choose one of the models.
 
         The user can specify the model parameters as desired.
@@ -1489,7 +1492,7 @@ class SFSCommand(Command):
         parameters of the Gutenkunst model.       
         """
         
-        if model == 'guten':
+        if model == 'gutenkunst':
             t_end = 0.60274
             t_expand_p0=0
             expand_p0 = 1.68493
@@ -1562,7 +1565,7 @@ class SFSCommand(Command):
         elif model != '':
             print "model", model, "not recongnized"
             print "please use one of the supported models"
-            print "supported models: 'guten', 'gravel', 'tennessen', and ''",
+            print "supported models: 'gutenkunst', 'gravel', 'tennessen', and ''",
             print "(user specified parameters)"
             exit()  
         

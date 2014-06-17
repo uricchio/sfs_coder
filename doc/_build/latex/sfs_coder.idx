@@ -1,24 +1,22 @@
-\indexentry{command (module)|hyperpage}{11}
-\indexentry{Command (class in command)|hyperpage}{11}
-\indexentry{add\_out() (command.Command method)|hyperpage}{11}
-\indexentry{execute() (command.Command method)|hyperpage}{11}
-\indexentry{SFSCommand (class in command)|hyperpage}{11}
-\indexentry{add\_rand() (command.SFSCommand method)|hyperpage}{12}
-\indexentry{build\_BGS() (command.SFSCommand method)|hyperpage}{12}
-\indexentry{build\_RHH() (command.SFSCommand method)|hyperpage}{12}
-\indexentry{build\_genomic() (command.SFSCommand method)|hyperpage}{12}
-\indexentry{convert\_sfs\_ms() (command.SFSCommand method)|hyperpage}{13}
-\indexentry{genomic() (command.SFSCommand method)|hyperpage}{13}
-\indexentry{gutenkunst() (command.SFSCommand method)|hyperpage}{13}
-\indexentry{parse\_string() (command.SFSCommand method)|hyperpage}{13}
-\indexentry{sfs (module)|hyperpage}{13}
-\indexentry{Simulation (class in sfs)|hyperpage}{13}
-\indexentry{calc\_S() (sfs.Simulation method)|hyperpage}{13}
-\indexentry{make\_muts() (sfs.Simulation method)|hyperpage}{13}
-\indexentry{sfsplot (module)|hyperpage}{13}
-\indexentry{ms (module)|hyperpage}{13}
-\indexentry{readsfs (module)|hyperpage}{13}
-\indexentry{FileData (class in readsfs)|hyperpage}{13}
-\indexentry{get\_sims() (readsfs.FileData method)|hyperpage}{14}
-\indexentry{msData (class in readsfs)|hyperpage}{14}
-\indexentry{get\_sims() (readsfs.msData method)|hyperpage}{14}
+\indexentry{command (module)|hyperpage}{13}
+\indexentry{Command (class in command)|hyperpage}{13}
+\indexentry{execute() (command.Command method)|hyperpage}{13}
+\indexentry{SFSCommand (class in command)|hyperpage}{13}
+\indexentry{add\_event() (command.SFSCommand method)|hyperpage}{14}
+\indexentry{build\_RHH() (command.SFSCommand method)|hyperpage}{14}
+\indexentry{genomic() (command.SFSCommand method)|hyperpage}{14}
+\indexentry{gutenkunst() (command.SFSCommand method)|hyperpage}{15}
+\indexentry{parse\_string() (command.SFSCommand method)|hyperpage}{15}
+\indexentry{three\_pop() (command.SFSCommand method)|hyperpage}{15}
+\indexentry{sfs (module)|hyperpage}{16}
+\indexentry{Mutation (class in sfs)|hyperpage}{16}
+\indexentry{SFSData (class in sfs)|hyperpage}{16}
+\indexentry{get\_sims() (sfs.SFSData method)|hyperpage}{17}
+\indexentry{Simulation (class in sfs)|hyperpage}{17}
+\indexentry{calc\_S() (sfs.Simulation method)|hyperpage}{17}
+\indexentry{calc\_fit() (sfs.Simulation method)|hyperpage}{17}
+\indexentry{calc\_pi() (sfs.Simulation method)|hyperpage}{17}
+\indexentry{calc\_pi\_by\_locus() (sfs.Simulation method)|hyperpage}{18}
+\indexentry{get\_sfs() (sfs.Simulation method)|hyperpage}{18}
+\indexentry{sfsplot (module)|hyperpage}{18}
+\indexentry{ms (module)|hyperpage}{18}

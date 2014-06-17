@@ -4,8 +4,16 @@
 \BOOKMARK [1][-]{section.2.2}{Optional dependencies}{chapter.2}% 4
 \BOOKMARK [1][-]{section.2.3}{Importing sfs\137coder's modules}{chapter.2}% 5
 \BOOKMARK [0][-]{chapter.3}{Running SFS\137CODE simulations}{}% 6
-\BOOKMARK [0][-]{chapter.4}{Analyzing the output}{}% 7
-\BOOKMARK [0][-]{chapter.5}{Plotting}{}% 8
-\BOOKMARK [0][-]{chapter.6}{Indices and tables}{}% 9
-\BOOKMARK [0][-]{section*.27}{Python Module Index}{}% 10
-\BOOKMARK [0][-]{section*.28}{Index}{}% 11
+\BOOKMARK [1][-]{section.3.1}{The basic structure of an sfs\137coder script}{chapter.3}% 7
+\BOOKMARK [1][-]{section.3.2}{Examples}{chapter.3}% 8
+\BOOKMARK [0][-]{chapter.4}{Analyzing the output}{}% 9
+\BOOKMARK [1][-]{section.4.1}{Opening and reading an output file}{chapter.4}% 10
+\BOOKMARK [0][-]{chapter.5}{Plotting}{}% 11
+\BOOKMARK [0][-]{chapter.6}{sfs\137coder Classes and methods}{}% 12
+\BOOKMARK [1][-]{section.6.1}{contents of command.py}{chapter.6}% 13
+\BOOKMARK [1][-]{section.6.2}{contents of sfs.py}{chapter.6}% 14
+\BOOKMARK [1][-]{section.6.3}{contents of sfsplot.py}{chapter.6}% 15
+\BOOKMARK [1][-]{section.6.4}{contents of ms.py}{chapter.6}% 16
+\BOOKMARK [0][-]{chapter.7}{indices and tables}{}% 17
+\BOOKMARK [0][-]{section*.21}{Python Module Index}{}% 18
+\BOOKMARK [0][-]{section*.22}{Index}{}% 19

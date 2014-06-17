@@ -99,7 +99,7 @@ Simulations with realistic genomic structure and demography
    com = command.SFSCommand(prefix='guten.lactase')
 
    # build the command line for the gutenkunst model in the lactase region
-   com.genomic(N=100,demo='guten',sel=False)
+   com.genomic(N=100,model='gutenkunst',sel=False)
 
    # set the location of sfs_code
    com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'rotations/hernandez/software/sfs_code/bin/sfs_code')

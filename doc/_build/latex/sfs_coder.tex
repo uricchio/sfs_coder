@@ -14,7 +14,7 @@
 
 
 \title{sfs\_coder Documentation}
-\date{April 08, 2014}
+\date{June 16, 2014}
 \release{0}
 \author{Lawrence Uricchio, Raul Torres, Ryan Hernandez}
 \newcommand{\sphinxlogo}{}
@@ -121,8 +121,6 @@
 \phantomsection\label{index::doc}
 
 
-Contents:
-
 
 \chapter{Introduction}
 \label{rstfiles/intro:introduction}\label{rstfiles/intro::doc}\label{rstfiles/intro:sfs-coder-documentation}
@@ -149,16 +147,25 @@ SFS\_CODE through a python based interface.  We encourage any interested users
 to extend the code base that we provide and add any models that could be
 useful for the community.
 
-sfs\_coder is free to use and distribute for personal or academic use.
+sfs\_coder is currently under developement and will be released in a few
+months.  We don't expect these pages to get much traffic at the moment
+but we have put them online for our development team. If you have stumbled
+accross them and have any suggestions or would like to inquire about the
+development feel free to email Lawrence (\href{mailto:uricchio@berkeley.edu}{uricchio@berkeley.edu}).
+
+sfs\_coder will be free to use and distribute for personal or academic use.
 We hope that you will find it useful.
 
 
 \chapter{Installation}
 \label{rstfiles/install:installation}\label{rstfiles/install::doc}
 sfs\_coder does not require any installation of its own in order
-to get its basic functionality.  Just download the source and put it
-wherever you want on your machine. However, some functionality within
-sfs\_coder requires external software in order to run.
+to get its basic functionality.  Just download the source and alter the
+PYTHONPATH variable on your machine so that python knows where to find the
+modules (see the section on ``Importing'' below).
+
+However, some methods within sfs\_coder require external software in order to
+run.
 
 
 \section{Required dependencies}
@@ -226,20 +233,22 @@ ways.
 \label{rstfiles/install:adding-the-sfs-coder-source-directory-to-pythonpath-in-bashrc}
 If you execute your scripts at the command line with a bash shell, you can add
 a line to your .bashrc file that will fix this problem and allow you to run the
-above script.  The .bashrc file exists in your home directory and is read by
-bash every time you open a new shell.  If the file doesn't exist in your home
-directory you can create it.
+above script.
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{n+nb}{export }\PYG{n+nv}{PYTHONPATH}\PYG{o}{=}\PYG{n+nv}{\PYGZdl{}PYTHONPATH}:\PYGZti{}/sfs\PYGZus{}coder/src
 \end{Verbatim}
 
+The .bashrc file exists in your home directory and is read by bash every time
+you open a new shell.  If a file called .bashrc doesn't exist in your home
+directory you can create it.
+
 Of course, if the path to your sfs\_coder `src' directory is different than
 above you will need to provide the path to your copy of this directory.
 
 
-\subsection{Adding the path to your sfs\_coder source directory within a python script}
-\label{rstfiles/install:adding-the-path-to-your-sfs-coder-source-directory-within-a-python-script}
+\subsection{Adding the path to sfs\_coder's source directory within a python script}
+\label{rstfiles/install:adding-the-path-to-sfs-coder-s-source-directory-within-a-python-script}
 You can also add the path to sfs\_coder's `src' directory to any python script
 if for any reason you don't want to modify your .bashrc as above.  Assuming
 the same directory layout as the above example, we can use:
@@ -254,22 +263,25 @@ the same directory layout as the above example, we can use:
 
 This adds `\textasciitilde{}/sfs\_coder/src' to the PYTHONPATH variable within the script.
 Note that this solution requires us to add this line of code to every python
-script whereas the first solution allows us to import the modules just like
-any other python modules.
+script that imports something from sfs\_coder, whereas the first solution allows
+us to import the modules just like any other python modules.
 
 
 \chapter{Running SFS\_CODE simulations}
 \label{rstfiles/execute::doc}\label{rstfiles/execute:running-sfs-code-simulations}
+
+\section{The basic structure of an sfs\_coder script}
+\label{rstfiles/execute:the-basic-structure-of-an-sfs-coder-script}
 Running SFS\_CODE simulations with sfs\_coder requires only a few lines
 of code.
 
-First, we import the command modile, initialize an SFSCommand object, and tell
+First, we import the command module, initialize an SFSCommand object, and tell
 the software where the sfs\_code binary is located.
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import} \PYG{n+nn}{command}
 
-\PYG{n}{com} \PYG{o}{=} \PYG{n}{SFSCommand}\PYG{p}{(}\PYG{p}{)}
+\PYG{n}{com} \PYG{o}{=} \PYG{n}{command}\PYG{o}{.}\PYG{n}{SFSCommand}\PYG{p}{(}\PYG{p}{)}
 
 \PYG{n}{com}\PYG{o}{.}\PYG{n}{sfs\PYGZus{}code\PYGZus{}loc} \PYG{o}{=} \PYG{l+s}{\PYGZsq{}}\PYG{l+s}{/path/to/sfs\PYGZus{}code}\PYG{l+s}{\PYGZsq{}}
 \end{Verbatim}
@@ -286,11 +298,12 @@ call the following:
 \PYG{n}{com}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{p}{)}
 \end{Verbatim}
 
-And that's it!  Of course, there are many more options that can be added to
-modify the parameters of the simulation.  Please see the ``scripts'' directory
-in the top level of sfs\_coder for more complicated examples. Below, we include
-a slight modification of the above script that demonstrates some basic
-functionality that may be useful to users.
+And that's it!  Of course, there are many more options that can be altered to
+modify the parameters of the simulation, such as the ancestral population size.
+Please see the ``scripts'' directory in the top level of sfs\_coder for more
+complicated examples. Below, we include a slight modification of the above
+script that demonstrates some basic functionality that may be useful to users,
+as well as a few other examples.
 
 \begin{Verbatim}[commandchars=\\\{\}]
 \PYG{k+kn}{import} \PYG{n+nn}{command}
@@ -300,10 +313,10 @@ functionality that may be useful to users.
 \PYG{c}{\PYGZsh{} initialize an SFS\PYGZus{}CODE command, set the prefix of the output subdirectory}
 \PYG{n}{com} \PYG{o}{=} \PYG{n}{command}\PYG{o}{.}\PYG{n}{SFSCommand}\PYG{p}{(}\PYG{n}{prefix}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{guten.N500}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
 
-\PYG{c}{\PYGZsh{} build the command line for the gutenkunst model with N=500, etc}
+\PYG{c}{\PYGZsh{} build the command line for the Gutenkunst model, specifying some parameters}
 \PYG{n}{com}\PYG{o}{.}\PYG{n}{gutenkunst}\PYG{p}{(}\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{500}\PYG{p}{,}\PYG{n}{nsam}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,}\PYG{n}{nsim}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}
 
-\PYG{c}{\PYGZsh{} set the location of sfs\PYGZus{}code, set the prefix of the out files}
+\PYG{c}{\PYGZsh{} set the location of the sfs\PYGZus{}code binary}
 \PYG{n}{com}\PYG{o}{.}\PYG{n}{sfs\PYGZus{}code\PYGZus{}loc} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{expanduser}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZti{}}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,}
                        \PYG{l+s}{\PYGZsq{}}\PYG{l+s}{path/to/sfs\PYGZus{}code}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
 
@@ -312,38 +325,136 @@ functionality that may be useful to users.
 \end{Verbatim}
 
 
+\section{Examples}
+\label{rstfiles/execute:examples}
+
+\subsection{Adding selection}
+\label{rstfiles/execute:adding-selection}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{command}
+\PYG{k+kn}{import} \PYG{n+nn}{os}
+\PYG{k+kn}{from} \PYG{n+nn}{random} \PYG{k+kn}{import} \PYG{n}{randint}
+
+\PYG{c}{\PYGZsh{} initialize a new SFS\PYGZus{}CODE command}
+\PYG{n}{com} \PYG{o}{=} \PYG{n}{command}\PYG{o}{.}\PYG{n}{SFSCommand}\PYG{p}{(}\PYG{n}{prefix}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{tennessen.N1000}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} build the command line for the tennessen model}
+\PYG{c}{\PYGZsh{} a selection model is added with sel = sel=[\PYGZsq{}\PYGZhy{}W\PYGZsq{},\PYGZsq{}1\PYGZsq{},\PYGZsq{}5\PYGZsq{},\PYGZsq{}0\PYGZsq{},\PYGZsq{}1\PYGZsq{}]}
+\PYG{c}{\PYGZsh{} this adds a type 1 selection model, with gamma =5,}
+\PYG{c}{\PYGZsh{} and the probability of negative seleciton set to 1.}
+\PYG{c}{\PYGZsh{} for more on selection models in SFS\PYGZus{}CODE, see the SFS\PYGZus{}CODE handbook}
+
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{three\PYGZus{}pop}\PYG{p}{(}\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{1000}\PYG{p}{,}\PYG{n}{nsam}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mi}{50}\PYG{p}{,}\PYG{l+m+mi}{50}\PYG{p}{,}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}\PYG{n}{nsim}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{n}{model}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{tennessen}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}
+              \PYG{n}{L}\PYG{o}{=}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZhy{}L}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{1}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{100}\PYG{l+s}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{,}\PYG{n}{sel}\PYG{o}{=}\PYG{p}{[}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZhy{}W}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{1}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{5}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{0}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{1}\PYG{l+s}{\PYGZsq{}}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} set the location of sfs\PYGZus{}code}
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{sfs\PYGZus{}code\PYGZus{}loc} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{expanduser}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZti{}}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,}
+                    \PYG{l+s}{\PYGZsq{}}\PYG{l+s}{rotations/hernandez/software/sfs\PYGZus{}code/bin/sfs\PYGZus{}code}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} execute the command}
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{rand}\PYG{o}{=}\PYG{n}{randint}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{100000}\PYG{p}{)}\PYG{p}{)}
+\end{Verbatim}
+
+
+\subsection{Simulations with realistic genomic structure and demography}
+\label{rstfiles/execute:simulations-with-realistic-genomic-structure-and-demography}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{command}
+\PYG{k+kn}{import} \PYG{n+nn}{os}
+\PYG{k+kn}{from} \PYG{n+nn}{random} \PYG{k+kn}{import} \PYG{n}{randint}
+
+\PYG{c}{\PYGZsh{} initialize a new SFS\PYGZus{}CODE command}
+\PYG{n}{com} \PYG{o}{=} \PYG{n}{command}\PYG{o}{.}\PYG{n}{SFSCommand}\PYG{p}{(}\PYG{n}{prefix}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{guten.lactase}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} build the command line for the gutenkunst model in the lactase region}
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{genomic}\PYG{p}{(}\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,}\PYG{n}{model}\PYG{o}{=}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{gutenkunst}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{n}{sel}\PYG{o}{=}\PYG{n+nb+bp}{False}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} set the location of sfs\PYGZus{}code}
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{sfs\PYGZus{}code\PYGZus{}loc} \PYG{o}{=} \PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{os}\PYG{o}{.}\PYG{n}{path}\PYG{o}{.}\PYG{n}{expanduser}\PYG{p}{(}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZti{}}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{rotations/hernandez/software/sfs\PYGZus{}code/bin/sfs\PYGZus{}code}\PYG{l+s}{\PYGZsq{}}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} execute the command}
+\PYG{n}{com}\PYG{o}{.}\PYG{n}{execute}\PYG{p}{(}\PYG{n}{rand}\PYG{o}{=}\PYG{n}{randint}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,}\PYG{l+m+mi}{100000}\PYG{p}{)}\PYG{p}{)}
+\end{Verbatim}
+
+
+\subsection{Using SGE}
+\label{rstfiles/execute:using-sge}
+sfs\_coder uses the sge\_task\_id system variable to number output files.
+If you submit an sfs\_coder script to a cluster as an array job, it will take
+care of all the work of numbering the output files for you.
+
+For example, any of the above scripts can be sent to a cluster with the
+following header:
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c}{\PYGZsh{}!/usr/bin/python}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}e sim.div.log}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}o sim.div.log}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}S /usr/bin/python}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}cwd}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}r yes}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}l h\PYGZus{}rt=240:00:00}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}t 1\PYGZhy{}100}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}l arch=linux\PYGZhy{}x64}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}l mem\PYGZus{}free=1G}
+\PYG{c}{\PYGZsh{}\PYGZdl{} \PYGZhy{}l netapp=1G}
+\end{Verbatim}
+
+
+\subsection{Simulations of phenotypes}
+\label{rstfiles/execute:simulations-of-phenotypes}
+
 \chapter{Analyzing the output}
 \label{rstfiles/analyze:analyzing-the-output}\label{rstfiles/analyze::doc}
+sfs\_code stores a great deal of information about each mutation or substitution
+in a simulation, which can make it challenging to parse the output.  With
+sfs\_coder, all the data is stored internally in the Mutation class, allowing
+for flexible manipulation of the output.
+
+
+\section{Opening and reading an output file}
+\label{rstfiles/analyze:opening-and-reading-an-output-file}
+Opening and reading files is simple.  Below is an example that reads in all
+the data in an SFS\_CODE output file and caluclates \(\pi\) (the average
+pairwise diversity) in the 0th locus in all sampled populations.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k+kn}{import} \PYG{n+nn}{sys}
+\PYG{k+kn}{import} \PYG{n+nn}{readsfs}
+
+\PYG{c}{\PYGZsh{} an sfs\PYGZus{}code output file that we will analyze}
+\PYG{n}{f} \PYG{o}{=}\PYG{n}{sys}\PYG{o}{.}\PYG{n}{argv}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]}
+
+\PYG{c}{\PYGZsh{} initializing a data object and setting the file path}
+\PYG{n}{data} \PYG{o}{=} \PYG{n}{readsfs}\PYG{o}{.}\PYG{n}{SFSData}\PYG{p}{(}\PYG{n+nb}{file}\PYG{o}{=}\PYG{n}{f}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} getting all the data from the simulations in the file}
+\PYG{n}{data}\PYG{o}{.}\PYG{n}{get\PYGZus{}sims}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{c}{\PYGZsh{} The simulations in the file are stored in the data.sims attribute}
+\PYG{c}{\PYGZsh{} for each Simulation object in data.sims, we can calculate pi for}
+\PYG{c}{\PYGZsh{} a set of loci}
+
+\PYG{k}{for} \PYG{n}{sim} \PYG{o+ow}{in} \PYG{n}{data}\PYG{o}{.}\PYG{n}{sims}\PYG{p}{:}
+
+    \PYG{n}{pis} \PYG{o}{=} \PYG{n}{sim}\PYG{o}{.}\PYG{n}{calc\PYGZus{}pi}\PYG{p}{(}\PYG{n}{loci}\PYG{o}{=}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{)} \PYG{c}{\PYGZsh{} array of pi values, indexed by population}
+    \PYG{k}{print} \PYG{n}{pis}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}                \PYG{c}{\PYGZsh{} pis[0] is pi in the 0th population}
+\end{Verbatim}
+
 
 \chapter{Plotting}
-\label{rstfiles/plot::doc}\label{rstfiles/plot:plotting}\phantomsection\label{index:module-command}\index{command (module)}\index{Command (class in command)}
+\label{rstfiles/plot::doc}\label{rstfiles/plot:plotting}
+
+\chapter{sfs\_coder Classes and methods}
+\label{index:sfs-coder-classes-and-methods}
+
+\section{contents of command.py}
+\label{index:module-command}\label{index:contents-of-command-py}\index{command (module)}\index{Command (class in command)}
 
 \begin{fulllineitems}
 \phantomsection\label{index:command.Command}\pysigline{\strong{class }\code{command.}\bfcode{Command}}
 This class stores information from parsed command lines
-and provides the mechanics to call SFS\_CODE/ms commands.
-\index{add\_out() (command.Command method)}
-
-\begin{fulllineitems}
-\phantomsection\label{index:command.Command.add_out}\pysiglinewithargsret{\bfcode{add\_out}}{}{}
-Adds the path to an output directory to self.line.  This method takes
-no arguments but uses self.prefix (a label for the set of simulation
-experiments you are doing) and self.outdir (a label for the directory
-in which sets of simulations are stored).
-
-Thus, the full path is set to:
-\begin{itemize}
-\item {} 
-\emph{os.path.join(self.outdir,self.prefix)}
-
-\end{itemize}
-
-The values of self.outdir and self.prefix are set when an object is
-instantiated.  See the documentation of command.SFSCommand() for the 
-defaults of these values.
-
-\end{fulllineitems}
-
+and provides the mechanics to call SFS\_CODE commands.
 \index{execute() (command.Command method)}
 
 \begin{fulllineitems}
@@ -357,6 +468,7 @@ Parameters:
 \item[{\emph{rand=1} }] \leavevmode
 a random integer. If the value is not reset by the user
 then a new random number is rolled within self.execute.
+This value is used as the random seed for SFS\_CODE.
 
 \end{description}
 
@@ -493,29 +605,37 @@ commands.
 \end{itemize}
 
 \end{itemize}
-\index{add\_rand() (command.SFSCommand method)}
+\index{add\_event() (command.SFSCommand method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.add_rand}\pysiglinewithargsret{\bfcode{add\_rand}}{\emph{rand}}{}
-Just a little helper method to add random numbers to command lines.
-Not really recommended for use outside of this module.
+\phantomsection\label{index:command.SFSCommand.add_event}\pysiglinewithargsret{\bfcode{add\_event}}{\emph{event}}{}
+add an event to a command line.
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} \begin{description}
+\item[{\emph{event} }] \leavevmode
+an array of strings corresponding to the event.
 
-\end{fulllineitems}
+e.g., adding a mutation at locus 0 at time 0 with
 
-\index{build\_BGS() (command.SFSCommand method)}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{event} \PYG{o}{=} \PYG{p}{[}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{\PYGZhy{}\PYGZhy{}mutation}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,} \PYG{l+s}{\PYGZsq{}}\PYG{l+s}{0}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{L}\PYG{l+s}{\PYGZsq{}}\PYG{p}{,}\PYG{l+s}{\PYGZsq{}}\PYG{l+s}{0}\PYG{l+s}{\PYGZsq{}}\PYG{p}{]}
+\end{Verbatim}
 
-\begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.build_BGS}\pysiglinewithargsret{\bfcode{build\_BGS}}{\emph{n\_sim=10}, \emph{theta=0.0001}, \emph{recomb=False}, \emph{rho=0.001}, \emph{N=250}, \emph{n\_sam=10}, \emph{alpha=5}, \emph{L=100000}, \emph{Lmid=100000}}{}
-A method for running simulations of background selection.  This method
-is a bit underdeveloped at the moment, so stay tuned for more on how
-it works.
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
 
 \end{fulllineitems}
 
 \index{build\_RHH() (command.SFSCommand method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.build_RHH}\pysiglinewithargsret{\bfcode{build\_RHH}}{\emph{alpha=1000.0}, \emph{N0=5000.0}, \emph{rho0=0.001}, \emph{lam0=1e-10}, \emph{delta=0.01}, \emph{L0=-1}, \emph{L1=100000.0}, \emph{loop\_max=10}, \emph{L\_neut=1000.0}, \emph{theta\_neut=0.001}, \emph{minpop=100}, \emph{recomb\_dir='./recombfiles'}, \emph{outdir='sims'}, \emph{TE=2}, \emph{r\_within=False}, \emph{neg\_sel\_rate=0.0}, \emph{alpha\_neg=5}, \emph{additive=1}, \emph{Lextend=1}, \emph{mutation=}\optional{}, \emph{bottle=}\optional{}, \emph{expansion=}\optional{}}{}
+\phantomsection\label{index:command.SFSCommand.build_RHH}\pysiglinewithargsret{\bfcode{build\_RHH}}{\emph{alpha=1000.0}, \emph{N0=5000.0}, \emph{rho0=0.001}, \emph{lam0=1e-10}, \emph{delta=0.01}, \emph{L0=-1}, \emph{L1=100000.0}, \emph{loop\_max=10}, \emph{L\_neut=1000.0}, \emph{theta\_neut=0.001}, \emph{minpop=100}, \emph{recomb\_dir='recombfiles'}, \emph{outdir='sims'}, \emph{TE=2}, \emph{r\_within=True}, \emph{neg\_sel\_rate=0.0}, \emph{alpha\_neg=5}, \emph{additive=1}, \emph{Lextend=1}, \emph{mutation=}\optional{}, \emph{bottle=}\optional{}, \emph{expansion=}\optional{}, \emph{nreps=10}, \emph{Boyko=False}, \emph{Lmult=False}, \emph{lmultnum=50}, \emph{Torg=False}, \emph{non\_coding=True}}{}
 A method to build a recurrent hitchhiking command line using the 
 method of Uricchio \& Hernandez (2014, \emph{Genetics}).
 \begin{itemize}
@@ -595,57 +715,126 @@ the ending time of the simulation in units of
 
 \end{description}
 
-\end{itemize}
+\item {} \begin{description}
+\item[{\emph{r\_within=False}}] \leavevmode
+Currently only works with this option set to False, 
+but in the future will allow for recombination within the 
+neutral locus.
+
+\end{description}
 
 \end{itemize}
 
-\end{fulllineitems}
-
-\index{build\_genomic() (command.SFSCommand method)}
-
-\begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.build_genomic}\pysiglinewithargsret{\bfcode{build\_genomic}}{\emph{basedir='/Users/luricchio/projects/cluster\_backup/sfs\_coder/doc/req'}, \emph{outdir='/Users/luricchio/projects/cluster\_backup/sfs\_coder/doc/input\_files'}, \emph{datafile='hg19\_gencode.v14.gtf.gz'}, \emph{chr=2}, \emph{begpos=134545415}, \emph{endpos=138594750}, \emph{db=136545415}, \emph{de=136594750}, \emph{withseq=0}, \emph{fafile='hg19.fa.gz'}, \emph{phast\_file='hg19\_phastCons\_mammal.wig'}, \emph{dense\_dist=5000}, \emph{regname='`}, \emph{annotfile='`}, \emph{recombout='`}, \emph{sel=True}}{}
-A method to build simulations of genomic regions with realistic 
-genome structure.  The default data sources and options are all
-human-centric, but in principle these methods could be used to simulate
-sequences from any population for which the relevant data sources are 
-available.
-
-\end{fulllineitems}
-
-\index{convert\_sfs\_ms() (command.SFSCommand method)}
-
-\begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.convert_sfs_ms}\pysiglinewithargsret{\bfcode{convert\_sfs\_ms}}{}{}
-A method to convert an sfs\_code command line to ms.  Most but not all
-switches are converted (the method should let you know if you try to
-use an unsupported switch).  The method will ignore selection 
-based switches in SFS\_CODE (since ms only includes neutral 
-demographic models).
-
-This method has been tested only sparingly and it is recommended that 
-it is used with great caution.
+\end{itemize}
 
 \end{fulllineitems}
 
 \index{genomic() (command.SFSCommand method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.genomic}\pysiglinewithargsret{\bfcode{genomic}}{\emph{basedir='/Users/luricchio/projects/cluster\_backup/sfs\_coder/doc/req'}, \emph{outdir='/Users/luricchio/projects/cluster\_backup/sfs\_coder/doc/input\_files'}, \emph{datafile='hg19\_gencode.v14.gtf.gz'}, \emph{chr=2}, \emph{begpos=134545415}, \emph{endpos=138594750}, \emph{db=136545415}, \emph{de=136594750}, \emph{withseq=0}, \emph{fafile='hg19.fa.gz'}, \emph{phast\_file='hg19\_phastCons\_mammal.wig'}, \emph{dense\_dist=5000}, \emph{N=2000}, \emph{mutation=}\optional{}, \emph{sel=True}}{}
+\phantomsection\label{index:command.SFSCommand.genomic}\pysiglinewithargsret{\bfcode{genomic}}{\emph{basedir='../src/../src/req', indir='/Users/luricchio/projects/cluster\_backup/sfs\_coder/doc/input\_files', datafile='hg19\_gencode.v14.gtf.gz', phast\_file='hg19\_phastCons\_mammal.wig.gz', dense\_dist=5000, begpos=134545415, endpos=138594750, db=-1, chr=2, de=-1, withseq=0, fafile='`, N=2000, mutation={[}{]}, sel=True, model='`, t=0.001, rho=0.001, nsim=10, nsam={[}20{]}}}{}
 A method for running simulations of genomic elements using realistic
-genome structure. Most of the heavy lifting is done by the 
-build\_genomic() method.  This method exists mostly as a slimmed down
-interface to that method, with the major difference being that this 
-version allows for the inclusion of a demographic model. Currenrly,
-only the demographic model of Gutenkunst (2009, \emph{PLoS Genetics}) is
-included.
+genome structure and demographic models.  The demographic models of 
+Gutenkunst (2009, \emph{PLoS Genetics}), Gravle (2011, \emph{PNAS}), Tennessenn
+(2012,*Science*), and the standard neutral model are included.
+
+The default data sources and options are all
+human-centric, but in principle these methods could be used to simulate
+sequences from any population for which the relevant data sources are 
+available (recombination map, conserved elements, exon positions).
+
+This function calls a number of perl scripts, originally 
+implemented by Ryan Hernandez, to build the input to SFS\_CODE.  These
+perl scripts are bundled with sfs\_coder in the directory src/req
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} \begin{description}
+\item[{\emph{basedir=os.path.join(os.path.dirname(\_\_file\_\_),'../src/req')}}] \leavevmode
+the directory where all the datasources and perl for this method
+are located.  You shouldn't have to change this unless you're
+moving around the source files relative to each other.
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{outdir=os.path.join(os.getcwd(),'input\_files')}}] \leavevmode
+the directory where the sfs\_code annotation files will be 
+written
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{chr=2}}] \leavevmode
+chromosome number to query
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{begpos=134545415}}] \leavevmode
+genomic coordinate of the beginning of the simulated sequence
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{endpos=138594750}}] \leavevmode
+genomic coordinate of the end of the simulated sequence
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{db=begpos}}] \leavevmode
+genomic coordinate of the region in which to include dense 
+neutral sequences.  Neutral sites within this region will be 
+simulated if they are within a specified distance of one
+of the simulated genomic elements (given by \emph{dense\_dist})
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{de=begpos}}] \leavevmode
+genomic coordinate of the end of the dense neutral region
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{dense\_dist=5000}}] \leavevmode
+The amount of neutral sequence to pad onto the end of each 
+conserved element or exon.  For example, if two adjaacent 
+conserved elemets are 20,000 base pairs apart, and the 
+dense\_dist=5,000, then 5,000 base pairs are padded onto the 
+end of each of the conserved elements and the middle 10,000
+base pairs are not simulated.
+
+To include no neutral sequence, use dense\_dist = 0.
+
+To include every neutral base pair in the region, use 
+dense\_dist=-1 (potentially very computationally expensive
+for large regions!)
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{sel=True}}] \leavevmode
+If true, draw selection coefficients from a gamma distribution 
+of selection coefficients for conserved elements and coding
+regions.  These distributions are taken from Boyko et al 
+(coding, 2008, \emph{PLoS Genetics}) and Torgerson et al (conserved 
+non-coding, 2009, \emph{PLoS Genetics}).
+
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
 
 \end{fulllineitems}
 
 \index{gutenkunst() (command.SFSCommand method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:command.SFSCommand.gutenkunst}\pysiglinewithargsret{\bfcode{gutenkunst}}{\emph{add\_on=False}, \emph{nsim=1}, \emph{N=10000}, \emph{non\_coding=False}, \emph{recombfile='`}, \emph{nsam=100}, \emph{mutation=}\optional{}, \emph{loci=}\optional{}, \emph{sel=}\optional{}, \emph{L=}\optional{}}{}
+\phantomsection\label{index:command.SFSCommand.gutenkunst}\pysiglinewithargsret{\bfcode{gutenkunst}}{\emph{add\_on=False, nsim=1, N=10000, non\_coding=False, recombfile='`, nsam={[}100{]}, mutation={[}{]}, t=0.001, rho=0.001, loci={[}{]}, sel={[}{]}, L={[}{]}}}{}
 A method that adds the Gutenkunst (2009, \emph{PLoS Genetics}) model to
 an SFS\_CODE command line.
 
@@ -661,40 +850,145 @@ are stored as dictionaries.
 
 Note, \textbf{only the short form of SFS\_CODE options are currently fully 
 supported!}  For example, \emph{-t 0.002} is supported but \emph{--theta 0.002}
-is not.
+is not. Hence, if you run SFS\_CODE with the long forms or wish to 
+analyze code that used the long form to run, you may have issues.
+
+\end{fulllineitems}
+
+\index{three\_pop() (command.SFSCommand method)}
+
+\begin{fulllineitems}
+\phantomsection\label{index:command.SFSCommand.three_pop}\pysiglinewithargsret{\bfcode{three\_pop}}{\emph{add\_on=False, nsim=1, N=10000, non\_coding=False, recombfile='`, nsam={[}100, 100, 100{]}, mutation={[}{]}, t=0.001, rho=0.001, loci={[}{]}, sel={[}{]}, L={[}{]}, t\_end=0.60274, t\_expand\_p0=0, expand\_p0=1.68493, t\_split\_p0\_p1=0.219178, t\_split\_p1\_p2=0.544658, bottle\_p1\_0=0.170732, bottle\_p1\_1=0.47619, bottle\_p2=0.242857, growth\_p1=58.4, growth\_p2=80.3, mig\_p0\_p1=6.15, mig\_p1\_p0=0.5, mig\_all={[}0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792{]}, t\_super=0.391465, model='guten'}}{}
+A general three population model with growth events.
+Inspired by Gutenkunst et al (2009, \emph{PLoS Genetics})
+and Gravel et al (2011, \emph{PNAS}).  For a pictorial 
+representation see Figure 3A of the Gutenkunst paper.
+
+The default parameters are set to Gutenkunst et al.
+The maximum likelihood estimates of Gravel et al
+and Tennessen et al (2012, \emph{Science}) are also 
+included.
+
+Use model='gravel', model='tennessen' or model='guten'
+to explicitly choose one of the models.
+
+The user can specify the model parameters as desired.
+To use a user specified model, simply use model = `'.
+Any unspecified parameters are set by default to the 
+parameters of the Gutenkunst model.
 
 \end{fulllineitems}
 
 
 \end{fulllineitems}
 
-\phantomsection\label{index:module-sfs}\index{sfs (module)}\index{Simulation (class in sfs)}
+
+
+\section{contents of sfs.py}
+\label{index:contents-of-sfs-py}\label{index:module-sfs}\index{sfs (module)}\index{Mutation (class in sfs)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:sfs.Simulation}\pysigline{\strong{class }\code{sfs.}\bfcode{Simulation}}
-A class to store the data from SFS\_CODE simulations.
-\index{calc\_S() (sfs.Simulation method)}
-
-\begin{fulllineitems}
-\phantomsection\label{index:sfs.Simulation.calc_S}\pysiglinewithargsret{\bfcode{calc\_S}}{\emph{pop=0}, \emph{multi\_skip=True}, \emph{loci=}\optional{}}{}
-calculate the number of segretating sites within a specific
-population.
+\phantomsection\label{index:sfs.Mutation}\pysigline{\strong{class }\code{sfs.}\bfcode{Mutation}}
+a class to store the data associated with a variant in an 
+SFS\_CODE output file.  Note, both mutations and substitutions
+are stored as instances of this class.
 \begin{itemize}
 \item {} 
-Parameters:
+Attributes:
 \begin{itemize}
-\item {} 
-\emph{pop = 0}
-population in which to calculate the number of segregating sites.
+\item {} \begin{description}
+\item[{\emph{self.locus=-1}}] \leavevmode
+The locus number of the variant
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.AXY='?'} }] \leavevmode
+`A' for autosomal, `X' or `Y' for the corresponding sex
+chromosomes
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.pos=-1}}] \leavevmode
+The position within the locus.  Note that the positions
+within each locus start from 0.
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.t\_init=\{\}} }] \leavevmode
+A dictionary, keyed by population number, and storing 
+the time that the variant arose
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.t\_fix=\{\}}}] \leavevmode
+A dictionary, keyed by population number, and storing 
+the time that the variant fixed within the population.
+If the variant is segregating, the time stored is the
+time of sampling.
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.tri\_nuc='NNN'}}] \leavevmode
+The ancestral trinucleotide (the middle base is the 
+mutated base, so this is not necessarily a codon!)
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.deriv\_n='N'}}] \leavevmode
+The derived nucleotide
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.non\_or\_syn='?'}}] \leavevmode
+Is the mutation synonymous (0) or nonsynonymous (1).
+0 also is used to indicate non-coding.
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.ancest='?'}}] \leavevmode
+Ancestral amino acid
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.deriv\_aa='?'}}] \leavevmode
+Derived amino acid
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.fit='?'}}] \leavevmode
+fitness effect of the mutation (0 for neutral)
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{self.chrs = defaultdict(dict)}}] \leavevmode
+A dictionary of dictionaries that is keyed by population
+and chromosome number.
+
+E.g., if the derived allele is present on chromosome 11 in
+population 2, then
+
+self.chrs{[}2{]}{[}11{]} = True
+
+\end{description}
 
 \item {} 
-\emph{multi\_skip = True}
-skip sites that are more than biallelic if true
+\emph{self.pops\_numchr = \{\}}
+\begin{quote}
 
-\item {} 
-\emph{loci = {[}{]}}
-A list of loci over which to calculate the number of segregating
-sites.  Uses all loci if this is left blank.
+A dictionary that stores the number of chromosomes that
+carry the derived allele in each population.
+\end{quote}
 
 \end{itemize}
 
@@ -702,39 +996,21 @@ sites.  Uses all loci if this is left blank.
 
 \end{fulllineitems}
 
-\index{make\_muts() (sfs.Simulation method)}
+\index{SFSData (class in sfs)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:sfs.Simulation.make_muts}\pysiglinewithargsret{\bfcode{make\_muts}}{}{}
-This method takes the string of data that is generated by readsfs and 
-parses it into individual mutations.  It handles some of the oddities
-of how mutations are stored when they segregate in multiple 
-populations.
-
-This is mostly intended for internal use within this module, so use 
-or modify at your own risk.
-
-\end{fulllineitems}
-
-
-\end{fulllineitems}
-
-\phantomsection\label{index:module-sfsplot}\index{sfsplot (module)}\phantomsection\label{index:module-ms}\index{ms (module)}\phantomsection\label{index:module-readsfs}\index{readsfs (module)}\index{FileData (class in readsfs)}
-
-\begin{fulllineitems}
-\phantomsection\label{index:readsfs.FileData}\pysiglinewithargsret{\strong{class }\code{readsfs.}\bfcode{FileData}}{\emph{file='`}}{}
+\phantomsection\label{index:sfs.SFSData}\pysiglinewithargsret{\strong{class }\code{sfs.}\bfcode{SFSData}}{\emph{file='`}}{}
 A class that handles the basic parsing of sfs\_code output file
 data.
 \begin{itemize}
 \item {} 
 Parameters:
 \begin{itemize}
-\item {} 
-\emph{file= `'}
-\begin{quote}
-
+\item {} \begin{description}
+\item[{\emph{file= `'}}] \leavevmode
 the path to the file that is to be read.
-\end{quote}
+
+\end{description}
 
 \end{itemize}
 
@@ -756,10 +1032,10 @@ an array of sfs.Simulation objects.
 \end{itemize}
 
 \end{itemize}
-\index{get\_sims() (readsfs.FileData method)}
+\index{get\_sims() (sfs.SFSData method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:readsfs.FileData.get_sims}\pysiglinewithargsret{\bfcode{get\_sims}}{}{}
+\phantomsection\label{index:sfs.SFSData.get_sims}\pysiglinewithargsret{\bfcode{get\_sims}}{}{}
 A method that reads sfs\_code output files and stores all the data in
 sfs.Simulation objects.
 
@@ -768,19 +1044,173 @@ sfs.Simulation objects.
 
 \end{fulllineitems}
 
-\index{msData (class in readsfs)}
+\index{Simulation (class in sfs)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:readsfs.msData}\pysiglinewithargsret{\strong{class }\code{readsfs.}\bfcode{msData}}{\emph{file='`}}{}
-A class to store ms output file data.
-\index{get\_sims() (readsfs.msData method)}
+\phantomsection\label{index:sfs.Simulation}\pysigline{\strong{class }\code{sfs.}\bfcode{Simulation}}
+A class to store the data from SFS\_CODE simulations.
+\begin{itemize}
+\item {} 
+Attributes:
+\begin{itemize}
+\item {} 
+\emph{self.command = command.SFSCommand()}
+
+\item {} 
+\emph{self.data = `'}
+
+\item {} 
+\emph{self.loci = defaultdict(lambda: defaultdict(list))}
+\begin{quote}
+
+A dictionary of dictionaries indexed by locus and position.
+Each dictionary of dictionaries is a list of Mutation
+objects that occur at the corresponding locus and position.
+
+e.g., self.loci{[}0{]}{[}0{]} is a list of Mutation objects that
+occur at the first position in the first locus.
+
+Note that these keys will only exist in self.loci if there
+were mutations at this particular point in the sequence
+in the sample from the simulation.
+\end{quote}
+
+\item {} 
+\emph{self.muts = {[}{]}}
+\begin{quote}
+
+A list of all the Mutation objects in the simulation.
+\end{quote}
+
+\end{itemize}
+
+\end{itemize}
+\index{calc\_S() (sfs.Simulation method)}
 
 \begin{fulllineitems}
-\phantomsection\label{index:readsfs.msData.get_sims}\pysiglinewithargsret{\bfcode{get\_sims}}{}{}
-A method that parses ms output files and stores each simulation
-as an ms.Simulation object.  This method is \emph{not} fully developed
-at this time and currently does not store several essential pieces of
-information, such as the positions of the segregating sites.
+\phantomsection\label{index:sfs.Simulation.calc_S}\pysiglinewithargsret{\bfcode{calc\_S}}{\emph{multi\_skip=True}, \emph{loci=}\optional{}, \emph{pop=0}}{}
+calculate the number of segretating sites within all
+populations.
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} \begin{description}
+\item[{\emph{multi\_skip = True}}] \leavevmode
+skip sites that are more than biallelic if True
+
+\end{description}
+
+\item {} \begin{description}
+\item[{\emph{loci = {[}{]}}}] \leavevmode
+A list of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.
+
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{calc\_fit() (sfs.Simulation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{index:sfs.Simulation.calc_fit}\pysiglinewithargsret{\bfcode{calc\_fit}}{\emph{pop=0}}{}
+calculate the fitness of the sampled chromosomes
+within a population.
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} \begin{description}
+\item[{\emph{pop=0} }] \leavevmode
+population number
+
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{calc\_pi() (sfs.Simulation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{index:sfs.Simulation.calc_pi}\pysiglinewithargsret{\bfcode{calc\_pi}}{\emph{multi\_skip=True}, \emph{loci=}\optional{}}{}
+calculate the mean pairwise diversity per site
+bewteen pairs of sequences across a set of loci.
+If the loci parameter is left undefined by the
+user, then this method calculates \(\pi\) 
+over all loci in the simulation.
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} 
+\emph{multi\_skip=True}
+\begin{quote}
+
+If True, skip loci that are multiallelic.
+Otherwise lump all the derived alleles together.
+\end{quote}
+
+\item {} 
+\emph{loci={[}{]}}
+\begin{quote}
+
+An array of loci over which to calculate 
+\(\pi\).  If left blank, all loci
+are used in the calculation.
+\end{quote}
+
+\end{itemize}
+
+\item {} 
+Return value: An array of values of \(\pi\)
+values indexed by population number.
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{calc\_pi\_by\_locus() (sfs.Simulation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{index:sfs.Simulation.calc_pi_by_locus}\pysiglinewithargsret{\bfcode{calc\_pi\_by\_locus}}{}{}
+calculate the value of \(\pi\) independently for each locus.
+\begin{itemize}
+\item {} 
+Return value: An array of arrays of pi values, indexed by 
+population and then locus number.
+
+e.g., if the return value is stored in the variable pi, 
+pi{[}0{]}{[}1{]} is the value of \(\pi\) in population 0 at locus 1.
+
+\end{itemize}
+
+\end{fulllineitems}
+
+\index{get\_sfs() (sfs.Simulation method)}
+
+\begin{fulllineitems}
+\phantomsection\label{index:sfs.Simulation.get_sfs}\pysiglinewithargsret{\bfcode{get\_sfs}}{\emph{pop=0}, \emph{NS=True}, \emph{SYN=True}}{}
+compute the site frequency specutrum for a population
+\begin{itemize}
+\item {} 
+Parameters:
+\begin{itemize}
+\item {} \begin{description}
+\item[{\emph{pop=0}}] \leavevmode
+population number
+
+\end{description}
+
+\end{itemize}
+
+\end{itemize}
 
 \end{fulllineitems}
 
@@ -789,7 +1219,13 @@ information, such as the positions of the segregating sites.
 
 
 
-\chapter{Indices and tables}
+\section{contents of sfsplot.py}
+\label{index:contents-of-sfsplot-py}\label{index:module-sfsplot}\index{sfsplot (module)}
+
+\section{contents of ms.py}
+\label{index:contents-of-ms-py}\label{index:module-ms}\index{ms (module)}
+
+\chapter{indices and tables}
 \label{index:indices-and-tables}\begin{itemize}
 \item {} 
 \emph{genindex}
@@ -811,9 +1247,6 @@ information, such as the positions of the segregating sites.
 \indexspace
 \bigletter{m}
 \item {\texttt{ms}}, \pageref{index:module-ms}
-\indexspace
-\bigletter{r}
-\item {\texttt{readsfs}}, \pageref{index:module-readsfs}
 \indexspace
 \bigletter{s}
 \item {\texttt{sfs}}, \pageref{index:module-sfs}
