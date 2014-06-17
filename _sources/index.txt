@@ -29,18 +29,6 @@ contents of sfs.py
 .. automodule:: sfs 
    :members:
 
-contents of sfsplot.py
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: sfsplot 
-   :members:
-
-contents of ms.py
-^^^^^^^^^^^^^^^^^
-
-.. automodule:: ms
-   :members:
-
 indices and tables
 ==================
 
