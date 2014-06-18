@@ -170,7 +170,7 @@ class Simulation:
           * *multi_skip = True*
              skip sites that are more than biallelic if True
           * *loci = []*
-             A list of loci over which to calculate the number of segregating
+             Array of loci over which to calculate the number of segregating
              sites.  Uses all loci if this is left blank.
         """
         if len(loci) == 0:
@@ -203,7 +203,19 @@ class Simulation:
         return nums[pop]  
 
     def calc_watt(self,pop=0,loci=[]):
+        
+        """
+        Calculate Watterson's estimator of pi for a set of loci
 
+        * Parameters:
+    
+          * *pop=0*
+             Population of interest
+
+          * *loci=[]*
+             Array of loci to use in the calculation. If empty,
+             uses all loci.
+        """
         if len(loci) == 0:
             loci = range(0,len(self.command.L))
         
@@ -228,6 +240,23 @@ class Simulation:
         return watt        
 
     def calc_theta_H(self, pop=0, multi_skip=False,loci=[]):
+
+        """
+        Calculate theta_H.
+
+        * Parameters:
+
+          * *pop=0*
+             Population of interest
+
+          * *loci=[]*
+             Array of loci to use in the calculation.  If empty,
+             calculates over all loci.
+
+          * *mutliskip=False*
+             Skip multiallelic sites
+ 
+        """
 
         if len(loci) == 0:
             loci = range(0, len(self.command.L))
@@ -260,6 +289,20 @@ class Simulation:
 
     def calc_tajD(self,pop=0,loci=[]):
   
+        """
+        Calculate Tajima's D
+
+        * Parameters:
+
+          * *pop=0*
+             Population of interest
+
+          * *loci=[]*
+             Array of loci to use in the calculation.  If empty,
+             calculates over all loci.
+
+        """
+
 
         if len(loci) == 0:
             loci = range(0,len(self.command.L)) 
@@ -308,6 +351,20 @@ class Simulation:
         return numerator/denom
 
     def calc_ZnS(self, pop = 0, loci=[]):
+
+        """
+        Calculate ZnS.
+
+        * Parameters:
+
+          * *pop=0*
+             Population of interest
+
+          * *loci=[]*
+             Array of loci to use in the calculation.  If empty,
+             calculates over all loci.
+
+        """
 
         if len(loci) == 0:
             loci = range(0,len(self.command.L))
@@ -545,13 +602,21 @@ class Simulation:
 
     def haplotype(self,pop=0):
   
+        """
+        Build haplotypes for each sampled chromosome.
+
+        * Parameters:
+
+          * *pop=0*
+             Population of interest
+
+        """
+
         self.haplo[pop] = [ [0 for i in range(0,len(self.muts))] for j in range(0, self.command.n[pop])]
  
         i = 0
         for mut in self.muts:
             if pop not in mut.fixed_pop:
-                for chr in range(0,self.command.n[pop]):
-                    self.haplo[pop][chr][i] = 0
                 i+=1
                 continue
             elif mut.fixed_pop[pop] == True:
@@ -567,24 +632,76 @@ class Simulation:
             for chr in mut.chrs[pop]:
                 self.haplo[pop][chr][i] = 1
             i += 1
-     
-    def print_fam(self,pop=0):
+    
+    def haplotype_SKAT(self,pop=0):
+  
+        """
+        Build haplotypes for each sampled chromosome in the 
+        SKAT fashion (number of minor alleles, not necessarily
+        number of derived alleles).
+
+        * Parameters:
+
+          * *pop=0*
+             Population of interest
+
+        """
+
+        self.haplo[pop] = [ [0 for i in range(0,len(self.muts))] for j in range(0, self.command.n[pop])]
+ 
+        i = 0
+        for mut in self.muts:
+            tot = len(mut.chrs[pop])
+            if pop not in mut.fixed_pop:
+                i+=1
+                continue
+            # SKAT wants minor alleles, so that's why we use 0 here
+            elif mut.fixed_pop[pop] == True:
+                i+=1
+                continue
+            # same reasoning here
+            elif -1 in mut.chrs[pop]:
+                i +=1 
+                continue
+            #and same here
+            elif tot < self.command.n[pop]/2:
+                for chr in mut.chrs[pop]:
+                    self.haplo[pop][chr][i] = 1
+                i+=1 
+                continue
+            else:
+                for chr in range(0,self.command.n[pop]):
+                    if chr not in mut.chrs[pop]:
+                        self.haplo[pop][chr][i] = 1        
+            i += 1
+            
+    def write_fam(self,pop=0,file=''):
+
+        if file == '':
+            print "must specify file!: self.write_fam(pop=0,file='path/to/file')"
+            exit()
+        
+        f = open(file,'w')
 
         if pop not in self.haplo:
             print "Warning: must define the haplotype first!"
             print "use self.haplotype(pop=0)"
+            print "OR use self.haplotype_SKAT(pop=0) (minor alleles treated in SKAT fashion)"
             print "exiting the function"
             return
 
         i = 0
         while i < len(self.haplo[pop]):
-            print i /2, '\t1\t',
-            for k in range(0, len(self.muts)+1):
+            #f.write(str(i /2))
+            #f.write('\t1\t')
+            for k in range(0, len(self.muts)):
                 var = (self.haplo[pop][i][k] + self.haplo[pop][i+1][k])
-                print var,
-            print
-            i+=2
-            
+                f.write(str(var)+' ')
+            f.write('\n')
+            i+=2        
+
+        f.close()
+
     def sim_pheno_simons(self,thresh=2.,c=0.,effect_small=0.01,effect_big=0.1):
              
         from scipy.stats import gamma
@@ -858,7 +975,7 @@ class Mutation:
                 self.pops_numchr[popu]+=1
 
     def calc_delij(self,mut,pop,n):
-        
+              
        if pop not in self.chrs or pop not in mut.chrs:
            return None
 

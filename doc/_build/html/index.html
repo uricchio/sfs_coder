@@ -211,7 +211,7 @@ ancestral population.</p>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>self.n_iter=1</em> </dt>
+<dt><em>self.nsim=1</em> </dt>
 <dd><p class="first last">number of simulations.</p>
 </dd>
 </dl>
@@ -455,7 +455,7 @@ analyze code that used the long form to run, you may have issues.</p>
 
 <dl class="method">
 <dt id="command.SFSCommand.three_pop">
-<tt class="descname">three_pop</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100, 100, 100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[], t_end=0.60274, t_expand_p0=0, expand_p0=1.68493, t_split_p0_p1=0.219178, t_split_p1_p2=0.544658, bottle_p1_0=0.170732, bottle_p1_1=0.47619, bottle_p2=0.242857, growth_p1=58.4, growth_p2=80.3, mig_p0_p1=6.15, mig_p1_p0=0.5, mig_all=[0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792], t_super=0.391465, model='guten'</em><big>)</big><a class="headerlink" href="#command.SFSCommand.three_pop" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">three_pop</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100, 100, 100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[], t_end=0.60274, t_expand_p0=0, expand_p0=1.68493, t_split_p0_p1=0.219178, t_split_p1_p2=0.544658, bottle_p1_0=0.170732, bottle_p1_1=0.47619, bottle_p2=0.242857, growth_p1=58.4, growth_p2=80.3, mig_p0_p1=6.15, mig_p1_p0=0.5, mig_all=[0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792], t_super=0.391465, model='gutenkunst'</em><big>)</big><a class="headerlink" href="#command.SFSCommand.three_pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>A general three population model with growth events.
 Inspired by Gutenkunst et al (2009, <em>PLoS Genetics</em>)
 and Gravel et al (2011, <em>PNAS</em>).  For a pictorial 
@@ -464,7 +464,7 @@ representation see Figure 3A of the Gutenkunst paper.</p>
 The maximum likelihood estimates of Gravel et al
 and Tennessen et al (2012, <em>Science</em>) are also 
 included.</p>
-<p>Use model=&#8217;gravel&#8217;, model=&#8217;tennessen&#8217; or model=&#8217;guten&#8217;
+<p>Use model=&#8217;gravel&#8217;, model=&#8217;tennessen&#8217; or model=&#8217;gutenkunst&#8217;
 to explicitly choose one of the models.</p>
 <p>The user can specify the model parameters as desired.
 To use a user specified model, simply use model = &#8216;&#8217;.
@@ -767,12 +767,6 @@ pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b235
 </dd></dl>
 
 </div>
-<div class="section" id="module-sfsplot">
-<span id="contents-of-sfsplot-py"></span><h3>contents of sfsplot.py<a class="headerlink" href="#module-sfsplot" title="Permalink to this headline">¶</a></h3>
-</div>
-<div class="section" id="module-ms">
-<span id="contents-of-ms-py"></span><h3>contents of ms.py<a class="headerlink" href="#module-ms" title="Permalink to this headline">¶</a></h3>
-</div>
 </div>
 <div class="section" id="indices-and-tables">
 <h2>indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -796,8 +790,6 @@ pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b235
 <li><a class="reference internal" href="#sfs-coder-classes-and-methods">sfs_coder Classes and methods</a><ul>
 <li><a class="reference internal" href="#module-command">contents of command.py</a></li>
 <li><a class="reference internal" href="#module-sfs">contents of sfs.py</a></li>
-<li><a class="reference internal" href="#module-sfsplot">contents of sfsplot.py</a></li>
-<li><a class="reference internal" href="#module-ms">contents of ms.py</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">indices and tables</a></li>
