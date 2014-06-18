@@ -672,8 +672,33 @@ populations.</p>
 </li>
 <li><dl class="first docutils">
 <dt><em>loci = []</em></dt>
-<dd><p class="first last">A list of loci over which to calculate the number of segregating
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
 sites.  Uses all loci if this is left blank.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_ZnS">
+<tt class="descname">calc_ZnS</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_ZnS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate ZnS.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci=[]</em></dt>
+<dd><p class="first last">Array of loci to use in the calculation.  If empty,
+calculates over all loci.</p>
 </dd>
 </dl>
 </li>
@@ -747,6 +772,87 @@ pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b235
 </dd></dl>
 
 <dl class="method">
+<dt id="sfs.Simulation.calc_tajD">
+<tt class="descname">calc_tajD</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_tajD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Tajima&#8217;s D</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci=[]</em></dt>
+<dd><p class="first last">Array of loci to use in the calculation.  If empty,
+calculates over all loci.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_theta_H">
+<tt class="descname">calc_theta_H</tt><big>(</big><em>pop=0</em>, <em>multi_skip=False</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate theta_H.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci=[]</em></dt>
+<dd><p class="first last">Array of loci to use in the calculation.  If empty,
+calculates over all loci.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>mutliskip=False</em></dt>
+<dd><p class="first last">Skip multiallelic sites</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.calc_watt">
+<tt class="descname">calc_watt</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_watt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Watterson&#8217;s estimator of pi for a set of loci</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci=[]</em></dt>
+<dd><p class="first last">Array of loci to use in the calculation. If empty,
+uses all loci.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
 <dt id="sfs.Simulation.get_sfs">
 <tt class="descname">get_sfs</tt><big>(</big><em>pop=0</em>, <em>NS=True</em>, <em>SYN=True</em><big>)</big><a class="headerlink" href="#sfs.Simulation.get_sfs" title="Permalink to this definition">¶</a></dt>
 <dd><p>compute the site frequency specutrum for a population</p>
@@ -756,6 +862,44 @@ pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b235
 <li><dl class="first docutils">
 <dt><em>pop=0</em></dt>
 <dd><p class="first last">population number</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.haplotype">
+<tt class="descname">haplotype</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfs.Simulation.haplotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build haplotypes for each sampled chromosome.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfs.Simulation.haplotype_SKAT">
+<tt class="descname">haplotype_SKAT</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfs.Simulation.haplotype_SKAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build haplotypes for each sampled chromosome in the 
+SKAT fashion (number of minor alleles, not necessarily
+number of derived alleles).</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
 </dd>
 </dl>
 </li>
