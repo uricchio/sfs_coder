@@ -15,7 +15,7 @@ import os
 from random import randint
 
 # initialize a new SFS_CODE command
-com = command.SFSCommand(prefix='snm',outdir=os.path.join(os.path.expanduser('~'),'test'))
+com = command.SFSCommand(prefix='snm') #outdir=os.path.join(os.path.expanduser('~'),'test'))
 
 # build the command line for the gutenkunst model with lactase
 com.genomic(N=100,model='snm',sel=True,dense_dist=0) #,chr=1,begpos=4190291,endpos=4195373)

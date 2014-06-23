@@ -209,6 +209,8 @@ class SFSCommand(Command):
         self.recomb_file=''
         self.line = []
         self.err = err
+        self.begpos = -1
+        self.endpos = -1
         if os.environ.has_key('SGE_TASK_ID'):
             self.task_id = os.environ['SGE_TASK_ID']
         else:
@@ -1107,6 +1109,9 @@ class SFSCommand(Command):
         
         """
 
+        self.begpos = begpos
+        self.endpos = endpos
+
         if de < 0:
             de = endpos
         if db < 0:
@@ -1385,11 +1390,6 @@ class SFSCommand(Command):
     def gutenkunst(self,add_on=False,nsim=1,N=10000,non_coding=False,
                    recombfile='',nsam=[100],mutation=[],t=0.001,rho=0.001,
                    loci=[], sel=[], L=[]):
-
-        """
-        A method that adds the Gutenkunst (2009, *PLoS Genetics*) model to
-        an SFS_CODE command line. 
-        """
 
         if not(add_on):
 
