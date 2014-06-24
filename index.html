@@ -651,7 +651,7 @@ in the sample from the simulation.</p>
 </ul>
 <dl class="method">
 <dt id="sfs.Simulation.calc_S">
-<tt class="descname">calc_S</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>pop=0</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_S" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_S</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_S" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the number of segretating sites within all
 populations.</p>
 <ul>
@@ -677,7 +677,7 @@ sites.  Uses all loci if this is left blank.</p>
 
 <dl class="method">
 <dt id="sfs.Simulation.calc_ZnS">
-<tt class="descname">calc_ZnS</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_ZnS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_ZnS</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_ZnS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate ZnS.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -721,7 +721,7 @@ within a population.</p>
 
 <dl class="method">
 <dt id="sfs.Simulation.calc_pi">
-<tt class="descname">calc_pi</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_pi" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_pi</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_pi" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the mean pairwise diversity per site
 bewteen pairs of sequences across a set of loci.
 If the loci parameter is left undefined by the
@@ -766,7 +766,7 @@ pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b235
 
 <dl class="method">
 <dt id="sfs.Simulation.calc_tajD">
-<tt class="descname">calc_tajD</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_tajD" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_tajD</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_tajD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Tajima&#8217;s D</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -791,7 +791,7 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfs.Simulation.calc_theta_H">
-<tt class="descname">calc_theta_H</tt><big>(</big><em>pop=0</em>, <em>multi_skip=False</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_theta_H</tt><big>(</big><em>pop=0</em>, <em>multi_skip=False</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate theta_H.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -822,7 +822,7 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfs.Simulation.calc_watt">
-<tt class="descname">calc_watt</tt><big>(</big><em>pop=0</em>, <em>loci=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_watt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_watt</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfs.Simulation.calc_watt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Watterson&#8217;s estimator of pi for a set of loci</p>
 <ul>
 <li><p class="first">Parameters:</p>
