@@ -296,6 +296,7 @@ my $TDIST = 0;
 my @REM = ();
 my $pend = 0;
 foreach my $s (sort {$a<=>$b} keys %REGS){
+
   my $foo=0;
   foreach my $l (sort {$a<=>$b} keys %{$REGS{$s}}){
     my $seq = "";

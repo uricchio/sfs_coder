@@ -19,7 +19,7 @@ data.get_sims()
 # a set of loci
 
 for sim in data.sims:
-    sfs =  sim.get_sfs(regstart=50320000,start=0,stop=3000)
+    sfs =  sim.get_sfs(input_log='/netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/sims/snm/err/log.build_input.txt',start=4194000,stop=4195373)
     print sfs
     #pis = sim.calc_pi(loci=[0],multi_skip=False)
     #print pis

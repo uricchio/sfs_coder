@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/var/spool/sge/qb3cell/opt20/job_scripts/8819621", line 13, in <module>
+    import command
+ImportError: No module named command
+/netapp/home/lawrence.uricchio/rotations/hernandez/software/sfs_code/bin/sfs_code 3 10 -N 100 -n 20 -A -t 0.001 -r F /netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/input_files/sfscode_rec_chr1_4190291-4195373.txt 0.001 -TS 0.265753 0 1 -TS 0.342466 1 2 -TE 0.405479 -Td 0 P 0 1.982738 -Td 0.265753 P 1 0.128575 -Td 0.342466 P 1 0.554541 -Tg 0.342466 P 1 44.822 -Td 0.342466 P 2 0.29554 -Tg 0.342466 P 2 70.08 -Tm 0.265753 P 0 1 4.3422 -Tm 0.265753 P 1 0 0.5583 -Tm 0.342466 L 0.7237 0.225794 0.09305 0.115754 0.00858 0.03421 -Tg 0.391465 P 0 242.36 -Tg 0.391465 P 1 284.7 -a F /netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/input_files/sfscode_annotation_chr1_4190291-4195373_CDSbuff_SEL.txt -s 15144 -o /netapp/home/lawrence.uricchio/sfs_coder/scripts/running_simulations/sims/snm/snm.1.txt

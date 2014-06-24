@@ -579,7 +579,7 @@ class Simulation:
         return
 
 
-    def get_sfs(self, pop=0, NS=True, SYN=True, regstart=-1,start=-1,stop=-1):
+    def get_sfs(self, pop=0, NS=True, SYN=True, input_log='',start=-1,stop=-1):
 
         """
         compute the site frequency specutrum for a population
@@ -588,21 +588,35 @@ class Simulation:
           
           * *pop=0*
              population number
-        """
-         
+        """         
+
         import re
         posdict = {}
         locus = 0
+        regstart = -1
 
+        # fisrt, get the actual start point of the simulation
         if start != -1:
-            if(regstart == -1):
-                print 'you must specify a regstart!'
+            if(input_log == ''):
+                print 'you must specify an input_log file!'
+                print 'This file is typically created by the genomic method,'
+                print 'and is stored in the \'err\' directory inside the sims directory'
                 exit()
-            
-            tot_sites = -1
+            r= open(input_log, 'r')
+            next = 0
+            for line in r:
+                if re.search('simulating bases:', line):
+                    next += 1
+                    continue
+                if next > 0:
+                    data = line.strip().split(' ')
+                    regstart = int(data[0])
+                    break
+            tot_sites = regstart-1
+            # next, get the postiions of the simulated sites
             f = open(self.command.a[1],'r')
             for line in f:
-                if tot_sites == -1:
+                if tot_sites == regstart-1:
                     tot_sites += 1
                     continue
                 data = line.strip().split(';')
@@ -610,13 +624,12 @@ class Simulation:
                 if(re.search(',',data[0])):
                     posdict[locus] = [tot_sites,tot_sites+int(fields[0])]
                     locus+=1 
-                
                 tot_sites += int(fields[0])
 
         sfs = [0 for i in range(0,self.command.n[pop]-1)]
 
         for mut in self.muts:
-            if regstart > -1:
+            if start !=  -1:
                 if not (mut.pos+posdict[mut.locus][0] >= start and mut.pos+posdict[mut.locus][0] <= stop):
                     continue
             if pop in mut.chrs and mut.fixed_pop[pop] == 0 and -1 not in mut.chrs[pop] and mut.pops_numchr[pop] != self.command.n[pop]:

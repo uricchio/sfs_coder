@@ -1,0 +1,8 @@
+Use of uninitialized value in subtraction (-) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 111.
+Use of uninitialized value in subtraction (-) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 111.
+Use of uninitialized value in numeric gt (>) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 183.
+Use of uninitialized value in numeric gt (>) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 183.
+Use of uninitialized value in numeric lt (<) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 186.
+Use of uninitialized value in numeric le (<=) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 189.
+Use of uninitialized value in numeric le (<=) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 189.
+Use of uninitialized value in numeric ge (>=) at /netapp/home/lawrence.uricchio/sfs_coder/src/../src/req/ExtractExons.pl line 189.

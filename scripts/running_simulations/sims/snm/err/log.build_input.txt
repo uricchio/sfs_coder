@@ -1,0 +1,10 @@
+read 0 after genes file
+read 0 after UTR file
+read 10 regions overall
+total simulated (excluding overlap) = 309
+total neutral regions = 0; len = 0
+simulating bases:
+4192958 4194459
+recMap = 9.897835486014 (4193426) - 9.89945876257723 (4194597)
+minMap=9.897835486014
+maxMap=9.89945876257723
