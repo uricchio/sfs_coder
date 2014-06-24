@@ -7,7 +7,6 @@ import command
 import ms
 import re
 import sys
-#import matplotlib
 from collections import defaultdict
 from os.path import exists
 
@@ -159,7 +158,7 @@ class Simulation:
         #for mut in self.muts:
         #    print mut.multiallelic
         
-    def calc_S(self,multi_skip=True,loci=[],pop=0):
+    def calc_S(self,multi_skip=True,loci=[],pop=0,input_log='',start=-1,stop=-1):
      
         """
         calculate the number of segretating sites within all
@@ -173,6 +172,14 @@ class Simulation:
              Array of loci over which to calculate the number of segregating
              sites.  Uses all loci if this is left blank.
         """
+ 
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if len(loci) == 0:
+                return None
+
         if len(loci) == 0:
             loci = range(0,len(self.command.L))
 
@@ -202,7 +209,7 @@ class Simulation:
             nums.append(num)    
         return nums[pop]  
 
-    def calc_watt(self,pop=0,loci=[]):
+    def calc_watt(self,pop=0,loci=[],input_log='',start=-1,stop=-1):
         
         """
         Calculate Watterson's estimator of pi for a set of loci
@@ -216,6 +223,14 @@ class Simulation:
              Array of loci to use in the calculation. If empty,
              uses all loci.
         """
+        
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if len(loci == 0):
+                return None
+
         if len(loci) == 0:
             loci = range(0,len(self.command.L))
         
@@ -239,7 +254,7 @@ class Simulation:
         
         return watt        
 
-    def calc_theta_H(self, pop=0, multi_skip=False,loci=[]):
+    def calc_theta_H(self, pop=0, multi_skip=False,loci=[],input_log='',start=-1,stop=-1):
 
         """
         Calculate theta_H.
@@ -258,6 +273,13 @@ class Simulation:
  
         """
 
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if len(loci) == 0:
+                return None
+
         if len(loci) == 0:
             loci = range(0, len(self.command.L))
 
@@ -274,7 +296,9 @@ class Simulation:
             if locus not in self.loci:
                 continue
             for pos in self.loci[locus]:
-                for mut in self.loci[locus][pos]:    
+                for mut in self.loci[locus][pos]: 
+                    if pop not in mut.chrs:
+                       continue   
                     if (mut.multiallelic == True and multi_skip==True):
                         continue
                     if -1 in mut.chrs[pop]:
@@ -287,7 +311,7 @@ class Simulation:
 
         return tot
 
-    def calc_tajD(self,pop=0,loci=[]):
+    def calc_tajD(self,pop=0,loci=[],input_log='',start=-1,stop=-1):
   
         """
         Calculate Tajima's D
@@ -303,6 +327,12 @@ class Simulation:
 
         """
 
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if(len(loci) == 0):
+               return None
 
         if len(loci) == 0:
             loci = range(0,len(self.command.L)) 
@@ -350,7 +380,7 @@ class Simulation:
 
         return numerator/denom
 
-    def calc_ZnS(self, pop = 0, loci=[]):
+    def calc_ZnS(self, pop = 0, loci=[],input_log='',start=-1,stop=-1):
 
         """
         Calculate ZnS.
@@ -365,6 +395,13 @@ class Simulation:
              calculates over all loci.
 
         """
+
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if len(loci) == 0:
+                return None
 
         if len(loci) == 0:
             loci = range(0,len(self.command.L))
@@ -397,7 +434,7 @@ class Simulation:
 
         return ZnS
  
-    def calc_pi(self,multi_skip=True,loci=[]):
+    def calc_pi(self,multi_skip=True,loci=[],input_log='',start=-1,stop=-1):
         
         """ 
         calculate the mean pairwise diversity per site
@@ -424,9 +461,16 @@ class Simulation:
   
         """
 
+        if start != -1:
+            loci = []
+            regstart = self.get_region_start(input_log=input_log)
+            loci = self.get_loci_within_coordinates(regstart=regstart,start=start,stop=stop)
+            if(len(loci) == 0):
+                return []
 
         pis = []
         tot = 0
+        
         if len(loci) == 0:
             loci= self.loci  
             tot = self.command.n_sites
@@ -506,7 +550,7 @@ class Simulation:
              population number
              
         """
-
+        
         fit = {}             
 
         if pop not in self.command.n:
@@ -557,6 +601,9 @@ class Simulation:
                                 fit[chr] += mut.fit
         f = 1
         i = 0
+ 
+        finalfits = []
+  
         for chr in range(0, self.command.n[pop]):
             if self.command.Z != 0:
                 f += fit[chr]
@@ -565,20 +612,96 @@ class Simulation:
                     newfit = f - int(self.command.P[0])
                     if newfit < 0:
                         newfit = 0
-                    print newfit,
+                    finalfits.append(newfit)
                     f = 1
             else:
                 i+=1               
                 f *= fit[chr]
                 if i % int(self.command.P[0]) == 0: 
-                    print f,
+                    finalfits.append(f)
                     f = 1
 
-        print
+        return finalfits
 
-        return
+    def get_region_start(self,input_log=''):
+        
+        if(input_log == ''):
+            print 'you must specify an input_log file!'
+            print 'This file is typically created by the genomic method,'
+            print 'and is stored in the \'err\' directory inside the sims directory'
+        
+        regstart = 0 
+        r= open(input_log, 'r')
+        next = 0
+        
+        for line in r:
+            if re.search('simulating bases:', line):
+                next += 1
+                continue
+            if next > 0:
+                data = line.strip().split(' ')
+                regstart = int(data[0])
+                break
+        return regstart
 
+    def get_genomic_coordinates(self,regstart=-1):
+        
+        posdict = {}
+        tot_sites = regstart-1
 
+        f = open(self.command.a[1],'r')
+        locus = 0
+        for line in f:
+            if tot_sites == regstart-1:
+                tot_sites += 1
+                continue
+            data = line.strip().split(';')
+            fields = data[0].split(',')
+            if(re.search(',',data[0])):
+                posdict[locus] = [tot_sites,tot_sites+int(fields[0])]
+                locus+=1
+            tot_sites += int(fields[0])
+        
+        return posdict
+    
+    def get_loci_within_coordinates(self,regstart=-1,start=-1,stop=-1):
+        
+        # get the loci that are within a set of
+        # genomic cooridinates
+     
+        def overlaps(s1,e1,s2,e2):
+        
+            if(s2 >= s1 and s2 <= e1):
+                 return True
+            if(s1 >= s2 and s1 <= e2):
+                 return True
+            return False
+
+        locdict = {}
+        tot_sites = regstart-1
+
+        f = open(self.command.a[1],'r')
+        locus = 0
+        for line in f:
+            if tot_sites == regstart-1:
+                tot_sites += 1
+                continue
+            data = line.strip().split(';')
+            fields = data[0].split(',')
+            if(re.search(',',data[0])):
+                if overlaps(tot_sites,tot_sites+int(fields[0]),start,stop):
+                    locdict[locus] = 0
+                locus+=1
+            
+            tot_sites += int(fields[0])
+            if tot_sites > stop:
+                break         
+        loci = [] 
+        for locus in sorted(locdict):
+            loci.append(locus)
+
+        return loci
+  
     def get_sfs(self, pop=0, NS=True, SYN=True, input_log='',start=-1,stop=-1):
 
         """
@@ -589,43 +712,18 @@ class Simulation:
           * *pop=0*
              population number
         """         
-
+        
         import re
-        posdict = {}
-        locus = 0
+        
         regstart = -1
+        posdict = {}
 
         # fisrt, get the actual start point of the simulation
+        
         if start != -1:
-            if(input_log == ''):
-                print 'you must specify an input_log file!'
-                print 'This file is typically created by the genomic method,'
-                print 'and is stored in the \'err\' directory inside the sims directory'
-                exit()
-            r= open(input_log, 'r')
-            next = 0
-            for line in r:
-                if re.search('simulating bases:', line):
-                    next += 1
-                    continue
-                if next > 0:
-                    data = line.strip().split(' ')
-                    regstart = int(data[0])
-                    break
-            tot_sites = regstart-1
-            # next, get the postiions of the simulated sites
-            f = open(self.command.a[1],'r')
-            for line in f:
-                if tot_sites == regstart-1:
-                    tot_sites += 1
-                    continue
-                data = line.strip().split(';')
-                fields = data[0].split(',')
-                if(re.search(',',data[0])):
-                    posdict[locus] = [tot_sites,tot_sites+int(fields[0])]
-                    locus+=1 
-                tot_sites += int(fields[0])
-
+            regstart = self.get_region_start(input_log=input_log)
+            posdict = self.get_genomic_coordinates(regstart=regstart)
+        
         sfs = [0 for i in range(0,self.command.n[pop]-1)]
 
         for mut in self.muts:
