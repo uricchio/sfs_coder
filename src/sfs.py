@@ -702,7 +702,7 @@ class Simulation:
 
         return loci
   
-    def get_sfs(self, pop=0, NS=True, SYN=True, input_log='',start=-1,stop=-1):
+    def get_sfs(self, pop=0, NS=True, SYN=True, NC=True,input_log='',start=-1,stop=-1):
 
         """
         compute the site frequency specutrum for a population
@@ -731,9 +731,9 @@ class Simulation:
                 if not (mut.pos+posdict[mut.locus][0] >= start and mut.pos+posdict[mut.locus][0] <= stop):
                     continue
             if pop in mut.chrs and mut.fixed_pop[pop] == 0 and -1 not in mut.chrs[pop] and mut.pops_numchr[pop] != self.command.n[pop]:
-                if NS == True and mut.non_or_syn==1:
+                if NS == True and mut.ancest != mut.deriv_aa:
                     sfs[mut.pops_numchr[pop]-1]+=1
-                elif SYN == True and mut.non_or_syn==0:
+                elif SYN == True and mut.ancest ==  mut.deriv_aa and mut.ancest != 'X':
                     sfs[mut.pops_numchr[pop]-1]+=1
         return sfs
 
@@ -877,12 +877,115 @@ class Simulation:
         for mut in self.muts:
             print mut.effect
 
+    def sim_pheno_EW_alt(self,pop=0,rho=1.,var_prop=1):
+
+        # like the EW model, but allowing us to preselect rho
+        # and also having same variance on every variant 
+        # (bigfer variants do not have noisier reltationship
+        # with effect size)
+
+        from scipy.stats import norm,pearsonr
+        from numpy import mean,var
+
+        effects = []
+        fits = []
+
+        for mut in self.muts:
+            fits.append(mut.fit)
+
+        mean_fit = mean(fits)
+        sd_fits = var(fits)**0.5
+        
+        sd_fit_effect = (sd_fits)*(1./(rho**2)-1)**0.5
+  
+
+        for mut in self.muts:
+            mut.effect = mut.fit + norm.rvs(scale=sd_fit_effect)
+            effects.append(mut.effect)
+
+        if pop not in self.haplo:
+            self.haplotype(pop)
+
+        num = 0
+        phenos = [0 for i in range(0, self.command.n[pop]/2)]
+        pheno =0
+
+        for chr in self.haplo[pop]:
+            if(len(chr) != len(effects)):
+                print >> sys.stderr, "Error: not every site has an effect size"
+                exit()
+            for j in range(0, len(chr)):
+                pheno += chr[j]*effects[j]
+            if num % 2 != 0:
+                phenos[num/2-1] = pheno
+                pheno = 0
+            num += 1
+
+        gen_var = var(phenos)
+
+        if gen_var > 0.:
+            env_var = gen_var*(1-var_prop)/(var_prop)
+        else:
+            env_var = 1.
+
+        for i in range(0, len(phenos)):
+            phenos[i] += norm.rvs(scale=env_var**0.5)
+
+        for pheno in phenos:
+            print pheno,
+        print
+    
+    def sim_pheno_EW(self,pop=0,sigma=1.,tau=1.,var_prop=0.5):
+
+        # like the EW model, but allowing us to preselect rho
+        # and also having same variance on every variant 
+        # (bigfer variants do not have noisier reltationship
+        # with effect size)
+
+        from scipy.stats import norm,pearsonr
+        from numpy import mean,var
+
+        effects = []
+
+        for mut in self.muts:
+            effects.append((mut.fit**tau)*(1+norm.rvs(scale=sigma)))
+
+        if pop not in self.haplo:
+            self.haplotype(pop)
+
+        num = 0
+        phenos = [0 for i in range(0, self.command.n[pop]/2)]
+        pheno =0
+
+        for chr in self.haplo[pop]:
+            if(len(chr) != len(effects)):
+                print >> sys.stderr, "Error: not every site has an effect size"
+                exit()
+            for j in range(0, len(chr)):
+                pheno += chr[j]*effects[j]
+            if num % 2 != 0:
+                phenos[num/2-1] = pheno
+                pheno = 0
+            num += 1
+
+        gen_var = var(phenos)
+
+        if gen_var > 0.:
+            env_var = gen_var*(1-var_prop)/(var_prop)
+        else:
+            env_var = 1.
+
+        for i in range(0, len(phenos)):
+            phenos[i] += norm.rvs(scale=env_var**0.5)
+
+        for pheno in phenos:
+            print pheno,
+        print
+
     def sim_pheno(self,c=1.,spread=0.01,pop=0,var_prop=0.01):
 
-        from scipy.stats import norm
+        from scipy.stats import norm,gamma
         from numpy import mean, var
-        from scipy.stats import gamma
-        import sys
 
         if var_prop <0. or var_prop >1.:
             print "var_prop is the proportion of variance in the",
@@ -891,7 +994,7 @@ class Simulation:
             exit()
 
         if 'W' not in self.command.__dict__ or len(self.command.W) == 0:
-            sys.stderr.write("This simulation not under selection,")
+            sys.stderr.write("Is this simulation not under selection?")
             sys.stderr.write("setting var_prop to 0!\n")
             var_prop = 0.
             mean = 0.
@@ -904,7 +1007,7 @@ class Simulation:
         effects = []
 
         for mut in self.muts:
-            mut.effect = mut.fit*c #+ norm.rvs(scale=spread*(c*mean))
+            mut.effect = mut.fit*c + norm.rvs(scale=spread*(c*mean))
             effects.append(mut.effect)
 
         if pop not in self.haplo:
