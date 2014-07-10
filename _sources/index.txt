@@ -12,6 +12,7 @@ sfs_coder documentation
    Installation </rstfiles/install>
    Running simulations </rstfiles/execute>
    Analyzing the output </rstfiles/analyze>
+   Some details and troubleshooting </rstfiles/guts>
    Plotting </rstfiles/plot>  
 
 sfs_coder Classes and methods

@@ -1,0 +1,42 @@
+The guts of sfs_coder
+*********************
+
+sfs_coder has an object oriented structure.  The main classes are Mutation,
+Simulation, and SFSCommand.  The Mutation class stores detauls relevant to
+each variable site in the simulation (including sites that have fixed in the
+output).  The Simulation class stores details relevant to every mutation 
+within the simulation or the simulation as a whole (such as the number 
+of simulated loci and the distances between them) and provides a number of 
+methods for analyzing data.  The SFSCommand class stores details that pertain 
+to command lines and allows for building commands and analyzing data.
+
+In the next few subsections, I discuss a few relevant details of the 
+organization and use of each class, but please refer to the section
+``sfs_coder Classes and methods'' section of this documentation for further 
+details.
+
+Mutation class
+==============
+
+Each Mutation instance has several attributes which correspond to the output
+from SFS_CODE.  Briefly, SFS_CODE outputs a comma delimited string similar to
+the following for each mutation within a simulation:
+
+0,A,483,5574,5676,GGG,T,1,G,C,-4.613899e-03,5,2.1080,2.1850,2.2951,2.3299,2.4194;
+
+Each field is explained in detail in the sfs_code documentation 
+(sfs_code.sourceforge.com).  The correspond to 
+
+1) locus number (0-based)
+2) Autosomal/X/Y 
+3) position in locus (0-based)
+4) Generation mutation occurred 
+5) Generation mutation fixed (time of sampling if not fixed)
+6) Ancestral tri-nucleotide
+7) Derived nucleotide
+8) Synonymouys (0) or non-synonymous (1) (0 is used for non-coding)
+9) Ancestral amino acid
+10) Derived amino acid
+11) Fitness effect (s)
+12) Number of chromosomes that carry mutation 
+13) comma delimited list of chromosomes carrying mutation (-1 indicates all chromosomes)
