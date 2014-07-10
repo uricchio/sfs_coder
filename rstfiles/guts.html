@@ -72,23 +72,78 @@ details.</p>
 from SFS_CODE.  Briefly, SFS_CODE outputs a comma delimited string similar to
 the following for each mutation within a simulation:</p>
 <p>0,A,483,5574,5676,GGG,T,1,G,C,-4.613899e-03,5,2.1080,2.1850,2.2951,2.3299,2.4194;</p>
-<p>Each field is explained in detail in the _SFS_CODE: <a class="reference external" href="http://sfscode.sourceforge.net">http://sfscode.sourceforge.net</a>
-documentation.  The fields correspond to</p>
+<p>Each field is explained in detail in the SFS_CODE documentation
+(<a class="reference external" href="http://sfscode.sourceforge.net">http://sfscode.sourceforge.net</a>). Suppose we have a Mutation object named mut.
+The fields correspond to:</p>
 <ol class="arabic simple">
-<li>locus number (0-based)</li>
-<li>Autosomal/X/Y</li>
-<li>position in locus (0-based)</li>
-<li>Generation mutation occurred</li>
-<li>Generation mutation fixed (time of sampling if not fixed)</li>
-<li>Ancestral tri-nucleotide</li>
-<li>Derived nucleotide</li>
-<li>Synonymouys (0) or non-synonymous (1) (0 is used for non-coding)</li>
-<li>Ancestral amino acid</li>
-<li>Derived amino acid</li>
-<li>Fitness effect (s)</li>
-<li>Number of chromosomes that carry mutation</li>
-<li>comma delimited list of chromosomes carrying mutation (-1 indicates all chromosomes)</li>
+<li>locus number (0-based) -&gt; mut.locus</li>
+<li>Autosomal/X/Y -&gt; mut.AXY</li>
+<li>position in locus (0-based) -&gt; mut.pos</li>
+<li>Generation mutation occurred -&gt; mut.t_int</li>
+<li>Generation mutation fixed (time of sampling if not fixed) -&gt; mut.t_fix</li>
+<li>Ancestral tri-nucleotide -&gt; mut.tri_nuc</li>
+<li>Derived nucleotide -&gt; mut.deriv_N</li>
+<li>Synonymouys (0) or non-synonymous (1) (0 is used for non-coding) -&gt; mut.non_or_syn</li>
+<li>Ancestral amino acid -&gt; mut.ancest</li>
+<li>Derived amino acid -&gt; mut.deriv_aa</li>
+<li>Fitness effect (s) -&gt; mut.fit</li>
+<li>Number of chromosomes that carry mutation -&gt; mut.pops_numchr</li>
+<li>comma delimited list of chromosomes carrying mutation (-1 indicates all chromosomes)
+-&gt; mut.chrs</li>
 </ol>
+<p>Most of the attributes are pretty straightforward, but a few are stored as dictionaries.
+The reason we&#8217;ve done this is because some data points can vary between populations
+(e.g., the time that a mutation fixes) and others are population invariant (e.g., position).</p>
+<p>So if you want to access a fixation time, list of chromosomes carrying the mutation,
+or the number of chromosomes carrying the mutation within a given population, all of these
+attributes are accessed as mut.&lt;attribute_name&gt;[pop] where pop is the number of the
+population of interest.  For example, mut.chrs[0] is a dictionary of chromosomes that carry
+the mutation in the 0th population.</p>
+</div>
+<div class="section" id="simulation-class">
+<h2>Simulation class<a class="headerlink" href="#simulation-class" title="Permalink to this headline">¶</a></h2>
+<p>The Simulation class keeps track of a few essential things, such as the command line
+that was used to generate the data and the Mutation objects in the simulation.</p>
+<p>Notably, Mutation objects are stored both as a list (self.muts) and a dictionary (self.loci).
+The reason for this is that sometimes we don&#8217;t want to go through every Mutation when
+computing something (e.g., the diversity within a particular locus).</p>
+<p>The Simulation class provides methods for computing pi, ZnS, S, Tajima&#8217;s D, theta_H,
+and Watterson&#8217;s theta. Other statistics will be forthcoming. It is possible to compute these
+statistics either for every site in the simulation, for a specified list of loci, or
+for a specified set of genomic coordinates in the case of simulations that use the
+&#8220;genomic&#8221; method.</p>
+<p>The Simulation class also provides the ability to simulate phenotypes under some canonical
+models.  Details on this functionality will be forthcoming shortly.</p>
+</div>
+<div class="section" id="sfscommand-class">
+<h2>SFSCommand class<a class="headerlink" href="#sfscommand-class" title="Permalink to this headline">¶</a></h2>
+<p>This class stores and parses command lines.  The command line is necessary in order to
+analyze the output of an SFS_CODE simulation becuse we need to know the number of simulated
+sites, the number of sampled chromosomes, the number of populations, etc.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>1) The long form swtiches for SFS_CODE are NOT currently supported.  Thus, if you run
+a simulation with the option &#8216;-t 0.001&#8217; you&#8217;re good to go but &#8216;&#8211;theta 0.001&#8217; could
+cause you problems.  If you use sfs_coder to run your simulations you (hopefully!) should
+not have any problems, but if you ran SFS_CODE on your own and used these options it may not
+be feasible to use sfs_coder to analyze the output.</p>
+<p>2) sfs_coder was designed with the hope that it will be easy to use.  It is not designed to be
+fast.  Sorry.  I may try to make performance improvements over time but no promises.</p>
+<p>3) If you&#8217;re using the &#8216;genomic&#8217; method to build your simulations, sfs_coder creates a bunch
+of files that detail the start and end points of the simulation, the recombination map for
+the region of interest, and all the simulated genomic elements.  If you move these files
+posthoc, sfs_coder will not be able to find them because it gets their file paths from
+the sfs_code command line, which is the first line in the output file.  So don&#8217;t move those
+files.</p>
+<p>I admit this could be a problem if you like to do your simulations on one machine and your
+analysis on another machine. If enough people complain about this I will add functionality
+to allow the user to specify the locations of the files on the local machine.</p>
+</div>
+<div class="section" id="department-of-complaints">
+<h2>Department of Complaints<a class="headerlink" href="#department-of-complaints" title="Permalink to this headline">¶</a></h2>
+<p>Feel free to email Lawrence at <a class="reference external" href="mailto:lawrence&#46;uricchio&#37;&#52;&#48;ucsf&#46;edu">lawrence<span>&#46;</span>uricchio<span>&#64;</span>ucsf<span>&#46;</span>edu</a> about problems. We hope this
+software will be useful, so if we can facilitate your research then we are happy to help.</p>
 </div>
 </div>
 
@@ -102,6 +157,10 @@ documentation.  The fields correspond to</p>
   <ul>
 <li><a class="reference internal" href="#">The guts of sfs_coder</a><ul>
 <li><a class="reference internal" href="#mutation-class">Mutation class</a></li>
+<li><a class="reference internal" href="#simulation-class">Simulation class</a></li>
+<li><a class="reference internal" href="#sfscommand-class">SFSCommand class</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li><a class="reference internal" href="#department-of-complaints">Department of Complaints</a></li>
 </ul>
 </li>
 </ul>
