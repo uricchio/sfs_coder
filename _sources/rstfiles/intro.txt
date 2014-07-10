@@ -24,7 +24,7 @@ sfs_coder is currently under developement and will be released in a few
 months.  We don't expect these pages to get much traffic at the moment
 but we have put them online for our development team. If you have stumbled
 accross them and have any suggestions or would like to inquire about the 
-development feel free to email Lawrence (uricchio@berkeley.edu).
+development feel free to email Lawrence (lawrence.uricchio@ucsf.edu).
 
 sfs_coder will be free to use and distribute for personal or academic use.  
 We hope that you will find it useful.
