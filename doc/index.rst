@@ -6,19 +6,22 @@ sfs_coder documentation
 #######################
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    Introduction </rstfiles/intro>
    Installation </rstfiles/install>
    Running simulations </rstfiles/execute>
    Analyzing the output </rstfiles/analyze>
-   Some details and troubleshooting </rstfiles/guts>
+   Some details and troubleshooting </rstfiles/dets>
    Plotting </rstfiles/plot>  
 
 sfs_coder Classes and methods
 =============================
 
-.. automodule:: sfscoder
+.. automodule:: sfscoder.command
+   :members:
+
+.. automodule:: sfscoder.sfs
    :members:
 
 indices and tables

@@ -1,13 +1,57 @@
+Downloading and Installing
+**************************
+
+A link to the sfs_coder tarball will appear here at release.
+
 Installation
-************
+============
 
-sfs_coder does not require any installation of its own in order 
-to get its basic functionality.  Just download the source and alter the 
-PYTHONPATH variable on your machine so that python knows where to find the 
-modules (see the section on "Importing" below). 
+Installation is handled by python's distutils.
 
-However, some methods within sfs_coder require external software in order to 
-run.
+Using a terminal, execute the following commands:
+
+1) cd into the sfs_coder source directory.
+
+   .. code-block:: none
+     
+      cd /path/to/sfs_coder
+
+2) run setup.py install
+
+   .. code-block:: none
+   
+      python setup.py install
+      
+If you don't get any errors with the above steps,
+you should be able to open python and import sfscoder.
+
+    .. code-block:: none
+      
+      python
+  
+    .. code-block:: python
+
+      import sfscoder
+
+If you still don't have any errors, you're good to go.
+
+Installing if you don't have admin status on your machine
+---------------------------------------------------------
+
+It's possible you will get a "permission denied" error after
+step 2 if you don't have write access to the default install 
+location on your machine.  In that case, try
+
+     .. code-block:: none
+
+        python setup.py install --user
+
+which should install in a location that you have access to.
+Repeat the last two steps above to make sure it's working
+(i.e., try to import sfscoder).  If it's still not working
+feel free to contact us.  We've only tested this on a few 
+Unix based platforms and it's possible (likely?) that 
+some system specific problems could pop up. 
 
 Required dependencies
 =====================
@@ -43,73 +87,22 @@ Optional dependencies
 Importing sfs_coder's modules             
 =============================
 
-Python uses the PYTHONPATH system variable to search for modules that are 
-imported.  Suppose we download sfs_coder and store it in the directory 
-'~/sfs_coder', and then we try to execute the following script called 
-'basic.py':
+All of the tools to execute simulations and analyze command
+lines are in the command module.
 
 .. code-block:: python
 
-   import command
+   from sfscoder import command
 
-   com = SFSCommand()
+   com = command.SFSCommand()
 
-If the directory that contains command.py ('~/sfs_coder/src' by default) is not 
-included in the PYTHONPATH variable, this will result in an error similar to 
-the following:
 
-.. code-block:: python
-
-   Traceback (most recent call last):
-     File "basic.py", line 13, in <module>
-       import command
-   ImportError: No module named command
-
-Python does not know where the command module is!  To fix this, we can add the
-'~/sfs_coder/src' directory to the PYTHONPATH variable in a couple different 
-ways.
-
-Adding the sfs_coder source directory to PYTHONPATH in .bashrc
---------------------------------------------------------------
-
-If you execute your scripts at the command line with a bash shell, you can add
-a line to your .bashrc file that will fix this problem and allow you to run the
-above script.  
-
-.. code-block:: bash
-
-   export PYTHONPATH=$PYTHONPATH:~/sfs_coder/src
-
-The .bashrc file exists in your home directory and is read by bash every time 
-you open a new shell.  If a file called .bashrc doesn't exist in your home 
-directory you can create it.
-
-Of course, if the path to your sfs_coder 'src' directory is different than
-above you will need to provide the path to your copy of this directory. Note
-that you will need to relaunch bash (open a new shell) once you have altered
-the .bashrc.  
-
-Note, this solution does not seem to work well with SGE (Sun Grid Engine) 
-clusters, I use the following solution for scripts that I run on a
-cluster.
-
-Adding the path to sfs_coder's source directory within a python script
-----------------------------------------------------------------------
-
-You can also add the path to sfs_coder's 'src' directory to any python script
-if for any reason you don't want to modify your .bashrc as above.  Assuming
-the same directory layout as the above example, we can use:
+All of the tools to analyze the output of SFS_CODE simulations
+are in the sfs module.
 
 .. code-block:: python
 
-   import sys
-   sys.path.append('~/sfs_coder/src')
-   import command
+   from sfscoder import sfs
 
-   com = SFSCommand()
-
-This adds '~/sfs_coder/src' to the PYTHONPATH variable within the script.
-Note that this solution requires us to add this line of code to every python
-script that imports something from sfs_coder, whereas the first solution allows 
-us to import the modules just like any other python modules.
+   mut = sfs.Mutation()
 

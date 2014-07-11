@@ -12,13 +12,13 @@ the software where the sfs_code binary is located.
 
 .. code-block:: python
 
-   import command
+   from sfscoder import command
   
    com = command.SFSCommand()
 
    com.sfs_code_loc = '/path/to/sfs_code'
 
-Next, we need to build a command line.  Although this process is very 
+Next, we need to build a command line.  Although this process is
 flexible (in fact we can build any command line that is accepted by SFS_CODE),
 we have prepackaged several models that may be of general interest.  For
 example, to simulate the model of Gutenkunst (2009, *PLoS Genetics*), we
@@ -26,7 +26,7 @@ call the following:
 
 .. code-block:: python
 
-   com.gutenkunst()
+   com.three_pop(model='gutenkunst')
 
    com.execute()   
 
@@ -39,7 +39,7 @@ as well as a few other examples.
 
 .. code-block:: python
 
-   import command
+   from sfscoder import command
    import os
    from random import randint
 
@@ -47,7 +47,7 @@ as well as a few other examples.
    com = command.SFSCommand(prefix='guten.N500')
 
    # build the command line for the Gutenkunst model, specifying some parameters
-   com.gutenkunst(N=500,nsam=50,nsim=10)
+   com.three_pop(N=500,nsam=50,nsim=10,model='gutenkunst')
 
    # set the location of the sfs_code binary
    com.sfs_code_loc = os.path.join(os.path.expanduser('~'),
@@ -63,7 +63,7 @@ Adding selection
 ^^^^^^^^^^^^^^^^
 .. code-block:: python
    
-   import command
+   from sfscoder import command
    import os
    from random import randint
 
@@ -81,7 +81,7 @@ Adding selection
 
    # set the location of sfs_code
    com.sfs_code_loc = os.path.join(os.path.expanduser('~'),
-                       'rotations/hernandez/software/sfs_code/bin/sfs_code')
+                       'path/to/sfs_code')
 
    # execute the command 
    com.execute(rand=randint(1,100000))
@@ -91,7 +91,7 @@ Simulations with realistic genomic structure and demography
 
 .. code-block:: python
 
-   import command
+   from sfscoder import command
    import os
    from random import randint
 
@@ -102,7 +102,7 @@ Simulations with realistic genomic structure and demography
    com.genomic(N=100,model='gutenkunst',sel=False)
 
    # set the location of sfs_code
-   com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'rotations/hernandez/software/sfs_code/bin/sfs_code')
+   com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'path/to/sfs_code')
 
    # execute the command 
    com.execute(rand=randint(1,100000))
@@ -118,7 +118,7 @@ care of all the work of numbering the output files for you.
 For example, any of the above scripts can be sent to a cluster with the 
 following header:
 
-.. code-block:: python
+.. code-block:: none
 
    #!/usr/bin/python
    #$ -e sim.div.log
@@ -132,10 +132,7 @@ following header:
    #$ -l mem_free=1G
    #$ -l netapp=1G
 
-Note, you may also have alter your python path within the script to import sfs_coder's
-modules when using SGE (see the section "Adding the path to sfs_coder’s source directory 
-within a python script" on the install page of this documentation).
-
 Simulations of phenotypes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Coming soon.
