@@ -18,7 +18,10 @@ sfs_coder documentation
 sfs_coder Classes and methods
 =============================
 
-.. automodule:: sfscoder
+.. automodule:: sfscoder.command
+   :members:
+
+.. automodule:: sfscoder.sfs
    :members:
 
 indices and tables
