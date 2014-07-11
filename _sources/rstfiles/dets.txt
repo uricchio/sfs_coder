@@ -22,7 +22,10 @@ Each Mutation instance has several attributes which correspond to the output
 from SFS_CODE.  Briefly, SFS_CODE outputs a comma delimited string similar to
 the following for each mutation within a simulation:
 
-0,A,483,5574,5676,GGG,T,1,G,C,-4.613899e-03,5,2.1080,2.1850,2.2951,2.3299,2.4194;
+  .. code-block:: none
+
+     0,A,483,5574,5676,GGG,T,1,G,C,-4.613899e-03,5,2.1080,2.1850,2.2951,2.3299,2.4194;
+
 
 Each field is explained in detail in the SFS_CODE documentation 
 (http://sfscode.sourceforge.net). Suppose we have a Mutation object named mut. 
