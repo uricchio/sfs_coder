@@ -13,6 +13,7 @@ sfs_coder documentation
    Running simulations </rstfiles/execute>
    Analyzing the output </rstfiles/analyze>
    Some details and troubleshooting </rstfiles/dets>
+   A longer example </rstfiles/longex>
    Plotting </rstfiles/plot>  
 
 sfs_coder Classes and methods

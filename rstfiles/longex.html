@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Generating a .fam file &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
+    <link rel="next" title="Plotting" href="plot.html" />
+    <link rel="prev" title="The guts of sfs_coder" href="dets.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="dets.html" title="The guts of sfs_coder"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="generating-a-fam-file">
+<h1>Generating a .fam file<a class="headerlink" href="#generating-a-fam-file" title="Permalink to this headline">¶</a></h1>
+<p>Here, I walk through generating a .fam file, where columns
+are SNPs and rows are individuals. All the scripts for this
+example are contained in the folder scripts/generate_fam
+in the source code.</p>
+<div class="section" id="simulating-the-data">
+<h2>Simulating the data<a class="headerlink" href="#simulating-the-data" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s suppose we want to simulate the lactase persistance region
+on chromosome 2 (which is the default region for the genomic method).</p>
+<p>We run the following script:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
+<span class="c">#$ -e sim.div.log</span>
+<span class="c">#$ -o sim.div.log</span>
+<span class="c">#$ -S /usr/bin/python</span>
+<span class="c">#$ -cwd</span>
+<span class="c">#$ -r yes</span>
+<span class="c">#$ -l h_rt=240:00:00</span>
+<span class="c">#$ -t 1-1</span>
+<span class="c">#$ -l arch=linux-x64</span>
+<span class="c">#$ -l mem_free=100M</span>
+<span class="c">#$ -l netapp=1G</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
+
+<span class="c"># initialize a new SFS_CODE command</span>
+<span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;guten&#39;</span><span class="p">)</span>
+
+<span class="c"># build the command line for the gutenkunst model with lactase</span>
+<span class="n">com</span><span class="o">.</span><span class="n">genomic</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s">&#39;gutenkunst&#39;</span><span class="p">,</span><span class="n">sel</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">dense_dist</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c"># set the location of sfs_code, set the prefix of the out files</span>
+<span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span><span class="s">&#39;path/to/sfs_code&#39;</span><span class="p">)</span>
+
+<span class="c"># execute the command</span>
+<span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">rand</span><span class="o">=</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Generating a .fam file</a><ul>
+<li><a class="reference internal" href="#simulating-the-data">Simulating the data</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="dets.html"
+                        title="previous chapter">The guts of sfs_coder</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plot.html"
+                        title="next chapter">Plotting</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rstfiles/longex.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="dets.html" title="The guts of sfs_coder"
+             >previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
