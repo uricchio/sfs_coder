@@ -10,7 +10,7 @@
 #$ -l mem_free=1G
 #$ -l netapp=1G
 
-import command
+from sfscoder import command
 import os
 from random import randint
 

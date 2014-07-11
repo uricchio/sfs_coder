@@ -10,10 +10,8 @@
 #$ -l mem_free=100M
 #$ -l netapp=1G
 
-import sys
-sys.path.append('/netapp/home/lawrence.uricchio/sfs_coder/src')
-import command
 import os
+from sfscoder import command
 from random import randint
 
 # initialize a new SFS_CODE command

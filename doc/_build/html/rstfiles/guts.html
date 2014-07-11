@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The guts of sfs_coder &mdash; sfs_coder 0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
+    <link rel="next" title="Plotting" href="plot.html" />
+    <link rel="prev" title="Analyzing the output" href="analyze.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="analyze.html" title="Analyzing the output"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-guts-of-sfs-coder">
+<h1>The guts of sfs_coder<a class="headerlink" href="#the-guts-of-sfs-coder" title="Permalink to this headline">¶</a></h1>
+<p>sfs_coder has an object oriented structure.  The main classes are Mutation,
+Simulation, and SFSCommand.  The Mutation class stores detauls relevant to
+each variable site in the simulation (including sites that have fixed in the
+output).  The Simulation class stores details relevant to every mutation
+within the simulation or the simulation as a whole (such as the number
+of simulated loci and the distances between them) and provides a number of
+methods for analyzing data.  The SFSCommand class stores details that pertain
+to command lines and allows for building commands and analyzing data.</p>
+<p>In the next few subsections, I discuss a few relevant details of the
+organization and use of each class, but please refer to the section
+<a href="#id1"><span class="problematic" id="id2">``</span></a>sfs_coder Classes and methods&#8217;&#8217; section of this documentation for further
+details.</p>
+<div class="section" id="mutation-class">
+<h2>Mutation class<a class="headerlink" href="#mutation-class" title="Permalink to this headline">¶</a></h2>
+<p>Each Mutation instance has several attributes which correspond to the output
+from SFS_CODE.  Briefly, SFS_CODE outputs a comma delimited string similar to
+the following for each mutation within a simulation:</p>
+<p>0,A,483,5574,5676,GGG,T,1,G,C,-4.613899e-03,5,2.1080,2.1850,2.2951,2.3299,2.4194;</p>
+<p>Each field is explained in detail in the SFS_CODE documentation
+(<a class="reference external" href="http://sfscode.sourceforge.net">http://sfscode.sourceforge.net</a>). Suppose we have a Mutation object named mut.
+The fields correspond to:</p>
+<ol class="arabic simple">
+<li>locus number (0-based) -&gt; mut.locus</li>
+<li>Autosomal/X/Y -&gt; mut.AXY</li>
+<li>position in locus (0-based) -&gt; mut.pos</li>
+<li>Generation mutation occurred -&gt; mut.t_int</li>
+<li>Generation mutation fixed (time of sampling if not fixed) -&gt; mut.t_fix</li>
+<li>Ancestral tri-nucleotide -&gt; mut.tri_nuc</li>
+<li>Derived nucleotide -&gt; mut.deriv_N</li>
+<li>Synonymouys (0) or non-synonymous (1) (0 is used for non-coding) -&gt; mut.non_or_syn</li>
+<li>Ancestral amino acid -&gt; mut.ancest</li>
+<li>Derived amino acid -&gt; mut.deriv_aa</li>
+<li>Fitness effect (s) -&gt; mut.fit</li>
+<li>Number of chromosomes that carry mutation -&gt; mut.pops_numchr</li>
+<li>comma delimited list of chromosomes carrying mutation (-1 indicates all chromosomes)
+-&gt; mut.chrs</li>
+</ol>
+<p>Most of the attributes are pretty straightforward, but a few are stored as dictionaries.
+The reason we&#8217;ve done this is because some data points can vary between populations
+(e.g., the time that a mutation fixes) and others are population invariant (e.g., position).</p>
+<p>So if you want to access a fixation time, list of chromosomes carrying the mutation,
+or the number of chromosomes carrying the mutation within a given population, all of these
+attributes are accessed as mut.&lt;attribute_name&gt;[pop] where pop is the number of the
+population of interest.  For example, mut.chrs[0] is a dictionary of chromosomes that carry
+the mutation in the 0th population.</p>
+</div>
+<div class="section" id="simulation-class">
+<h2>Simulation class<a class="headerlink" href="#simulation-class" title="Permalink to this headline">¶</a></h2>
+<p>The Simulation class keeps track of a few essential things, such as the command line
+that was used to generate the data and the Mutation objects in the simulation.</p>
+<p>Notably, Mutation objects are stored both as a list (self.muts) and a dictionary (self.loci).
+The reason for this is that sometimes we don&#8217;t want to go through every Mutation when
+computing something (e.g., the diversity within a particular locus).</p>
+<p>The Simulation class provides methods for computing pi, ZnS, S, Tajima&#8217;s D, theta_H,
+and Watterson&#8217;s theta. Other statistics will be forthcoming. It is possible to compute these
+statistics either for every site in the simulation, for a specified list of loci, or
+for a specified set of genomic coordinates in the case of simulations that use the
+&#8220;genomic&#8221; method.</p>
+<p>The Simulation class also provides the ability to simulate phenotypes under some canonical
+models.  Details on this functionality will be forthcoming shortly.</p>
+</div>
+<div class="section" id="sfscommand-class">
+<h2>SFSCommand class<a class="headerlink" href="#sfscommand-class" title="Permalink to this headline">¶</a></h2>
+<p>This class stores and parses command lines.  The command line is necessary in order to
+analyze the output of an SFS_CODE simulation becuse we need to know the number of simulated
+sites, the number of sampled chromosomes, the number of populations, etc.</p>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>1) The long form swtiches for SFS_CODE are NOT currently supported.  Thus, if you run
+a simulation with the option &#8216;-t 0.001&#8217; you&#8217;re good to go but &#8216;&#8211;theta 0.001&#8217; could
+cause you problems.  If you use sfs_coder to run your simulations you (hopefully!) should
+not have any problems, but if you ran SFS_CODE on your own and used these options it may not
+be feasible to use sfs_coder to analyze the output.</p>
+<p>2) sfs_coder was designed with the hope that it will be easy to use.  It is not designed to be
+fast.  Sorry.  I may try to make performance improvements over time but no promises.</p>
+<p>3) If you&#8217;re using the &#8216;genomic&#8217; method to build your simulations, sfs_coder creates a bunch
+of files that detail the start and end points of the simulation, the recombination map for
+the region of interest, and all the simulated genomic elements.  If you move these files
+posthoc, sfs_coder will not be able to find them because it gets their file paths from
+the sfs_code command line, which is the first line in the output file.  So don&#8217;t move those
+files.</p>
+<p>I admit this could be a problem if you like to do your simulations on one machine and your
+analysis on another machine. If enough people complain about this I will add functionality
+to allow the user to specify the locations of the files on the local machine.</p>
+</div>
+<div class="section" id="department-of-complaints">
+<h2>Department of Complaints<a class="headerlink" href="#department-of-complaints" title="Permalink to this headline">¶</a></h2>
+<p>Feel free to email Lawrence at <a class="reference external" href="mailto:lawrence&#46;uricchio&#37;&#52;&#48;ucsf&#46;edu">lawrence<span>&#46;</span>uricchio<span>&#64;</span>ucsf<span>&#46;</span>edu</a> about problems. We hope this
+software will be useful, so if we can facilitate your research then we are happy to help.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The guts of sfs_coder</a><ul>
+<li><a class="reference internal" href="#mutation-class">Mutation class</a></li>
+<li><a class="reference internal" href="#simulation-class">Simulation class</a></li>
+<li><a class="reference internal" href="#sfscommand-class">SFSCommand class</a></li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li><a class="reference internal" href="#department-of-complaints">Department of Complaints</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="analyze.html"
+                        title="previous chapter">Analyzing the output</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plot.html"
+                        title="next chapter">Plotting</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/rstfiles/guts.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plot.html" title="Plotting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="analyze.html" title="Analyzing the output"
+             >previous</a> |</li>
+        <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lawrence Uricchio, Raul Torres, Ryan Hernandez.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

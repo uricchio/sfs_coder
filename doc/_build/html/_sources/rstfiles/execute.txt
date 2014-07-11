@@ -33,7 +33,7 @@ call the following:
 And that's it!  Of course, there are many more options that can be altered to
 modify the parameters of the simulation, such as the ancestral population size. 
 Please see the "scripts" directory in the top level of sfs_coder for more 
-complicated examples. Below, we include a slight modification of the above 
+examples. Below, we include a slight modification of the above 
 script that demonstrates some basic functionality that may be useful to users,
 as well as a few other examples.
 
@@ -132,6 +132,9 @@ following header:
    #$ -l mem_free=1G
    #$ -l netapp=1G
 
+Note, you may also have alter your python path within the script to import sfs_coder's
+modules when using SGE (see the section "Adding the path to sfs_coder’s source directory 
+within a python script" on the install page of this documentation).
 
 Simulations of phenotypes
 ^^^^^^^^^^^^^^^^^^^^^^^^^

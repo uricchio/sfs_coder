@@ -31,8 +31,7 @@ Optional dependencies
 
   .. _mpmath: https://code.google.com/p/mpmath/
 
-* `scipy`_ (*required for rescaled recurrent hitchhiking simulations and some 
-  methods in sfsplot*)
+* `scipy`_ (*required for rescaled recurrent hitchhiking simulations*)
 
   .. _scipy: http://www.scipy.org/
 
@@ -86,7 +85,13 @@ you open a new shell.  If a file called .bashrc doesn't exist in your home
 directory you can create it.
 
 Of course, if the path to your sfs_coder 'src' directory is different than
-above you will need to provide the path to your copy of this directory.
+above you will need to provide the path to your copy of this directory. Note
+that you will need to relaunch bash (open a new shell) once you have altered
+the .bashrc.  
+
+Note, this solution does not seem to work well with SGE (Sun Grid Engine) 
+clusters, I use the following solution for scripts that I run on a
+cluster.
 
 Adding the path to sfs_coder's source directory within a python script
 ----------------------------------------------------------------------

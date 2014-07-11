@@ -3,7 +3,7 @@
 #
 
 import sys
-import sfs
+from sfscoder import sfs
 
 # an sfs_code output file that we will analyze
 f =sys.argv[1]
