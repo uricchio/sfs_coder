@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="sfs_coder 0 documentation" href="../index.html" />
     <link rel="next" title="Analyzing the output" href="analyze.html" />
-    <link rel="prev" title="Installation" href="install.html" /> 
+    <link rel="prev" title="Downloading and Installing" href="install.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="analyze.html" title="Analyzing the output"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installation"
+          <a href="install.html" title="Downloading and Installing"
              accesskey="P">previous</a> |</li>
         <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
       </ul>
@@ -60,14 +60,14 @@
 of code.</p>
 <p>First, we import the command module, initialize an SFSCommand object, and tell
 the software where the sfs_code binary is located.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
 
 <span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">()</span>
 
 <span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="s">&#39;/path/to/sfs_code&#39;</span>
 </pre></div>
 </div>
-<p>Next, we need to build a command line.  Although this process is very
+<p>Next, we need to build a command line.  Although this process is
 flexible (in fact we can build any command line that is accepted by SFS_CODE),
 we have prepackaged several models that may be of general interest.  For
 example, to simulate the model of Gutenkunst (2009, <em>PLoS Genetics</em>), we
@@ -83,7 +83,7 @@ Please see the &#8220;scripts&#8221; directory in the top level of sfs_coder for
 examples. Below, we include a slight modification of the above
 script that demonstrates some basic functionality that may be useful to users,
 as well as a few other examples.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
 
@@ -91,7 +91,7 @@ as well as a few other examples.</p>
 <span class="n">com</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">SFSCommand</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&#39;guten.N500&#39;</span><span class="p">)</span>
 
 <span class="c"># build the command line for the Gutenkunst model, specifying some parameters</span>
-<span class="n">com</span><span class="o">.</span><span class="n">gutenkunst</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">nsam</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">nsim</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">com</span><span class="o">.</span><span class="n">three_pop</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">nsam</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span><span class="n">nsim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s">&#39;gutenkunst&#39;</span><span class="p">)</span>
 
 <span class="c"># set the location of the sfs_code binary</span>
 <span class="n">com</span><span class="o">.</span><span class="n">sfs_code_loc</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s">&#39;~&#39;</span><span class="p">),</span>
@@ -106,7 +106,7 @@ as well as a few other examples.</p>
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="adding-selection">
 <h3>Adding selection<a class="headerlink" href="#adding-selection" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
 
@@ -133,7 +133,7 @@ as well as a few other examples.</p>
 </div>
 <div class="section" id="simulations-with-realistic-genomic-structure-and-demography">
 <h3>Simulations with realistic genomic structure and demography<a class="headerlink" href="#simulations-with-realistic-genomic-structure-and-demography" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">command</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
 
@@ -158,25 +158,23 @@ If you submit an sfs_coder script to a cluster as an array job, it will take
 care of all the work of numbering the output files for you.</p>
 <p>For example, any of the above scripts can be sent to a cluster with the
 following header:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
-<span class="c">#$ -e sim.div.log</span>
-<span class="c">#$ -o sim.div.log</span>
-<span class="c">#$ -S /usr/bin/python</span>
-<span class="c">#$ -cwd</span>
-<span class="c">#$ -r yes</span>
-<span class="c">#$ -l h_rt=240:00:00</span>
-<span class="c">#$ -t 1-100</span>
-<span class="c">#$ -l arch=linux-x64</span>
-<span class="c">#$ -l mem_free=1G</span>
-<span class="c">#$ -l netapp=1G</span>
+<div class="highlight-none"><div class="highlight"><pre>#!/usr/bin/python
+#$ -e sim.div.log
+#$ -o sim.div.log
+#$ -S /usr/bin/python
+#$ -cwd
+#$ -r yes
+#$ -l h_rt=240:00:00
+#$ -t 1-100
+#$ -l arch=linux-x64
+#$ -l mem_free=1G
+#$ -l netapp=1G
 </pre></div>
 </div>
-<p>Note, you may also have alter your python path within the script to import sfs_coder&#8217;s
-modules when using SGE (see the section &#8220;Adding the path to sfs_coder’s source directory
-within a python script&#8221; on the install page of this documentation).</p>
 </div>
 <div class="section" id="simulations-of-phenotypes">
 <h3>Simulations of phenotypes<a class="headerlink" href="#simulations-of-phenotypes" title="Permalink to this headline">¶</a></h3>
+<p>Coming soon.</p>
 </div>
 </div>
 </div>
@@ -204,7 +202,7 @@ within a python script&#8221; on the install page of this documentation).</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="install.html"
-                        title="previous chapter">Installation</a></p>
+                        title="previous chapter">Downloading and Installing</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="analyze.html"
                         title="next chapter">Analyzing the output</a></p>
@@ -243,7 +241,7 @@ within a python script&#8221; on the install page of this documentation).</p>
           <a href="analyze.html" title="Analyzing the output"
              >next</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installation"
+          <a href="install.html" title="Downloading and Installing"
              >previous</a> |</li>
         <li><a href="../index.html">sfs_coder 0 documentation</a> &raquo;</li> 
       </ul>
