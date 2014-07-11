@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; sfs_coder 0 documentation</title>
+    <title>Download &mdash; sfs_coder 0 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -52,14 +52,26 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="installation">
+  <div class="section" id="download">
+<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+<p>A link to the sfs_coder tarball will appear here at release.</p>
+</div>
+<div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>sfs_coder does not require any installation of its own in order
-to get its basic functionality.  Just download the source and alter the
-PYTHONPATH variable on your machine so that python knows where to find the
-modules (see the section on &#8220;Importing&#8221; below).</p>
-<p>However, some methods within sfs_coder require external software in order to
-run.</p>
+<p>Installation is handled by python&#8217;s distutils.</p>
+<p>Using a terminal, execute the following commands:</p>
+<ol class="arabic">
+<li><p class="first">cd into the sfs_coder source directory.</p>
+<div class="highlight-none"><div class="highlight"><pre>cd /path/to/sfs-_coder
+</pre></div>
+</div>
+</li>
+<li><p class="first">run setup.py install</p>
+<div class="highlight-none"><div class="highlight"><pre>python setup.py install
+</pre></div>
+</div>
+</li>
+</ol>
 <div class="section" id="required-dependencies">
 <h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -150,7 +162,8 @@ us to import the modules just like any other python modules.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#">Download</a></li>
+<li><a class="reference internal" href="#installation">Installation</a><ul>
 <li><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
 <li><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
 <li><a class="reference internal" href="#importing-sfs-coder-s-modules">Importing sfs_coder&#8217;s modules</a><ul>

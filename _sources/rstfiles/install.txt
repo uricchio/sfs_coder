@@ -1,13 +1,27 @@
+Download
+********
+
+A link to the sfs_coder tarball will appear here at release.
+
 Installation
 ************
 
-sfs_coder does not require any installation of its own in order 
-to get its basic functionality.  Just download the source and alter the 
-PYTHONPATH variable on your machine so that python knows where to find the 
-modules (see the section on "Importing" below). 
+Installation is handled by python's distutils.
 
-However, some methods within sfs_coder require external software in order to 
-run.
+Using a terminal, execute the following commands:
+
+1) cd into the sfs_coder source directory.
+
+   .. code-block:: none
+     
+      cd /path/to/sfs-_coder
+
+2) run setup.py install
+
+   .. code-block:: none
+   
+      python setup.py install
+      
 
 Required dependencies
 =====================
