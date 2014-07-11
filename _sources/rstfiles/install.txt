@@ -1,10 +1,10 @@
-Download
-********
+Downloading and Installing
+**************************
 
 A link to the sfs_coder tarball will appear here at release.
 
 Installation
-************
+============
 
 Installation is handled by python's distutils.
 
@@ -14,7 +14,7 @@ Using a terminal, execute the following commands:
 
    .. code-block:: none
      
-      cd /path/to/sfs-_coder
+      cd /path/to/sfs_coder
 
 2) run setup.py install
 
@@ -22,6 +22,36 @@ Using a terminal, execute the following commands:
    
       python setup.py install
       
+If you don't get any errors with the above steps,
+you should be able to open python and import sfscoder.
+
+    ..code-block:: none
+      
+      python
+  
+    ..code-block:: python
+
+      import sfscoder
+
+If you still don't have any errors, you're good to go.
+
+Installing if you don't have admin status on your machine
+---------------------------------------------------------
+
+It's possible you will get a "permission denied" error after
+step 2 if you don't have write access to the default install 
+location on your machine.  In that case, try
+
+     .. code-block:: none
+
+        python setup.py install --user
+
+which should install in a location that you have access to.
+Repeat the last two steps above to make sure it's working
+(i.e., try to import sfscoder).  If it's still not working
+feel free to contact us.  We've only tested this on a few 
+Unix based platforms and it's possible (likely?) that 
+some system specific problems could pop up. 
 
 Required dependencies
 =====================

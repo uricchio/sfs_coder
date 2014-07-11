@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Download &mdash; sfs_coder 0 documentation</title>
+    <title>Downloading and Installing &mdash; sfs_coder 0 documentation</title>
     
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -52,17 +52,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="download">
-<h1>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="downloading-and-installing">
+<h1>Downloading and Installing<a class="headerlink" href="#downloading-and-installing" title="Permalink to this headline">¶</a></h1>
 <p>A link to the sfs_coder tarball will appear here at release.</p>
-</div>
 <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Installation is handled by python&#8217;s distutils.</p>
 <p>Using a terminal, execute the following commands:</p>
 <ol class="arabic">
 <li><p class="first">cd into the sfs_coder source directory.</p>
-<div class="highlight-none"><div class="highlight"><pre>cd /path/to/sfs-_coder
+<div class="highlight-none"><div class="highlight"><pre>cd /path/to/sfs_coder
 </pre></div>
 </div>
 </li>
@@ -72,6 +71,35 @@
 </div>
 </li>
 </ol>
+<p>If you don&#8217;t get any errors with the above steps,
+you should be able to open python and import sfscoder.</p>
+<blockquote>
+<div><p>..code-block:: none</p>
+<blockquote>
+<div>python</div></blockquote>
+<p>..code-block:: python</p>
+<blockquote>
+<div>import sfscoder</div></blockquote>
+</div></blockquote>
+<p>If you still don&#8217;t have any errors, you&#8217;re good to go.</p>
+<div class="section" id="installing-if-you-don-t-have-admin-status-on-your-machine">
+<h3>Installing if you don&#8217;t have admin status on your machine<a class="headerlink" href="#installing-if-you-don-t-have-admin-status-on-your-machine" title="Permalink to this headline">¶</a></h3>
+<p>It&#8217;s possible you will get a &#8220;permission denied&#8221; error after
+step 2 if you don&#8217;t have write access to the default install
+location on your machine.  In that case, try</p>
+<blockquote>
+<div><div class="highlight-none"><div class="highlight"><pre>python setup.py install --user
+</pre></div>
+</div>
+</div></blockquote>
+<p>which should install in a location that you have access to.
+Repeat the last two steps above to make sure it&#8217;s working
+(i.e., try to import sfscoder).  If it&#8217;s still not working
+feel free to contact us.  We&#8217;ve only tested this on a few
+Unix based platforms and it&#8217;s possible (likely?) that
+some system specific problems could pop up.</p>
+</div>
+</div>
 <div class="section" id="required-dependencies">
 <h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -162,8 +190,11 @@ us to import the modules just like any other python modules.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Download</a></li>
+<li><a class="reference internal" href="#">Downloading and Installing</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a><ul>
+<li><a class="reference internal" href="#installing-if-you-don-t-have-admin-status-on-your-machine">Installing if you don&#8217;t have admin status on your machine</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
 <li><a class="reference internal" href="#optional-dependencies">Optional dependencies</a></li>
 <li><a class="reference internal" href="#importing-sfs-coder-s-modules">Importing sfs_coder&#8217;s modules</a><ul>
