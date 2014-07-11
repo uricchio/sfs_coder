@@ -26,7 +26,7 @@ call the following:
 
 .. code-block:: python
 
-   com.gutenkunst()
+   com.three_pop(model='gutenkunst')
 
    com.execute()   
 
