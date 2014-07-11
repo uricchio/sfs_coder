@@ -81,7 +81,7 @@ Adding selection
 
    # set the location of sfs_code
    com.sfs_code_loc = os.path.join(os.path.expanduser('~'),
-                       'rotations/hernandez/software/sfs_code/bin/sfs_code')
+                       'path/to/sfs_code')
 
    # execute the command 
    com.execute(rand=randint(1,100000))
@@ -102,7 +102,7 @@ Simulations with realistic genomic structure and demography
    com.genomic(N=100,model='gutenkunst',sel=False)
 
    # set the location of sfs_code
-   com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'rotations/hernandez/software/sfs_code/bin/sfs_code')
+   com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'path/to/sfs_code')
 
    # execute the command 
    com.execute(rand=randint(1,100000))

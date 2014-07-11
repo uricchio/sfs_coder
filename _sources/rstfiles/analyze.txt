@@ -15,7 +15,7 @@ pairwise diversity) in the 0th locus in all sampled populations.
 
 .. code-block:: python
 
-   import sys
+   from sfscoder import sys
    import sfs
 
    # an sfs_code output file that we will analyze
