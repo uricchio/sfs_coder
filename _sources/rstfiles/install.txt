@@ -25,11 +25,11 @@ Using a terminal, execute the following commands:
 If you don't get any errors with the above steps,
 you should be able to open python and import sfscoder.
 
-    ..code-block:: none
+    .. code-block:: none
       
       python
   
-    ..code-block:: python
+    .. code-block:: python
 
       import sfscoder
 
