@@ -1,0 +1,7 @@
+setup.py
+src/sfscoder/__init__.py
+src/sfscoder/command.py
+src/sfscoder/ms.py
+src/sfscoder/sfs.py
+recursive-include scripts/running_simulations *.py
+recursive-include scripts/analyzing_simulations *.py
