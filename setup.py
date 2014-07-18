@@ -8,5 +8,5 @@ setup(name='sfscoder',
       url='http://uricchio.github.io/sfs_coder',
       packages=['sfscoder'],
       package_dir={'sfscoder': 'src/sfscoder'},
-      package_data={'sfscoder': ['req/*.pl','req/hg19/*.gz','req/hg19/geneticMap/*.gz']},
+      package_data={'sfscoder': ['req/*.pl','req/hg19/*.gz','req/hg19/geneticMap/*.gz','scripts/running_simulations/*','scripts/analyzing_simulations/*']},
      )

@@ -18,7 +18,7 @@ from random import randint
 com = command.SFSCommand(prefix='tennessen.N1000')
 
 # build the command line for the gutenkunst model
-com.three_pop(N=1000,nsam=[50,50,0],nsim=10,model='tennessen',L=['-L','1','100'],sel=['-W','1','5','0','1'])
+com.three_pop(N=1000,nsam=[50,50,0],nsim=10,model='gravel',L=['-L','1','100'],sel=['-W','1','5','0','1'])
 
 # set the location of sfs_code
 com.sfs_code_loc = os.path.join(os.path.expanduser('~'),'rotations/hernandez/software/sfs_code/bin/sfs_code')

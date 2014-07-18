@@ -9,7 +9,7 @@ class Command:
 
     """
     This class stores information from parsed command lines
-    and provides the mechanics to call SFS_CODE commands.
+    and provides the mechanism to call SFS_CODE commands.
     """ 
 
     def add_out(self):
@@ -1036,9 +1036,8 @@ class SFSCommand(Command):
                       datafile='hg19_gencode.v14.gtf.gz',
                       phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
                       begpos=134545415,endpos=138594750,db=-1,chr=2,
-                      de=-1,withseq=0,fafile='',
-                      N=2000,mutation=[],sel=True,model='',t=0.001,rho=0.001,
-                      nsim=10,nsam=[20]):
+                      de=-1,N=2000,mutation=[],sel=True,model='',t=0.001,rho=0.001,
+                      nsim=10,nsam=[20],withseq=False,seqfile=''):
 
         """
 
@@ -1054,7 +1053,7 @@ class SFSCommand(Command):
 
         This function calls a number of perl scripts, originally 
         implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
-        perl scripts are bundled with sfs_coder in the directory req
+        perl scripts are bundled with sfs_coder in the directory src/req
 
         * Parameters:
 
@@ -1119,10 +1118,6 @@ class SFSCommand(Command):
 
         files = 0
 
-        if fafile == '':
-
-            fafile = 'chr'+str(chr)+'.fa.gz'
-
         regname = 'chr'+str(chr)+'_'+str(begpos)+'-'+str(endpos)
 
         if(sel==True):
@@ -1148,10 +1143,10 @@ class SFSCommand(Command):
         if files != 0:
             self.build_genomic(basedir=basedir,indir=indir,datafile=datafile,                                
                                chr=chr,begpos=begpos,endpos=endpos,db=db,de=de,
-                               withseq=withseq,fafile=fafile,
                                phast_file=phast_file,dense_dist=dense_dist,
                                regname=regname,annotfile=annotfile,
-                               recombout=recombout,sel=sel)
+                               recombout=recombout,sel=sel,withseq=withseq,
+                               seqfile=seqfile)
         if model != 'snm':
 
             self.three_pop(N=N,nsim=nsim,recombfile=recombout,nsam=nsam,
@@ -1233,10 +1228,9 @@ class SFSCommand(Command):
                       indir=os.path.join(os.getcwd(),'input_files'),
                       datafile='hg19_gencode.v14.gtf.gz',chr=2,
                       begpos=134545415,endpos=138594750,db=-1,
-                      de=-1,withseq=0,fafile='chr2.fa.gz',
+                      de=-1,withseq=False,seqfile='',
                       phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
                       regname='',annotfile='',recombout='',sel='SEL'):
-       
 
         import signal
 
@@ -1330,13 +1324,17 @@ class SFSCommand(Command):
         if annotfile == '': 
             annotfile =os.path.join(indir, 'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
 
+        w = 0
+        if withseq == True:
+            w = 1
+      
         annot = ['perl', os.path.join(basedir,'makeSFSCODEannotationFile.pl'), 
                  str(begpos), str(endpos), str(dense_dist), 
                  os.path.join(annotfile), 
                  os.path.join(indir,regname+'.exons'), 
                  os.path.join(indir,regname+'.UTRs'), 
                  os.path.join(indir,regname+'.CNCs'), str(db), str(de), 
-                 str(sel), '0']
+                 str(sel), str(w), str(seqfile)]
 
         logfile = os.path.join(self.outdir,self.prefix,self.err,'log.build_input.txt')
 
