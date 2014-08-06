@@ -21,7 +21,7 @@ provides a number of useful cannonical models that are prepackaged and can be
 accessed and analyzed with just a few lines of code.
 
 sfs_coder is currently under developement.  A beta version is available on
-the SFS_CODE project page (sfscode.sourceforge.net).
+the SFS_CODE project page (http://sfscode.sourceforge.net).
 We don't expect these pages to get much traffic at the moment
 but we have put them online for our development team. If you have stumbled
 accross them and have any suggestions or would like to inquire about the 
