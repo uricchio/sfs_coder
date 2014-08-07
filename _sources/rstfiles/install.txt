@@ -79,7 +79,7 @@ Optional dependencies
 
   .. _scipy: http://www.scipy.org/
 
-* `matplotlib`_ (*required for plotting the output*)
+* `matplotlib`_ (*required for plotting the output, in development*)
 
   .. _matplotlib: http://matplotlib.org/
 
