@@ -22,7 +22,6 @@ accessed and analyzed with just a few lines of code.
 
 sfs_coder is currently under developement. A beta version is currently
 available (http://sfscode.sourceforge.net).  
-but we have put them online for our development team. 
 If you have any suggestions or would like to inquire about the 
 development feel free to email Lawrence (lawrence.uricchio@ucsf.edu).
 
