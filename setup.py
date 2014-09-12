@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='sfscoder',
-      version='0.0',
+      version='0.1',
       description='Front end to SFS_CODE',
       author='Lawrence Uricchio',
       author_email='uricchil@gmail.com',
