@@ -135,4 +135,29 @@ following header:
 Simulations of phenotypes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Coming soon.
+.. code-block:: python
+
+   #!/usr/bin/python
+   #
+   #
+
+   import sys
+   from sfscoder import sfs
+
+   # an sfs_code output file that we will analyze
+   f =sys.argv[1]
+
+   # initialize a data object and set the file path
+   data = sfs.SFSData(file=f)
+
+   # get all the data from the simulations in the file
+
+   data.get_sims()
+
+   # simulate phenotypes using one of a few different models
+   # Here we are using the 'EW' method, the model of Eyre-Walker
+   # (2010, PNAS)
+
+   for sim in data.sims:
+       p = sim.sim_pheno(method='EW',pops=[0,1])
+

@@ -174,7 +174,31 @@ following header:</p>
 </div>
 <div class="section" id="simulations-of-phenotypes">
 <h3>Simulations of phenotypes<a class="headerlink" href="#simulations-of-phenotypes" title="Permalink to this headline">¶</a></h3>
-<p>Coming soon.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
+<span class="c">#</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">sfs</span>
+
+<span class="c"># an sfs_code output file that we will analyze</span>
+<span class="n">f</span> <span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c"># initialize a data object and set the file path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">sfs</span><span class="o">.</span><span class="n">SFSData</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c"># get all the data from the simulations in the file</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">get_sims</span><span class="p">()</span>
+
+<span class="c"># simulate phenotypes using one of a few different models</span>
+<span class="c"># Here we are using the &#39;EW&#39; method, the model of Eyre-Walker</span>
+<span class="c"># (2010, PNAS)</span>
+
+<span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">sims</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">sim_pheno</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;EW&#39;</span><span class="p">,</span><span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
