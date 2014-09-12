@@ -77,10 +77,6 @@
 <li class="toctree-l2"><a class="reference internal" href="rstfiles/dets.html#department-of-complaints">Department of Complaints</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="rstfiles/longex.html">A longer example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="rstfiles/longex.html#simulating-the-data">Simulating the data</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="rstfiles/plot.html">Plotting</a></li>
 </ul>
 </div>
@@ -90,7 +86,7 @@
 <dt id="sfscoder.command.Command">
 <em class="property">class </em><tt class="descclassname">sfscoder.command.</tt><tt class="descname">Command</tt><a class="headerlink" href="#sfscoder.command.Command" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class stores information from parsed command lines
-and provides the mechanics to call SFS_CODE commands.</p>
+and provides the mechanism to call SFS_CODE commands.</p>
 <dl class="method">
 <dt id="sfscoder.command.Command.execute">
 <tt class="descname">execute</tt><big>(</big><em>rand=1</em><big>)</big><a class="headerlink" href="#sfscoder.command.Command.execute" title="Permalink to this definition">¶</a></dt>
@@ -352,7 +348,7 @@ neutral locus.</p>
 
 <dl class="method">
 <dt id="sfscoder.command.SFSCommand.genomic">
-<tt class="descname">genomic</tt><big>(</big><em>basedir='/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/sfscoder/req', indir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files', datafile='hg19_gencode.v14.gtf.gz', phast_file='hg19_phastCons_mammal.wig.gz', dense_dist=5000, begpos=134545415, endpos=138594750, db=-1, chr=2, de=-1, withseq=0, fafile='', N=2000, mutation=[], sel=True, model='', t=0.001, rho=0.001, nsim=10, nsam=[20]</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.genomic" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">genomic</tt><big>(</big><em>basedir='/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/sfscoder/req', indir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files', datafile='hg19_gencode.v14.gtf.gz', phast_file='hg19_phastCons_mammal.wig.gz', dense_dist=5000, begpos=134545415, endpos=138594750, db=-1, chr=2, de=-1, N=2000, mutation=[], sel=True, model='', t=0.001, rho=0.001, nsim=10, nsam=[20], withseq=False, seqfile=''</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.genomic" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for running simulations of genomic elements using realistic
 genome structure and demographic models.  The demographic models of 
 Gutenkunst (2009, <em>PLoS Genetics</em>), Gravle (2011, <em>PNAS</em>), Tennessenn
@@ -363,7 +359,7 @@ sequences from any population for which the relevant data sources are
 available (recombination map, conserved elements, exon positions).</p>
 <p>This function calls a number of perl scripts, originally 
 implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
-perl scripts are bundled with sfs_coder in the directory req</p>
+perl scripts are bundled with sfs_coder in the directory src/req</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
@@ -459,7 +455,7 @@ analyze code that used the long form to run, you may have issues.</p>
 
 <dl class="method">
 <dt id="sfscoder.command.SFSCommand.three_pop">
-<tt class="descname">three_pop</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100, 100, 100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[], t_end=0.60274, t_expand_p0=0, expand_p0=1.68493, t_split_p0_p1=0.219178, t_split_p1_p2=0.544658, bottle_p1_0=0.170732, bottle_p1_1=0.47619, bottle_p2=0.242857, growth_p1=58.4, growth_p2=80.3, mig_p0_p1=6.15, mig_p1_p0=0.5, mig_all=[0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792], t_super=0.391465, model='gutenkunst'</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.three_pop" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">three_pop</tt><big>(</big><em>add_on=False, nsim=1, N=10000, non_coding=False, recombfile='', nsam=[100, 100, 100], mutation=[], t=0.001, rho=0.001, loci=[], sel=[], L=[], t_end=0.60274, t_expand_p0=0, expand_p0=1.68493, t_split_p0_p1=0.219178, t_split_p1_p2=0.544658, bottle_p1_0=0.170732, bottle_p1_1=0.47619, bottle_p2=0.242857, growth_p1=58.4, growth_p2=80.3, mig_p0_p1=6.15, mig_p1_p0=0.5, mig_all=[0.738, 0.4674, 0.06, 0.192, 0.01938, 0.09792], t_super=0.391465, model='gutenkunst', event=[]</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.three_pop" title="Permalink to this definition">¶</a></dt>
 <dd><p>A general three population model with growth events.
 Inspired by Gutenkunst et al (2009, <em>PLoS Genetics</em>)
 and Gravel et al (2011, <em>PNAS</em>).  For a pictorial 
@@ -469,11 +465,16 @@ The maximum likelihood estimates of Gravel et al
 and Tennessen et al (2012, <em>Science</em>) are also 
 included.</p>
 <p>Use model=&#8217;gravel&#8217;, model=&#8217;tennessen&#8217; or model=&#8217;gutenkunst&#8217;
-to explicitly choose one of the models.</p>
+to explicitly choose one of the models. Note that the Tennessen
+model differs slightly from the other two by adding
+recent explosive growth in the African contitnental group and 
+two phases of growth in Europeans.</p>
 <p>The user can specify the model parameters as desired.
 To use a user specified model, simply use model = &#8216;&#8217;.
 Any unspecified parameters are set by default to the 
 parameters of the Gutenkunst model.</p>
+<p>Population 0 is the African continental group, 1 is Europe, 
+and 2 is Asia.</p>
 </dd></dl>
 
 </dd></dl>
@@ -617,7 +618,7 @@ data.</p>
 </ul>
 <dl class="method">
 <dt id="sfscoder.sfs.SFSData.get_sims">
-<tt class="descname">get_sims</tt><big>(</big><big>)</big><a class="headerlink" href="#sfscoder.sfs.SFSData.get_sims" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_sims</tt><big>(</big><em>iter=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#sfscoder.sfs.SFSData.get_sims" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method that reads sfs_code output files and stores all the data in
 sfs.Simulation objects.</p>
 </dd></dl>
@@ -653,13 +654,22 @@ in the sample from the simulation.</p>
 <div><p>A list of all the Mutation objects in the simulation.</p>
 </div></blockquote>
 </li>
+<li><p class="first"><em>self.haplo = {}</em></p>
+<blockquote>
+<div><p>A dictionary of haplotypes for each population.</p>
+<p>self.haplo[0] is a 2-D array of haplotypes in the 0th 
+population.</p>
+<p>This attribute is only filled when you run the haplotype
+method</p>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_S">
-<tt class="descname">calc_S</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_S" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_S</tt><big>(</big><em>multi_skip=True, loci=[], pops=[0], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_S" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the number of segretating sites within all
 populations.</p>
 <ul>
@@ -685,7 +695,7 @@ sites.  Uses all loci if this is left blank.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_ZnS">
-<tt class="descname">calc_ZnS</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_ZnS" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_ZnS</tt><big>(</big><em>pops=[0], loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_ZnS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate ZnS.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -703,6 +713,8 @@ calculates over all loci.</p>
 </dd>
 </dl>
 </li>
+<li><p class="first"><em>input_log = &#8216;&#8217;</em></p>
+</li>
 </ul>
 </li>
 </ul>
@@ -710,14 +722,14 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_fit">
-<tt class="descname">calc_fit</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_fit" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_fit</tt><big>(</big><em>pops=[0], loci=[]</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the fitness of the sampled chromosomes
 within a population.</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
 <li><dl class="first docutils">
-<dt><em>pop=0</em> </dt>
+<dt><em>pops=[0]</em> </dt>
 <dd><p class="first last">population number</p>
 </dd>
 </dl>
@@ -729,7 +741,7 @@ within a population.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_pi">
-<tt class="descname">calc_pi</tt><big>(</big><em>multi_skip=True</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_pi" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_pi</tt><big>(</big><em>multi_skip=True, pops=[0], loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_pi" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculate the mean pairwise diversity per site
 bewteen pairs of sequences across a set of loci.
 If the loci parameter is left undefined by the
@@ -760,21 +772,8 @@ values indexed by population number.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="sfscoder.sfs.Simulation.calc_pi_by_locus">
-<tt class="descname">calc_pi_by_locus</tt><big>(</big><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_pi_by_locus" title="Permalink to this definition">¶</a></dt>
-<dd><p>calculate the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> independently for each locus.</p>
-<ul>
-<li><p class="first">Return value: An array of arrays of pi values, indexed by 
-population and then locus number.</p>
-<p>e.g., if the return value is stored in the variable pi, 
-pi[0][1] is the value of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/> in population 0 at locus 1.</p>
-</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_tajD">
-<tt class="descname">calc_tajD</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_tajD" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_tajD</tt><big>(</big><em>pops=[0], loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_tajD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Tajima&#8217;s D</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -799,7 +798,7 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_theta_H">
-<tt class="descname">calc_theta_H</tt><big>(</big><em>pop=0</em>, <em>multi_skip=False</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_theta_H</tt><big>(</big><em>pops=[0], multi_skip=False, loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate theta_H.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -830,7 +829,7 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_watt">
-<tt class="descname">calc_watt</tt><big>(</big><em>pop=0</em>, <em>loci=</em>, <span class="optional">[</span><span class="optional">]</span><em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_watt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_watt</tt><big>(</big><em>pops=[0], loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_watt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Watterson&#8217;s estimator of pi for a set of loci</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -855,8 +854,8 @@ uses all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.get_sfs">
-<tt class="descname">get_sfs</tt><big>(</big><em>pop=0</em>, <em>NS=True</em>, <em>SYN=True</em>, <em>NC=True</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.get_sfs" title="Permalink to this definition">¶</a></dt>
-<dd><p>compute the site frequency specutrum for a population</p>
+<tt class="descname">get_sfs</tt><big>(</big><em>pops=[0], loci=[], NS=True, SYN=True, NC=True, input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.get_sfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the site frequency specutrum for a set of population</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
@@ -873,7 +872,7 @@ uses all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.haplotype">
-<tt class="descname">haplotype</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">haplotype</tt><big>(</big><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build haplotypes for each sampled chromosome.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -891,10 +890,10 @@ uses all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.haplotype_SKAT">
-<tt class="descname">haplotype_SKAT</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype_SKAT" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">haplotype_SKAT</tt><big>(</big><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype_SKAT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build haplotypes for each sampled chromosome in the 
 SKAT fashion (number of minor alleles, not necessarily
-number of derived alleles).</p>
+same as derived allele).</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
