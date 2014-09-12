@@ -77,6 +77,10 @@
 <li class="toctree-l2"><a class="reference internal" href="rstfiles/dets.html#department-of-complaints">Department of Complaints</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="rstfiles/longex.html">A longer example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="rstfiles/longex.html#simulating-the-data">Simulating the data</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="rstfiles/plot.html">Plotting</a></li>
 </ul>
 </div>
@@ -86,7 +90,7 @@
 <dt id="sfscoder.command.Command">
 <em class="property">class </em><tt class="descclassname">sfscoder.command.</tt><tt class="descname">Command</tt><a class="headerlink" href="#sfscoder.command.Command" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class stores information from parsed command lines
-and provides the mechanism to call SFS_CODE commands.</p>
+and provides the mechanics to call SFS_CODE commands.</p>
 <dl class="method">
 <dt id="sfscoder.command.Command.execute">
 <tt class="descname">execute</tt><big>(</big><em>rand=1</em><big>)</big><a class="headerlink" href="#sfscoder.command.Command.execute" title="Permalink to this definition">¶</a></dt>
@@ -348,7 +352,7 @@ neutral locus.</p>
 
 <dl class="method">
 <dt id="sfscoder.command.SFSCommand.genomic">
-<tt class="descname">genomic</tt><big>(</big><em>basedir='/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/sfscoder/req', indir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files', datafile='hg19_gencode.v14.gtf.gz', phast_file='hg19_phastCons_mammal.wig.gz', dense_dist=5000, begpos=134545415, endpos=138594750, db=-1, chr=2, de=-1, N=2000, mutation=[], sel=True, model='', t=0.001, rho=0.001, nsim=10, nsam=[20], withseq=False, seqfile=''</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.genomic" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">genomic</tt><big>(</big><em>basedir='/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/sfscoder/req', indir='/Users/luricchio/projects/cluster_backup/sfs_coder/doc/input_files', datafile='hg19_gencode.v14.gtf.gz', phast_file='hg19_phastCons_mammal.wig.gz', dense_dist=5000, begpos=134545415, endpos=138594750, db=-1, chr=2, de=-1, withseq=0, fafile='', N=2000, mutation=[], sel=True, model='', t=0.001, rho=0.001, nsim=10, nsam=[20]</em><big>)</big><a class="headerlink" href="#sfscoder.command.SFSCommand.genomic" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for running simulations of genomic elements using realistic
 genome structure and demographic models.  The demographic models of 
 Gutenkunst (2009, <em>PLoS Genetics</em>), Gravle (2011, <em>PNAS</em>), Tennessenn
@@ -359,7 +363,7 @@ sequences from any population for which the relevant data sources are
 available (recombination map, conserved elements, exon positions).</p>
 <p>This function calls a number of perl scripts, originally 
 implemented by Ryan Hernandez, to build the input to SFS_CODE.  These
-perl scripts are bundled with sfs_coder in the directory src/req</p>
+perl scripts are bundled with sfs_coder in the directory req</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
@@ -869,7 +873,7 @@ uses all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.haplotype">
-<tt class="descname">haplotype</tt><big>(</big><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">haplotype</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build haplotypes for each sampled chromosome.</p>
 <ul>
 <li><p class="first">Parameters:</p>
@@ -887,7 +891,7 @@ uses all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.haplotype_SKAT">
-<tt class="descname">haplotype_SKAT</tt><big>(</big><em>pop=0</em>, <em>input_log=''</em>, <em>start=-1</em>, <em>stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype_SKAT" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">haplotype_SKAT</tt><big>(</big><em>pop=0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.haplotype_SKAT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build haplotypes for each sampled chromosome in the 
 SKAT fashion (number of minor alleles, not necessarily
 number of derived alleles).</p>

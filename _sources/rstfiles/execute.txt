@@ -30,9 +30,8 @@ call the following:
 
    com.execute()   
 
-And that's it!  Of course, there are many more options to
-modify the parameters of the simulation, such as the simulated ancestral 
-population size. 
+And that's it!  Of course, there are many more options that can be altered to
+modify the parameters of the simulation, such as the ancestral population size. 
 Please see the "scripts" directory in the top level of sfs_coder for more 
 examples. Below, we include a slight modification of the above 
 script that demonstrates some basic functionality that may be useful to users,
@@ -89,21 +88,6 @@ Adding selection
 
 Simulations with realistic genomic structure and demography
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-sfs_coder's focus is on simulations that are relevant to human
-demography, selection and recombination.  We have packaged several
-recently inferred demographic histories of modern human continental 
-groups into the software.  These include the models of Gutenkunst
-(2009, *PLos Genetics*), Gravel (2011, *PNAS*), and Tennessen 
-(2012, *Science*).  The models can each be accessed by specifyfing the 
-'model' parameter within the 'three_pop' method or the 'genomic' method, 
-as shown below. 
-
-The 'genomic' method will access human specific recombination maps and 
-genomic elements (conserved non-coding elements and exons), and builds an 
-SFS_CODE command line that incorportates each of these elements.  In contrast,
-the three_pop method allows for the specification of a human demographic model,
-but not the inclusion of human genomic elements.
 
 .. code-block:: python
 

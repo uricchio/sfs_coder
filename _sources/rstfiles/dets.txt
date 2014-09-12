@@ -28,9 +28,8 @@ the following for each mutation within a simulation:
 
 
 Each field is explained in detail in the SFS_CODE documentation 
-(http://sfscode.sourceforge.net). Suppose we have a Mutation object named mut
-in our python script. The comma delimited fields correspond to the following 
-attributes of this mutation object:
+(http://sfscode.sourceforge.net). Suppose we have a Mutation object named mut. 
+The fields correspond to:
 
 1) locus number (0-based) -> mut.locus
 2) Autosomal/X/Y -> mut.AXY

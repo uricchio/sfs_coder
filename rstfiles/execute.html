@@ -77,9 +77,8 @@ call the following:</p>
 <span class="n">com</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>And that&#8217;s it!  Of course, there are many more options to
-modify the parameters of the simulation, such as the simulated ancestral
-population size.
+<p>And that&#8217;s it!  Of course, there are many more options that can be altered to
+modify the parameters of the simulation, such as the ancestral population size.
 Please see the &#8220;scripts&#8221; directory in the top level of sfs_coder for more
 examples. Below, we include a slight modification of the above
 script that demonstrates some basic functionality that may be useful to users,
@@ -134,19 +133,6 @@ as well as a few other examples.</p>
 </div>
 <div class="section" id="simulations-with-realistic-genomic-structure-and-demography">
 <h3>Simulations with realistic genomic structure and demography<a class="headerlink" href="#simulations-with-realistic-genomic-structure-and-demography" title="Permalink to this headline">¶</a></h3>
-<p>sfs_coder&#8217;s focus is on simulations that are relevant to human
-demography, selection and recombination.  We have packaged several
-recently inferred demographic histories of modern human continental
-groups into the software.  These include the models of Gutenkunst
-(2009, <em>PLos Genetics</em>), Gravel (2011, <em>PNAS</em>), and Tennessen
-(2012, <em>Science</em>).  The models can each be accessed by specifyfing the
-&#8216;model&#8217; parameter within the &#8216;three_pop&#8217; method or the &#8216;genomic&#8217; method,
-as shown below.</p>
-<p>The &#8216;genomic&#8217; method will access human specific recombination maps and
-genomic elements (conserved non-coding elements and exons), and builds an
-SFS_CODE command line that incorportates each of these elements.  In contrast,
-the three_pop method allows for the specification of a human demographic model,
-but not the inclusion of human genomic elements.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">command</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">randint</span>
