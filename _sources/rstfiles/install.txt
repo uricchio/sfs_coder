@@ -68,6 +68,10 @@ running SFS_CODE through sfs_coder).
 
   .. _python: https://www.python.org
 
+* `numpy`_ 
+
+  .. _scipy: http://www.scipy.org/
+
 Optional dependencies
 =====================
 
@@ -78,10 +82,6 @@ Optional dependencies
 * `scipy`_ (*required for rescaled recurrent hitchhiking simulations*)
 
   .. _scipy: http://www.scipy.org/
-
-* `matplotlib`_ (*required for plotting the output*)
-
-  .. _matplotlib: http://matplotlib.org/
 
 
 Importing sfs_coder's modules             
