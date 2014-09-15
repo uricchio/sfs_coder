@@ -729,23 +729,50 @@ directory as the simulated data, in the file &#8216;err/log.build_input.txt&#821
 <li><p class="first">Parameters:</p>
 <ul>
 <li><dl class="first docutils">
-<dt><em>pop=0</em></dt>
-<dd><p class="first last">Population of interest</p>
+<dt><em>pops = [0]</em></dt>
+<dd><p class="first last">populations over which to calculate pi</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>loci=[]</em></dt>
-<dd><p class="first last">Array of loci to use in the calculation.  If empty,
-calculates over all loci.</p>
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><em>input_log = &#8216;&#8217;</em></p>
+<li><p class="first"><em>start=-1</em>
+site at which to start calculating pi. If you are doing a simulation 
+of genomic structure, this is the starting position in hg19 coordinates.
+Ignored if left at the default.
+Note that the caluclation is still locus based, so if the start parameter
+is in the middle of a locus, the entire locus is included in the calculation.
+DO NOT USE THIS OPTION AND ALSO SELECT A SET OF LOCI.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>stop=-1</em></dt>
+<dd><p class="first last">site at which to stop calculating pi. All the same caveats for the start parameter 
+apply to this parameter as well.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>input_log=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the log file that was made by sfs_coder, storing the start and stop of the
+genomic region that was simulated.  By default, it is stored in the same
+directory as the simulated data, in the file &#8216;err/log.build_input.txt&#8217;</p>
+</dd>
+</dl>
 </li>
 </ul>
 </li>
 </ul>
+<blockquote>
+<div><ul class="simple">
+<li>Return value: A dictionary of values of ZnS
+indexed by population number.</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -759,6 +786,13 @@ within a population.</p>
 <li><dl class="first docutils">
 <dt><em>pops=[0]</em> </dt>
 <dd><p class="first last">population number</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci=[]</em></dt>
+<dd><p class="first last">set of loci over which to calcuate fitness.  Uses all
+loci if left empty</p>
 </dd>
 </dl>
 </li>
@@ -778,25 +812,57 @@ over all loci in the simulation.</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
-<li><p class="first"><em>multi_skip=True</em></p>
-<blockquote>
-<div><p>If True, skip loci that are multiallelic.
-Otherwise lump all the derived alleles together.</p>
-</div></blockquote>
+<li><dl class="first docutils">
+<dt><em>multi_skip = True</em></dt>
+<dd><p class="first last">skip sites that are more than biallelic if True</p>
+</dd>
+</dl>
 </li>
-<li><p class="first"><em>loci=[]</em></p>
-<blockquote>
-<div><p>An array of loci over which to calculate 
-<img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/>.  If left blank, all loci
-are used in the calculation.</p>
-</div></blockquote>
+<li><dl class="first docutils">
+<dt><em>pops = [0]</em></dt>
+<dd><p class="first last">populations over which to calculate pi</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>start=-1</em>
+site at which to start calculating pi. If you are doing a simulation 
+of genomic structure, this is the starting position in hg19 coordinates.
+Ignored if left at the default.
+Note that the caluclation is still locus based, so if the start parameter
+is in the middle of a locus, the entire locus is included in the calculation.
+DO NOT USE THIS OPTION AND ALSO SELECT A SET OF LOCI.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>stop=-1</em></dt>
+<dd><p class="first last">site at which to stop calculating pi. All the same caveats for the start parameter 
+apply to this parameter as well.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>input_log=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the log file that was made by sfs_coder, storing the start and stop of the
+genomic region that was simulated.  By default, it is stored in the same
+directory as the simulated data, in the file &#8216;err/log.build_input.txt&#8217;</p>
+</dd>
+</dl>
 </li>
 </ul>
 </li>
-<li><p class="first">Return value: An array of values of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/>
-values indexed by population number.</p>
-</li>
 </ul>
+<blockquote>
+<div><ul class="simple">
+<li>Return value: A dictionary of <img class="math" src="_images/math/c1bd4cb4e3647c6b2356b7ccf2f52aeffedd1b61.png" alt="\pi"/>
+values indexed by population number.</li>
+</ul>
+</div></blockquote>
 </dd></dl>
 
 <dl class="method">
@@ -807,17 +873,43 @@ values indexed by population number.</p>
 <li><p class="first">Parameters:</p>
 <ul>
 <li><dl class="first docutils">
-<dt><em>pop=0</em></dt>
-<dd><p class="first last">Population of interest</p>
+<dt><em>pops = [0]</em></dt>
+<dd><p class="first last">populations over which to calculate pi</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>loci=[]</em></dt>
-<dd><p class="first last">Array of loci to use in the calculation.  If empty,
-calculates over all loci.</p>
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
 </dd>
 </dl>
+</li>
+<li><p class="first"><em>start=-1</em>
+site at which to start calculating pi. If you are doing a simulation 
+of genomic structure, this is the starting position in hg19 coordinates.
+Ignored if left at the default.
+Note that the caluclation is still locus based, so if the start parameter
+is in the middle of a locus, the entire locus is included in the calculation.
+DO NOT USE THIS OPTION AND ALSO SELECT A SET OF LOCI.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>stop=-1</em></dt>
+<dd><p class="first last">site at which to stop calculating pi. All the same caveats for the start parameter 
+apply to this parameter as well.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>input_log=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the log file that was made by sfs_coder, storing the start and stop of the
+genomic region that was simulated.  By default, it is stored in the same
+directory as the simulated data, in the file &#8216;err/log.build_input.txt&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Return value: A dictionary of values of Tajima&#8217;s D
+indexed by population number.</p>
 </li>
 </ul>
 </li>
@@ -826,29 +918,55 @@ calculates over all loci.</p>
 
 <dl class="method">
 <dt id="sfscoder.sfs.Simulation.calc_theta_H">
-<tt class="descname">calc_theta_H</tt><big>(</big><em>pops=[0], multi_skip=False, loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">calc_theta_H</tt><big>(</big><em>pops=[0], multi_skip=True, loci=[], input_log='', start=-1, stop=-1</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.calc_theta_H" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate theta_H.</p>
 <ul>
 <li><p class="first">Parameters:</p>
 <ul>
 <li><dl class="first docutils">
-<dt><em>pop=0</em></dt>
-<dd><p class="first last">Population of interest</p>
+<dt><em>multi_skip = True</em></dt>
+<dd><p class="first last">skip sites that are more than biallelic if True</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>loci=[]</em></dt>
-<dd><p class="first last">Array of loci to use in the calculation.  If empty,
-calculates over all loci.</p>
+<dt><em>pops = [0]</em></dt>
+<dd><p class="first last">populations over which to calculate pi</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>mutliskip=False</em></dt>
-<dd><p class="first last">Skip multiallelic sites</p>
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
 </dd>
 </dl>
+</li>
+<li><p class="first"><em>start=-1</em>
+site at which to start calculating pi. If you are doing a simulation 
+of genomic structure, this is the starting position in hg19 coordinates.
+Ignored if left at the default.
+Note that the caluclation is still locus based, so if the start parameter
+is in the middle of a locus, the entire locus is included in the calculation.
+DO NOT USE THIS OPTION AND ALSO SELECT A SET OF LOCI.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>stop=-1</em></dt>
+<dd><p class="first last">site at which to stop calculating pi. All the same caveats for the start parameter 
+apply to this parameter as well.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>input_log=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the log file that was made by sfs_coder, storing the start and stop of the
+genomic region that was simulated.  By default, it is stored in the same
+directory as the simulated data, in the file &#8216;err/log.build_input.txt&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Return value: A dictionary of H values
+indexed by population number.</p>
 </li>
 </ul>
 </li>
@@ -863,15 +981,38 @@ calculates over all loci.</p>
 <li><p class="first">Parameters:</p>
 <ul>
 <li><dl class="first docutils">
-<dt><em>pop=0</em></dt>
-<dd><p class="first last">Population of interest</p>
+<dt><em>pops = [0]</em></dt>
+<dd><p class="first last">populations over which to calculate pi</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><em>loci=[]</em></dt>
-<dd><p class="first last">Array of loci to use in the calculation. If empty,
-uses all loci.</p>
+<dt><em>loci = []</em></dt>
+<dd><p class="first last">Array of loci over which to calculate the number of segregating
+sites.  Uses all loci if this is left blank.</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><em>start=-1</em>
+site at which to start calculating pi. If you are doing a simulation 
+of genomic structure, this is the starting position in hg19 coordinates.
+Ignored if left at the default.
+Note that the caluclation is still locus based, so if the start parameter
+is in the middle of a locus, the entire locus is included in the calculation.
+DO NOT USE THIS OPTION AND ALSO SELECT A SET OF LOCI.</p>
+</li>
+<li><dl class="first docutils">
+<dt><em>stop=-1</em></dt>
+<dd><p class="first last">site at which to stop calculating pi. All the same caveats for the start parameter 
+apply to this parameter as well.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>input_log=&#8217;&#8216;</em></dt>
+<dd><p class="first last">the log file that was made by sfs_coder, storing the start and stop of the
+genomic region that was simulated.  By default, it is stored in the same
+directory as the simulated data, in the file &#8216;err/log.build_input.txt&#8217;</p>
 </dd>
 </dl>
 </li>
