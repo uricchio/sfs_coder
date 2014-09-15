@@ -1064,6 +1064,7 @@ directory as the simulated data, in the file &#8216;err/log.build_input.txt&#821
 </ul>
 </li>
 </ul>
+<p>The haplotypes are stored in self.haplo</p>
 </dd></dl>
 
 <dl class="method">
@@ -1078,6 +1079,96 @@ same as derived allele).</p>
 <li><dl class="first docutils">
 <dt><em>pop=0</em></dt>
 <dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+<p>The haplotypes are stored in self.haplo</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfscoder.sfs.Simulation.sim_pheno">
+<tt class="descname">sim_pheno</tt><big>(</big><em>h_sq=0.01, pops=[0], min_freq=-1, causal_pop=-1, opp=1.0, rho=1.0, method='SKAT', tau=1.0, sig=1.0</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.sim_pheno" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for simulating phenotypes.</p>
+<p>Currently has three different methods, inspired by Wu et al (<em>AJHG</em>, 2011),
+Simons et al (<em>Nature genetics</em>, 2014), and Eyre_walker (<em>PNAS</em>, 2010).</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>h_sq=0.01</em></dt>
+<dd><p class="first last">The proportion of variance in the phenotype that is explained by the test sequence</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>pops=[0]</em></dt>
+<dd><p class="first last">Populations to be simulated</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>min_freq=-1</em></dt>
+<dd><p class="first last">The minimum frequency that is taken as non-causal (i.e., all sites
+with frequency below min_freq are taken to be causal).  Only used with
+method=&#8217;SKAT&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>causal_pop=-1</em></dt>
+<dd><p class="first last">The population that is used for determining the proportion of variance
+explained by the test_sequence.  Hence, this population will have h_sq=Vg/Vp,
+but the other populations will not.  Defaults to the first population in the 
+pops parameter if it is not reset from -1.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>rho=1.</em></dt>
+<dd><p class="first last">The probability that a causal site&#8217;s effect size is taken as proportional to its     
+selection coefficient.  Only used with method=&#8217;SIMONS&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>tau=1</em></dt>
+<dd><p class="first last">The tau parameter in the model of Eyre-Walker.  This parameter is also used in
+the &#8216;SIMONS&#8217; mehtod, where effect sizes are taken as s**tau (s is the selection
+coefficient)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>sigma=1</em> </dt>
+<dd><p class="first last">The sigma parameter in the model of Eyre-Walker</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Note that because we are fixing h_sq in one of the populations, there is always
+an arbitrary constant scaling each effect size.  For each method, the variation
+from the environment is taken to be a normal distribution</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sfscoder.sfs.Simulation.write_geno">
+<tt class="descname">write_geno</tt><big>(</big><em>pop=0</em>, <em>file=''</em><big>)</big><a class="headerlink" href="#sfscoder.sfs.Simulation.write_geno" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write genotypes out a file.  You must
+call self.haplotype() or self.haplotype_SKAT()
+before running this method.</p>
+<ul>
+<li><p class="first">Parameters:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><em>pop=0</em></dt>
+<dd><p class="first last">Population of interest</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>file=&#8217;&#8216;</em></dt>
+<dd><p class="first last">The destination file.  Must be set to a valid path</p>
 </dd>
 </dl>
 </li>
