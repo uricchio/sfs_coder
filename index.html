@@ -339,6 +339,55 @@ neutral locus.</p>
 </dd>
 </dl>
 </li>
+<li><dl class="first docutils">
+<dt><em>neg_sel_rate</em></dt>
+<dd><p class="first last">The proportion of mutations in the flanking sequence which
+are under negative selection</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>alpha_neg</em></dt>
+<dd><p class="first last">The population scaled negative selection coefficient</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Boyko</em></dt>
+<dd><p class="first last">If True, use the distribution of selection coefficients 
+from Boyko et al (<em>PLoS Genetics</em>, 2008)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Torg</em></dt>
+<dd><p class="first last">If True, use the distribution of selection coefficents 
+from Torgerson et al (<em>PLoS Genetics</em>, 2009)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Lmult=False</em> </dt>
+<dd><p class="first last">If True, split the flanking sequences up into lmultnum equal 
+sized bins.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>nreps=10</em></dt>
+<dd><p class="first last">Number of repetitions of the simulation to perform.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>dem_event</em></dt>
+<dd><p class="first last">A demographic events of the users choice.  Should be an array storing
+the exact SFS_CODE command.  For example, for a bottleneck you could 
+use [&#8216;-Td&#8217;, &#8216;0&#8217;, &#8216;0.1&#8217;], where the bottleneck occurs at time 0 and
+shrinks the population to 10 percent of its original size.</p>
+</dd>
+</dl>
+</li>
 </ul>
 </li>
 </ul>
