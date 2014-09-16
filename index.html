@@ -368,8 +368,14 @@ from Torgerson et al (<em>PLoS Genetics</em>, 2009)</p>
 </li>
 <li><dl class="first docutils">
 <dt><em>Lmult=False</em> </dt>
-<dd><p class="first last">If True, split the flanking sequences up into lmultnum equal 
+<dd><p class="first last">If True, split the central (neutral) sequence up into lmultnum equal 
 sized bins.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>lmultnum=50</em></dt>
+<dd><p class="first last">Number of bins to be used when Lmult is True</p>
 </dd>
 </dl>
 </li>
@@ -381,10 +387,11 @@ sized bins.</p>
 </li>
 <li><dl class="first docutils">
 <dt><em>dem_event</em></dt>
-<dd><p class="first last">A demographic events of the users choice.  Should be an array storing
+<dd><p class="first last">Demographic event/s of the users choice.  Should be an array storing
 the exact SFS_CODE command.  For example, for a bottleneck you could 
 use [&#8216;-Td&#8217;, &#8216;0&#8217;, &#8216;0.1&#8217;], where the bottleneck occurs at time 0 and
-shrinks the population to 10 percent of its original size.</p>
+shrinks the population to 10 percent of its original size.  Multiple
+demographic events can be concatenated</p>
 </dd>
 </dl>
 </li>
@@ -489,6 +496,22 @@ you can specify &#8216;gutenkunst&#8217;, &#8216;tennessen&#8217;, or &#8216;gra
 descriptions of each model, see the relevant publications 
 (Gravel et al, <em>PNAS</em>, 2011; Gutenkunst, <em>PLoS Genetics</em>, 2009;
 Tennessen et al, <em>Science</em>, 2012)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>t=0.001</em></dt>
+<dd><p class="first last">Theta = <em>4Nu</em> in the ancestral population</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>r=0.001</em></dt>
+<dd><p class="first last">rho = <em>4Nr</em> in the ancestral population.  Note, you should interpret
+this parameter as the genomewide average.  If you are simulating
+a low recombination rate region, sfs_coder will automatically
+reduce the recombination rate using the recombination map for 
+the region.</p>
 </dd>
 </dl>
 </li>
