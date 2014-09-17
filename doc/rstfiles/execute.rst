@@ -135,4 +135,50 @@ following header:
 Simulations of phenotypes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Coming soon.
+Simulation of phenotypes is handled post-hoc to the simulation
+of genotypes using either the genotypes or selection coefficients 
+to pick effect sizes.  We provide three models, those of Wu (2011, 
+AJHG), Eyre-Walker (2010, PNAS), and Simons (2014, Nature Genetics).
+
+Briefly, the model of Wu takes the effect size of a variant to be 
+proportional to log10 of the allele frequency in the sample.  Only 
+5% of the variants under 3% frequency are taken as causal. The model of
+Eyre-Walker takes effect size to be equal to the selection coefficient 
+multiplied by (1 + e), where e is a normally distributed random variable.
+For the model of Simons, we take the effect size to be proportional to 
+the selection coefficient with probability rho, but randomly sample the 
+effect size from the distribution of selection coefficients with probability
+(1-rho).  There are several parameters that can be altered under each model.
+Please see the documentation for the sim_pheno method for more information
+on all the parameters that can be chosen.
+
+For each method, the user can set the proportion of the variance in the 
+phenotype that is explained by the sequence in question with the h_sq 
+parameter.
+
+.. code-block:: python
+
+   #!/usr/bin/python
+   #
+   #
+
+   import sys
+   from sfscoder import sfs
+
+   # an sfs_code output file that we will analyze
+   f =sys.argv[1]
+
+   # initialize a data object and set the file path
+   data = sfs.SFSData(file=f)
+
+   # get all the data from the simulations in the file
+
+   data.get_sims()
+
+   # simulate phenotypes using one of a few different models
+   # Here we are using the 'EW' method, the model of Eyre-Walker
+   # (2010, PNAS)
+
+   for sim in data.sims:
+       p = sim.sim_pheno(method='EW',pops=[0,1])
+

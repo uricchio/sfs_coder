@@ -100,64 +100,65 @@ close(IN);
 #NOW SORT OUT UNIQ ELEMENTS AND ROUND LENGHT OF CDS EXONS TO WHOLE CODONS
 my @srtEx = ();
 my $nsrt = 0;
-my @uniqEx = ();
-my $nuex = 0;
-my $finalLen = 0;
-open(OUTEX,">$ARGV[2]") or die "cannot write to $ARGV[2]\n";
-if($numGenes>0 || $numExons>0){
-  foreach my $s (sort {$a<=>$b} keys %exons){
-    $srtEx[$nsrt][0] = $s;
-    $srtEx[$nsrt][1] = $exons{$s};
-    $nsrt++;
-  }
-  $uniqEx[0][0] = $srtEx[0][0];
-  $uniqEx[0][1] = $srtEx[0][1];
-  if((($uniqEx[0][1]-$uniqEx[0][0]+1) % 3) == 1){
-    $uniqEx[0][1] += 2;
-  }
-  elsif((($uniqEx[0][1]-$uniqEx[0][0]+1) % 3) == 2){
-    $uniqEx[0][1]++;
-  }
-
-  for(my $i=1; $i<$nsrt; $i++){
-    if($srtEx[$i][0] > $uniqEx[$nuex][1]){
-      $nuex++;
-      $uniqEx[$nuex][0] = $srtEx[$i][0];
-      $uniqEx[$nuex][1] = $srtEx[$i][1];
-    }
-    elsif($srtEx[$i][1] > $uniqEx[$nuex][1]){
-      $uniqEx[$nuex][1] = $srtEx[$i][1];
-    }
-    if((($uniqEx[$nuex][1]-$uniqEx[$nuex][0]+1) % 3) == 1){
-      $uniqEx[$nuex][1] += 2;
-    }
-    elsif((($uniqEx[$nuex][1]-$uniqEx[$nuex][0]+1) % 3) == 2){
-      $uniqEx[$nuex][1]++;
-    }
-  }
-
-  for(my $i=0; $i<=$nuex; $i++){
-    $finalLen += $uniqEx[$i][1]-$uniqEx[$i][0]+1;
-    print OUTEX "$uniqEx[$i][0] $uniqEx[$i][1]\n";
-    if($uniqEx[$i][0] > $uniqEx[$i][1]){
-      die "uniqEx[$i] $uniqEx[$i][0] > $uniqEx[$i][1]\n";
-    }
-  }
-  print "$nuex uniq exons; length = $finalLen\n";
+foreach my $s (sort {$a<=>$b} keys %exons){
+  $srtEx[$nsrt][0] = $s;
+  $srtEx[$nsrt][1] = $exons{$s};
+  $nsrt++;
 }
+my @uniqEx = ();
+$uniqEx[0][0] = $srtEx[0][0];
+$uniqEx[0][1] = $srtEx[0][1];
+if((($uniqEx[0][1]-$uniqEx[0][0]+1) % 3) == 1){
+  $uniqEx[0][1] += 2;
+}
+elsif((($uniqEx[0][1]-$uniqEx[0][0]+1) % 3) == 2){
+  $uniqEx[0][1]++;
+}
+
+my $nuex = 0;
+for(my $i=1; $i<$nsrt; $i++){
+  if($srtEx[$i][0] > $uniqEx[$nuex][1]){
+    $nuex++;
+    $uniqEx[$nuex][0] = $srtEx[$i][0];
+    $uniqEx[$nuex][1] = $srtEx[$i][1];
+  }
+  elsif($srtEx[$i][1] > $uniqEx[$nuex][1]){
+    $uniqEx[$nuex][1] = $srtEx[$i][1];
+  }
+  if((($uniqEx[$nuex][1]-$uniqEx[$nuex][0]+1) % 3) == 1){
+    $uniqEx[$nuex][1] += 2;
+  }
+  elsif((($uniqEx[$nuex][1]-$uniqEx[$nuex][0]+1) % 3) == 2){
+    $uniqEx[$nuex][1]++;
+  }
+}
+
+open(OUTEX,">$ARGV[2]") or die "cannot write to $ARGV[2]\n";
+my $finalLen = 0;
+for(my $i=0; $i<=$nuex; $i++){
+  
+  if($nuex == 0) {
+      last;
+  }
+   
+  $finalLen += $uniqEx[$i][1]-$uniqEx[$i][0]+1;
+  print OUTEX "$uniqEx[$i][0] $uniqEx[$i][1]\n";
+  if($uniqEx[$i][0] > $uniqEx[$i][1]){
+    die "uniqEx[$i] $uniqEx[$i][0] > $uniqEx[$i][1]\n";
+  }
+}
+print "$nuex uniq exons; length = $finalLen\n";
 close(OUTEX);
 
 my @srtUtr = ();
 $nsrt = 0;
-my @uniqUtr = ();
-
 foreach my $s (sort {$a<=>$b} keys %UTRs){
   $srtUtr[$nsrt][0] = $s;
   $srtUtr[$nsrt][1] = $UTRs{$s};
   $nsrt++;
 }
 print "$nsrt sorted UTRs\n";
-
+my @uniqUtr = ();
 $uniqUtr[0][0] = $srtUtr[0][0];
 $uniqUtr[0][1] = $srtUtr[0][1];
 
@@ -176,47 +177,45 @@ print "$nutr uniq UTRs\n";
 
 my @UTRfin = ();
 my $nUTRfin = 0;
-if($nsrt>0){
-  for(my $i=0; $i<scalar(@uniqUtr); $i++){
-    my $KEEP = 1;
-    for(my $j=0; $j<scalar(@uniqEx); $j++){
-      if($uniqEx[$j][0] > $uniqUtr[$i][1]){
-	last;
-      }
-      elsif($uniqEx[$j][1] < $uniqUtr[$i][0]){
-	next;
-      }
-      elsif($uniqEx[$j][0] <= $uniqUtr[$i][0] &&
-	    $uniqEx[$j][1] >= $uniqUtr[$i][1]){
+for(my $i=0; $i<scalar(@uniqUtr); $i++){
+  my $KEEP = 1;
+  for(my $j=0; $j<scalar(@uniqEx); $j++){
+    if($uniqEx[$j][0] > $uniqUtr[$i][1]){
+      last;
+    }
+    elsif($uniqEx[$j][1] < $uniqUtr[$i][0]){
+      next;
+    }
+    elsif($uniqEx[$j][0] <= $uniqUtr[$i][0] &&
+	  $uniqEx[$j][1] >= $uniqUtr[$i][1]){
+      $KEEP = 0;
+      last;
+    }
+    elsif($uniqEx[$j][0] >= $uniqUtr[$i][0] &&
+	  $uniqEx[$j][0] <= $uniqUtr[$i][1]){
+      $uniqUtr[$i][1] = $uniqEx[$j][0]-1;
+      if($uniqUtr[$i][1] <= $uniqUtr[$i][0]){
 	$KEEP = 0;
 	last;
       }
-      elsif($uniqEx[$j][0] >= $uniqUtr[$i][0] &&
-	    $uniqEx[$j][0] <= $uniqUtr[$i][1]){
-	$uniqUtr[$i][1] = $uniqEx[$j][0]-1;
-	if($uniqUtr[$i][1] <= $uniqUtr[$i][0]){
-	  $KEEP = 0;
-	  last;
-	}
-      }
-      elsif($uniqEx[$j][1] >= $uniqUtr[$i][0] &&
-	    $uniqEx[$j][1] <= $uniqUtr[$i][1]){
-	$uniqUtr[$i][0] = $uniqEx[$j][1]+1;
-	if($uniqUtr[$i][1] <= $uniqUtr[$i][0]){
-	  $KEEP = 0;
-	  last;
-	}
+    }
+    elsif($uniqEx[$j][1] >= $uniqUtr[$i][0] &&
+	  $uniqEx[$j][1] <= $uniqUtr[$i][1]){
+      $uniqUtr[$i][0] = $uniqEx[$j][1]+1;
+      if($uniqUtr[$i][1] <= $uniqUtr[$i][0]){
+	$KEEP = 0;
+	last;
       }
     }
-    if($KEEP == 1 && $uniqUtr[$i][1] > $uniqUtr[$i][0]){
-      $UTRfin[$nUTRfin][0] = $uniqUtr[$i][0];
-      $UTRfin[$nUTRfin][1] = $uniqUtr[$i][1];
-      #    print "$nUTRfin $UTRfin[$nUTRfin][0] $UTRfin[$nUTRfin][1]\n";
-      $nUTRfin++;
-      #    if($nUTRfin>10){
-      #      last;
-      #    }
-    }
+  }
+  if($KEEP == 1 && $uniqUtr[$i][1] > $uniqUtr[$i][0]){
+    $UTRfin[$nUTRfin][0] = $uniqUtr[$i][0];
+    $UTRfin[$nUTRfin][1] = $uniqUtr[$i][1];
+    #    print "$nUTRfin $UTRfin[$nUTRfin][0] $UTRfin[$nUTRfin][1]\n";
+    $nUTRfin++;
+    #    if($nUTRfin>10){
+    #      last;
+    #    }
   }
 }
 

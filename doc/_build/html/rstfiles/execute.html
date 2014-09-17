@@ -174,7 +174,49 @@ following header:</p>
 </div>
 <div class="section" id="simulations-of-phenotypes">
 <h3>Simulations of phenotypes<a class="headerlink" href="#simulations-of-phenotypes" title="Permalink to this headline">¶</a></h3>
-<p>Coming soon.</p>
+<p>Simulation of phenotypes is handled post-hoc to the simulation
+of genotypes using either the genotypes or selection coefficients
+to pick effect sizes.  We provide three models, those of Wu (2011,
+AJHG), Eyre-Walker (2010, PNAS), and Simons (2014, Nature Genetics).</p>
+<p>Briefly, the model of Wu takes the effect size of a variant to be
+proportional to log10 of the allele frequency in the sample.  Only
+5% of the variants under 3% frequency are taken as causal. The model of
+Eyre-Walker takes effect size to be equal to the selection coefficient
+multiplied by (1 + e), where e is a normally distributed random variable.
+For the model of Simons, we take the effect size to be proportional to
+the selection coefficient with probability rho, but randomly sample the
+effect size from the distribution of selection coefficients with probability
+(1-rho).  There are several parameters that can be altered under each model.
+Please see the documentation for the sim_pheno method for more information
+on all the parameters that can be chosen.</p>
+<p>For each method, the user can set the proportion of the variance in the
+phenotype that is explained by the sequence in question with the h_sq
+parameter.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#!/usr/bin/python</span>
+<span class="c">#</span>
+<span class="c">#</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">sfscoder</span> <span class="kn">import</span> <span class="n">sfs</span>
+
+<span class="c"># an sfs_code output file that we will analyze</span>
+<span class="n">f</span> <span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c"># initialize a data object and set the file path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">sfs</span><span class="o">.</span><span class="n">SFSData</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c"># get all the data from the simulations in the file</span>
+
+<span class="n">data</span><span class="o">.</span><span class="n">get_sims</span><span class="p">()</span>
+
+<span class="c"># simulate phenotypes using one of a few different models</span>
+<span class="c"># Here we are using the &#39;EW&#39; method, the model of Eyre-Walker</span>
+<span class="c"># (2010, PNAS)</span>
+
+<span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">sims</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">sim_pheno</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;EW&#39;</span><span class="p">,</span><span class="n">pops</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>

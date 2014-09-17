@@ -48,7 +48,7 @@ class Command:
         from random import randint
 
         if rand == 1:
-            rand = randint(0,1000000)
+            rand = randint(0,1000000000)
 
         if(isinstance(self,SFSCommand)):
             if self.sfs_code_loc == '':
@@ -84,8 +84,6 @@ class Command:
                 print "Cannot open file ", self.out_path
                 exit()
 
-
-            
         err = os.path.join(self.outdir,self.prefix,self.err)
 
         try:
@@ -94,7 +92,7 @@ class Command:
             os.makedirs(err)
 
         err_file= os.path.join(err,'log.'+str(self.task_id)+'.e')    
-            
+         
         err_h = open(err_file, 'w')
         
         if out_h == '':
@@ -104,7 +102,7 @@ class Command:
             print word,
         print
 
-        process = subprocess.Popen(self.line, stdout=out_h, 
+        process = subprocess.Popen(self.line, stdout=out_h,
                                    stderr=err_h, close_fds = True)
         returncode = process.wait()
     
@@ -318,6 +316,7 @@ class SFSCommand(Command):
             self.Z = 1
 
         if 'a' in self.attrs:
+            #print self.a
             if self.a[0] == 'F':
                    
                 fh = open(self.a[1],'r')
@@ -341,9 +340,9 @@ class SFSCommand(Command):
                   delta=0.01, L0 = -1,L1=10.**5,loop_max=10,L_neut=1000.,
                   theta_neut=0.001,minpop=100,recomb_dir='recombfiles',
                   outdir='sims',TE=2,r_within=True, neg_sel_rate = 0., 
-                  alpha_neg = 5, additive=1, Lextend=1,mutation=[],bottle=[],
-                  expansion=[],nreps=10, Boyko=False,Lmult=False,lmultnum=50,
-                  Torg=False,non_coding=True):
+                  alpha_neg = 5, additive=1, Lextend=1,mutation=[],dem_event=[],
+                  nreps=10, Torg=False,Boyko=False,Lmult=False,lmultnum=50,
+                  non_coding=True):
 
         """
 
@@ -375,8 +374,8 @@ class SFSCommand(Command):
              Smaller values of delta result in dynamics that are a better
              match for the original population of size N0, but are more 
              computationally expensive.  We do not recommend using values
-             of delta greater than 0.1.  For more information please see the
-             paper referenced above.
+             of delta greater than 0.1, and ideally should be smaller than 0.05.  
+             For more information please see the paper referenced above.
           * *L0 = -1* 
              the length of the flanking sequence on each side of the
              neutral locus. If L0 is not reset from it's default value, 
@@ -388,9 +387,32 @@ class SFSCommand(Command):
              the ending time of the simulation in units of 
              2\*N0\*self.P[0] generations.
           * *r_within=False*
-             Currently only works with this option set to False, 
-             but in the future will allow for recombination within the 
+             Allows for recombination within the 
              neutral locus.
+          * *neg_sel_rate*
+             The proportion of mutations in the flanking sequence which
+             are under negative selection
+          * *alpha_neg*
+             The population scaled negative selection coefficient
+          * *Boyko*
+             If True, use the distribution of selection coefficients 
+             from Boyko et al (*PLoS Genetics*, 2008)
+          * *Torg*
+             If True, use the distribution of selection coefficents 
+             from Torgerson et al (*PLoS Genetics*, 2009)
+          * *Lmult=False* 
+             If True, split the central (neutral) sequence up into lmultnum equal 
+             sized bins. 
+          * *lmultnum=50*
+             Number of bins to be used when Lmult is True
+          * *nreps=10*
+             Number of repetitions of the simulation to perform.
+          * *dem_event*
+             Demographic event/s of the users choice.  Should be an array storing
+             the exact SFS_CODE command.  For example, for a bottleneck you could 
+             use ['-Td', '0', '0.1'], where the bottleneck occurs at time 0 and
+             shrinks the population to 10 percent of its original size.  Multiple
+             demographic events can be concatenated
          """      
 
         from scipy.integrate import quad
@@ -504,7 +526,7 @@ class SFSCommand(Command):
         finaldist = math.ceil(2*L1+L_neut)
         
         if len(self.recomb_file) == 0:
-            self.recomb_file = os.path.join(recomb_dir,'recomb.L0'+str(int(L0))+'.al'+str(int(round(alpha)))+'.lam'+str(lam0)+'.txt')
+            self.recomb_file = os.path.join(recomb_dir,'recomb.L0'+str(int(L0))+'.al'+str(int(round(alpha)))+'.lam'+str(lam0)+'.'+str(r_within)+'.txt')
 
         try:
             os.stat(recomb_dir)
@@ -532,9 +554,9 @@ class SFSCommand(Command):
                 rfile.write(str(int(finaldist)))
                 rfile.write(' 1.0\n')
             else:
-                rfile.write('0.5\n')
+                rfile.write(' 0.5\n')
                 rfile.write(str(int(middist)))
-                rfile.write('0.5000000000000001\n')
+                rfile.write(' 0.5000000000000001\n') # sfs_code errors out if this is exactly 0.5...
                 rfile.write(str(int(finaldist)))
                 rfile.write(' 1.0\n')
   
@@ -556,7 +578,8 @@ class SFSCommand(Command):
         if (additive == 1):
             self.line.append('-Z')
 
-
+        if r_within:
+            rho = (2*L1*rho+rho0*L_neut)/(2*L1+L_neut+0.)
         #set up recombination file
         self.line.extend(['-r','F',self.recomb_file,str(rho)])
         
@@ -664,10 +687,7 @@ class SFSCommand(Command):
                 
 
         # add any demographic events
-        for thing in bottle:
-            self.line.extend([thing])
-
-        for thing in expansion:
+        for thing in dem_event:
             self.line.extend([thing])
 
         # add any mutation events
@@ -995,6 +1015,10 @@ class SFSCommand(Command):
              
                 event = ['--mutation', '0','L','0']
 
+        Note that order of events is sometimes important for the SFS_CODE command line.
+        Please see the SFS_CODE manual at `sfscode.sourceforge.net`_.
+
+        .. _sfscode.sourceforge.net: http://sfscode.sourceforge.net
         """
         new_event = []
 
@@ -1003,38 +1027,11 @@ class SFSCommand(Command):
 
         self.line.extend(new_event)
 
-    def build_BGS(self, n_sim=10,theta=0.0001,recomb=True,rho=0.001,N=250,
-                  nsam=[10],alpha=5,L=10**5,Lmid=10**5):
-        
-        self.line = [];
-        
-        self.line.extend(['1',str(n_sim),'-A'])
-
-        self.line.extend(['-t', str(theta)])
-
-        if recomb == True:
-            self.line.extend(['-r',str(rho)])
-
-        self.line.extend(['-N', str(N)])
-
-        self.line.append('-n')
-        
-        for thing in nsam:
-             self.line.append(str(thing))
-
-        self.line.extend(['-L', '3', str(L),str(Lmid),str(L)])
-        
-        self.line.extend(['-a','N'])
-        
-        self.line.extend(['-W','L','0','1',str(alpha),'0','1'])
-        self.line.extend(['-W','L','1','1',str(alpha),'0','1'])
-        self.line.extend(['-W','L','2','1',str(alpha),'0','1'])
-     
  
     def genomic(self,basedir=os.path.join(os.path.dirname(__file__),'req'),
                       indir=os.path.join(os.getcwd(),'input_files'),
                       datafile='hg19_gencode.v14.gtf.gz',
-                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
+                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=0,
                       begpos=134545415,endpos=138594750,db=-1,chr=2,
                       de=-1,N=2000,mutation=[],sel=True,model='',t=0.001,rho=0.001,
                       nsim=10,nsam=[20],withseq=False,seqfile=''):
@@ -1084,7 +1081,7 @@ class SFSCommand(Command):
           * *de=begpos*
              genomic coordinate of the end of the dense neutral region
 
-          * *dense_dist=5000*
+          * *dense_dist=0*
              The amount of neutral sequence to pad onto the end of each 
              conserved element or exon.  For example, if two adjaacent 
              conserved elemets are 20,000 base pairs apart, and the 
@@ -1092,8 +1089,6 @@ class SFSCommand(Command):
              end of each of the conserved elements and the middle 10,000
              base pairs are not simulated.
  
-             To include no neutral sequence, use dense_dist = 0.
-      
              To include every neutral base pair in the region, use 
              dense_dist=-1 (potentially very computationally expensive
              for large regions!) 
@@ -1105,8 +1100,26 @@ class SFSCommand(Command):
              (coding, 2008, *PLoS Genetics*) and Torgerson et al (conserved 
              non-coding, 2009, *PLoS Genetics*).
 
-        
+          * *model=''*
+             Demographic model.  By default, uses standard neutral model, but
+             you can specify 'gutenkunst', 'tennessen', or 'gravel'.  For
+             descriptions of each model, see the relevant publications 
+             (Gravel et al, *PNAS*, 2011; Gutenkunst, *PLoS Genetics*, 2009;
+             Tennessen et al, *Science*, 2012)
+
+          * *t=0.001*
+             Theta = *4Nu* in the ancestral population
+
+          * *r=0.001*
+             rho = *4Nr* in the ancestral population.  Note, you should interpret
+             this parameter as the genomewide average.  If you are simulating
+             a low recombination rate region, sfs_coder will automatically
+             reduce the recombination rate using the recombination map for 
+             the region.
+
         """
+
+        import re
 
         self.begpos = begpos
         self.endpos = endpos
@@ -1126,7 +1139,7 @@ class SFSCommand(Command):
             sel='NEUT'
 
         annotfile = os.path.join(indir,
-                            'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
+                            'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.dense'+str(dense_dist)+'.txt')
          
         recombout = os.path.join(indir, 'sfscode_rec_'+regname+'.txt')
 
@@ -1140,13 +1153,44 @@ class SFSCommand(Command):
         except:
             files+=1
  
+        rec_fac = 1.
         if files != 0:
-            self.build_genomic(basedir=basedir,indir=indir,datafile=datafile,                                
+            rec_fac = self.build_genomic(basedir=basedir,indir=indir,datafile=datafile,                                
                                chr=chr,begpos=begpos,endpos=endpos,db=db,de=de,
                                phast_file=phast_file,dense_dist=dense_dist,
                                regname=regname,annotfile=annotfile,
                                recombout=recombout,sel=sel,withseq=withseq,
                                seqfile=seqfile)
+        
+        else:
+             logfile = os.path.join(self.outdir,self.prefix,self.err,'log.build_input.txt')
+
+             log = open(logfile,'r')
+
+             i = 0
+             sim_min = 1
+             sim_max = 1
+             rec_min = 1
+             rec_max = 1
+             for line in log:
+                 if (re.search('.pl', line)):
+                     continue 
+                 i += 1
+                 if(i == 7):
+                     min_max = line.strip().split(' ')
+                     sim_min = float(min_max[0])
+                     sim_max = float(min_max[1])
+                 if(i == 9):
+                     rec = line.strip().split('=')
+                     rec_min = float(rec[1])
+                 if (i == 10):   
+                     rec = line.strip().split('=')
+                     rec_max = float(rec[1])
+              
+             rec_fac = (10**6)*(rec_max-rec_min)/(sim_max-sim_min)  
+
+        rho *= rec_fac
+
         if model != 'snm':
 
             self.three_pop(N=N,nsim=nsim,recombfile=recombout,nsam=nsam,
@@ -1185,8 +1229,11 @@ class SFSCommand(Command):
 
         self.line.append('-n')
 
-        for thing in nsam:
-            self.line.append(str(thing))
+        if len(nsam) > 1:
+            print >> sys.stderr, "There is only one population in the standard neutral model!"
+            print >> sys.stderr, "Using first population size given"
+
+        self.line.append(str(nsam[0]))
         
         if no_L == False:
             self.line.append('-L')
@@ -1229,7 +1276,7 @@ class SFSCommand(Command):
                       datafile='hg19_gencode.v14.gtf.gz',chr=2,
                       begpos=134545415,endpos=138594750,db=-1,
                       de=-1,withseq=False,seqfile='',
-                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=5000,
+                      phast_file ='hg19_phastCons_mammal.wig.gz',dense_dist=0,
                       regname='',annotfile='',recombout='',sel='SEL'):
 
         import signal
@@ -1289,6 +1336,10 @@ class SFSCommand(Command):
                  os.path.join(indir,regname+'.exons'), str(chr), str(begpos), 
                  str(endpos)] 
 
+        #for word in exons:
+        #    print word,
+        
+
         ex_exons = subprocess.Popen(exons, stdout=log_exons, stderr=eh_exons, 
                                     preexec_fn=lambda: signal.signal(
                                         signal.SIGPIPE, signal.SIG_DFL), 
@@ -1322,7 +1373,7 @@ class SFSCommand(Command):
         # next perl command, make annotation file for sfs_code
 
         if annotfile == '': 
-            annotfile =os.path.join(indir, 'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.txt')
+            annotfile =os.path.join(indir, 'sfscode_annotation_'+regname+'_CDSbuff_'+str(sel)+'.dense'+str(dense_dist)+'.txt')
 
         w = 0
         if withseq == True:
@@ -1353,7 +1404,7 @@ class SFSCommand(Command):
         cmd = "cat "+logfile
         result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
                                   stderr=subprocess.PIPE)
-       
+
         out,err  = result.communicate()
 
         out_arr = out.split('\n')
@@ -1376,9 +1427,23 @@ class SFSCommand(Command):
                                   preexec_fn=lambda: signal.signal(
                                         signal.SIGPIPE, signal.SIG_DFL),
                                   close_fds = True)
+        
         returncode = ex_map.wait()
 
-        return returncode
+        cmd = "cat "+logfile
+        result = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
+
+        out,err  = result.communicate()
+
+        out_arr = out.split('\n')
+
+        rmax = float(out_arr[len(out_arr)-2].split('=')[1])
+        rmin = float(out_arr[len(out_arr)-3].split('=')[1])
+
+        fac = ((rmax-rmin)/(float(sim_max)-float(sim_min)))*(10**6)
+
+        return fac
 
     # What I don't yet understand is how I am going to build in phenotype
     # If phenotype has no realtionship with selection, then I need a 
@@ -1468,7 +1533,7 @@ class SFSCommand(Command):
                    bottle_p1_1=0.47619,bottle_p2=0.242857,
                    growth_p1=58.4,growth_p2=80.3, mig_p0_p1=6.15,
                    mig_p1_p0=0.5, mig_all = [0.738,0.4674,0.06,0.192,
-                   0.01938,0.09792], t_super=0.391465,model='gutenkunst'):
+                   0.01938,0.09792], t_super=0.391465,model='gutenkunst',event=[]):
         
         """
         A general three population model with growth events.
@@ -1482,12 +1547,18 @@ class SFSCommand(Command):
         included.
 
         Use model='gravel', model='tennessen' or model='gutenkunst'
-        to explicitly choose one of the models.
+        to explicitly choose one of the models. Note that the Tennessen
+        model differs slightly from the other two by adding
+        recent explosive growth in the African contitnental group and 
+        two phases of growth in Europeans.
 
         The user can specify the model parameters as desired.
         To use a user specified model, simply use model = ''.
         Any unspecified parameters are set by default to the 
-        parameters of the Gutenkunst model.       
+        parameters of the Gutenkunst model. 
+ 
+        Population 0 is the African continental group, 1 is Europe, 
+        and 2 is Asia.     
         """
         
         if model == 'gutenkunst':
@@ -1524,7 +1595,7 @@ class SFSCommand(Command):
                    0.09305, 0.115754, 0.00858, 0.03421]            
 
         
-        # these are the prepublication parameters from Dadi (provided by Ryan Hernandez)
+        # these are the pre-publication parameters from Dadi (provided by Ryan Hernandez)
         elif model == 'guten_old':
             t_end=0.629098
             t_expand_p0=0
@@ -1594,11 +1665,6 @@ class SFSCommand(Command):
         for n in nsam:
             self.line.append(str(n))
 
-        # non_coding?
-        if (non_coding):
-            self.line.extend(['-a','N'])
-            if len(self.command.L) > 1:
-                self.line.append('R')
 
         # no seq
         self.line.append('-A')
@@ -1606,6 +1672,12 @@ class SFSCommand(Command):
         if len(L) > 0:
             for thing in L:
                 self.line.append(thing)
+       
+        # non_coding?
+        if (non_coding):
+            self.line.extend(['-a','N'])
+            if len(self.L) > 1 or len(L) >0:
+                self.line.append('R')
 
         self.line.extend(['-t',str(t)])
 
@@ -1654,6 +1726,10 @@ class SFSCommand(Command):
             for thing in mutation:
                 self.line.append(thing)
 
+        # event
+        if len(event) > 0:
+            for thing in event:
+                self.line.append(thing)
 
 class MSCommand(Command):
 

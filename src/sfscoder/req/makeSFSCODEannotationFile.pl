@@ -132,6 +132,15 @@ foreach my $s (sort {$a<=>$b} keys %REGS){
 my @NEUT = ();
 my $nNEUT = 0;
 my $tmp = 0;
+if(@CREGS==0) {
+    if($BUFF != -1 && %REGS) {
+        $BUFF=0;
+    }
+    elsif (! %REGS) {
+        $BUFF=-1;
+    }
+}
+
 if($BUFF != 0){
   if($BUFF == -1){
     $NEUT[0][0] = $DB;
