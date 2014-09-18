@@ -72,9 +72,11 @@ Adding selection
 
    # build the command line for the tennessen model
    # a selection model is added with sel = sel=['-W','1','5','0','1']
-   # this adds a type 1 selection model, with gamma =5, 
-   # and the probability of negative seleciton set to 1.
+   # this adds a "type 1 model", with gamma =5, 
+   # and the probability of negative selection set to 1.
    # for more on selection models in SFS_CODE, see the SFS_CODE handbook
+   # we sample 50 individuals from populations 0 and 1 (Africa and Europe), 
+   # and 0 individuals from population 2 (Asia)
 
    com.three_pop(N=1000,nsam=[50,50,0],nsim=10,model='tennessen',
                  L=['-L','1','100'],sel=['-W','1','5','0','1'])

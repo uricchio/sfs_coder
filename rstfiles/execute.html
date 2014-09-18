@@ -115,9 +115,11 @@ as well as a few other examples.</p>
 
 <span class="c"># build the command line for the tennessen model</span>
 <span class="c"># a selection model is added with sel = sel=[&#39;-W&#39;,&#39;1&#39;,&#39;5&#39;,&#39;0&#39;,&#39;1&#39;]</span>
-<span class="c"># this adds a type 1 selection model, with gamma =5,</span>
-<span class="c"># and the probability of negative seleciton set to 1.</span>
+<span class="c"># this adds a &quot;type 1 model&quot;, with gamma =5,</span>
+<span class="c"># and the probability of negative selection set to 1.</span>
 <span class="c"># for more on selection models in SFS_CODE, see the SFS_CODE handbook</span>
+<span class="c"># we sample 50 individuals from populations 0 and 1 (Africa and Europe),</span>
+<span class="c"># and 0 individuals from population 2 (Asia)</span>
 
 <span class="n">com</span><span class="o">.</span><span class="n">three_pop</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">nsam</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">nsim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">model</span><span class="o">=</span><span class="s">&#39;tennessen&#39;</span><span class="p">,</span>
               <span class="n">L</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-L&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;100&#39;</span><span class="p">],</span><span class="n">sel</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;-W&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;5&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">])</span>
