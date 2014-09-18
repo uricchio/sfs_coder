@@ -25,7 +25,7 @@ available (http://sourceforge.net/projects/sfscode/files/sfs_coder/).
 If you have any suggestions or would like to inquire about the 
 development feel free to email Lawrence (lawrence.uricchio@ucsf.edu).
 
-sfs_coder will be free to use and distribute for personal or academic use.  
+sfs_coder is free to use and distribute for personal or academic use.  
 We hope that you will find it useful.
 
 
